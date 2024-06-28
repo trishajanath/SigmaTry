@@ -1,31 +1,61 @@
-import { StyleSheet } from 'react-native';
+import AnimatedButton from "@/components/AnimatedButton";
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
+import { SegmentedButtons, Surface } from "react-native-paper";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+const { width, height } = Dimensions.get("window");
 
-export default function TabOneScreen() {
+const App = () => {
+  const [value, setValue] = React.useState("first");
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <Surface
+        style={{
+          width: width * 0.8,
+          height: height * 0.5,
+          backgroundColor: "white",
+          borderRadius: 10,
+          padding: wp("5%"),
+          borderWidth: 1,
+          borderColor: "#f5f5f5",
+        }}
+        elevation={3}
+      >
+        <AnimatedButton />
+      </Surface>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    padding: wp("5%"),
+    backgroundColor: "#f5f5f5",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  header: {
+    fontSize: wp("8%"),
+    fontWeight: "bold",
+    marginBottom: hp("2%"),
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  paragraph: {
+    fontSize: wp("5%"),
+    textAlign: "center",
   },
 });
+
+export default App;
