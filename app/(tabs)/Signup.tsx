@@ -7,6 +7,8 @@ const { width, height } = Dimensions.get("window");
 const initialState = {
   collegeId: "",
   password: "",
+  loading: false,
+  error: "",
 };
 
 interface Action {
@@ -25,6 +27,10 @@ const reducer = (state: State, action: Action) => {
       return { ...state, collegeId: action.payload };
     case "password":
       return { ...state, password: action.payload };
+    case "loading":
+      return { ...state, loading: true };
+    case "error":
+      return { ...state, error: action.payload, loading: false };
     default:
       return state;
   }
