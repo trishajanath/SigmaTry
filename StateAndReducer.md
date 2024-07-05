@@ -160,9 +160,9 @@ const state = {
 
 ### view Issue
 
-- comments on the issue
+- add comments to the issue raised
 
-- api call to close the issue generated
+- api call to update the issue status and comments
 
 ```js
 const state = {
@@ -186,3 +186,17 @@ const state = {
   role: "",
 };
 ```
+
+- General Hooks
+
+  - all the pages in the application uses the `useReducer` hooks and the pages with specific data will be fetched using the `useEffect` hooks.
+
+  - the `useContext` hook is used to pass the user details to the other components.
+
+  - the `useNavigate` hook is used to navigate to the other pages.
+
+  - the `expo router` is used inorder to navigate between pages
+
+  - `Expo async Storage` is used to store the local data and use when ever necessary
+
+  - the Backend url will be retrieved from the app.json using `expo constant` inorder to abstract and protect the url from the user.
