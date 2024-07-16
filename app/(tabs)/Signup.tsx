@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import React, { useReducer } from "react";
 import { Button, TextInput } from "react-native-paper";
-
+import { router } from "expo-router";
 const { width, height } = Dimensions.get("window");
 
 const initialState = {
@@ -60,7 +60,11 @@ const Signup = () => {
         }}
       />
       <Text style={styles.forgotPassword}>Forgot password?</Text>
-      <Button mode="contained" style={styles.button}>
+      <Button
+        mode="contained"
+        style={styles.button}
+        onPress={() => router.replace("Home")}
+      >
         Signup
       </Button>
     </View>

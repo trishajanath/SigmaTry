@@ -17,7 +17,7 @@ const AnimatedButton = () => {
     setSelectedButton(button);
     Animated.timing(slideAnim, {
       toValue: button === "login" ? 0 : 1,
-      duration: 300,
+      duration: 700,
       useNativeDriver: false,
     }).start();
   };

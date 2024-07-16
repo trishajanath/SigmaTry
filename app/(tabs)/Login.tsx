@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Button, TextInput } from "react-native-paper";
+import { router } from "expo-router";
 
 const Login = () => {
   return (
@@ -50,6 +51,7 @@ const Login = () => {
           marginTop: "5%",
           borderRadius: 10,
         }}
+        onPress={() => router.replace("Home")}
       >
         Login
       </Button>
