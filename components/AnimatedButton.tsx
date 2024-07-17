@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "50%",
     height: "100%",
-    backgroundColor: "#4caf50",
+    backgroundColor: "#61198c",
     borderRadius: 25,
   },
   selectedText: {
