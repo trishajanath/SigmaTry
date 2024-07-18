@@ -35,6 +35,7 @@ const App = () => {
       >
         <AnimatedButton />
       </Surface>
+      
     </View>
   );
 };

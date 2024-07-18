@@ -7,6 +7,7 @@ import {
   Text as RNText,
   Dimensions,
 } from "react-native";
+import { router } from "expo-router";
 import { Appbar, Text, Searchbar, Button } from "react-native-paper";
 import { FontAwesome6, FontAwesome5, Foundation } from "@expo/vector-icons";
 import {
@@ -32,37 +33,37 @@ const Index = () => {
   const ovalContainers = [
     {
       id: 1,
-      icon: <BookOpenIcon size={30} color="grey" style={{ padding: 20 }} />,
-      text: "Classroom",
+      icon: <BookOpenIcon size={30} color="grey" style={{ padding: 20 }} onPress={() => router.push("/Home/classroom1")}/>,
+      
     },
     {
       id: 2,
-      icon: <FontAwesome5 name="restroom" size={24} color="black" />,
-      text: "Restroom",
+      icon: <FontAwesome5 name="restroom" size={30} color="black"  onPress={() => router.push("/Home/restroom")}/>,
+      
     },
     {
       id: 3,
       icon: (
         <BuildingOffice2Icon size={30} color="grey" style={{ padding: 20 }} />
       ),
-      text: "Department",
+      
     },
     {
       id: 4,
-      icon: <FontAwesome6 name="glass-water-droplet" size={24} color="black" />,
-      text: "Water Dispenser",
+      icon: <FontAwesome6 name="glass-water-droplet" size={30} color="black" />,
+      
     },
     {
       id: 5,
-      icon: <Foundation name="elevator" size={24} color="black" />,
-      text: "Lift",
+      icon: <Foundation name="elevator" size={30} color="black" />,
+      
     },
     {
       id: 6,
-      icon: (
+      icon: 
         <WrenchScrewdriverIcon size={30} color="grey" style={{ padding: 20 }} />
-      ),
-      text: "Miscellaneous",
+      
+
     },
   ];
 
@@ -125,10 +126,11 @@ const Index = () => {
             marginHorizontal: "3%",
           }}
         />
+        <RNText style={{ marginTop:"5%", marginLeft:"5%", fontSize: 18 }}>Write a Complaint</RNText>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={{ marginTop: "1%", paddingHorizontal: 7.5 }}
+          style={{ marginTop: "2%", paddingHorizontal: 7.5 }}
           contentContainerStyle={{ paddingRight: width * 0.3 }}
         >
           {ovalContainers.map((item) => (
@@ -136,21 +138,22 @@ const Index = () => {
               key={item.id}
               style={{
                 backgroundColor: "white",
-                borderRadius: 50,
-                width: width * 0.4,
-                height: width * 0.4,
+                borderRadius: 40,
+                width: width * 0.22,
+                height: width * 0.3,
                 marginTop: "1%",
-                marginHorizontal: "1%",
+                marginHorizontal: "2%",
                 alignItems: "center",
                 justifyContent: "center",
                 flexDirection: "column",
               }}
             >
               <RNText style={{ fontSize: 18 }}>{item.icon}</RNText>
-              <RNText>{item.text}</RNText>
+              
             </TouchableOpacity>
           ))}
         </ScrollView>
+        <RNText style={{ marginTop:"5%", marginLeft:"5%", fontSize: 18 }}>My Complaints</RNText>
         {rectangularContainers.map((item) => (
           <View
             key={item.id}
