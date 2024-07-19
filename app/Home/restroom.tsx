@@ -1,26 +1,32 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Switch } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, Text, TextInput, StyleSheet, Switch, Dimensions } from 'react-native';
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
-
-
 import ModalDropdown from "react-native-modal-dropdown";
+import 'google_fonts';
 
-
+const { width } = Dimensions.get("window");
 const ProgressStepsComponent = () => {
-  const [step1Data, setStep1Data] = useState({ name: '', number: '', restroom:'' });
-  const [step2Data, setStep2Data] = useState({ type: '', domain: '', content:'', anonymous:false});
-  const [selectedOption, setSelectedOption] = useState('Select Type');
+  const [step1Data, setStep1Data] = useState({ name: '', number: '', restroom: '' });
+  const [step2Data, setStep2Data] = useState({ content: '', anonymous: false });
+  const [selectedOptionType, setSelectedOptionType] = useState('Select Type');
+  const [selectedOptionDomain, setSelectedOptionDomain] = useState('Select Domain');
+  const [restroom, setrestroom] = useState('Select Option');
   const handleSwitchChange = (value: boolean) => {
     setStep2Data({ ...step2Data, anonymous: value });
   };
   
-
   return (
     <View style={styles.container}>
-      <ProgressSteps>
+      <ProgressSteps
+        activeStepIconBorderColor="#a2c2e8"
+        activeStepIconColor="#e9f7ff"
+        completedStepIconColor="#a2c2e8"
+        activeLabelColor="#a2c2e8"
+        completedProgressBarColor="#a2c2e8"
+        progressBarColor="#a2c2e8"
+      >
         <ProgressStep label="Step 1">
-          <View style={styles.container}>
+          <View style={styles.stepContainer}>
             <Text style={styles.label}>Block Name</Text>
             <TextInput
               style={styles.input}
@@ -35,50 +41,44 @@ const ProgressStepsComponent = () => {
               value={step1Data.number}
               onChangeText={text => setStep1Data({ ...step1Data, number: text })}
             />
-      
-          <Picker
-          selectedValue={step1Data.restroom}
-          style={styles.input}
-          onValueChange={(itemValue) =>
-            setStep1Data({ ...step1Data, restroom: itemValue })
-          }>
-          <Picker.Item label="Option 1" value="option1" />
-          <Picker.Item label="Option 2" value="option2" />
-          <Picker.Item label="Option 3" value="option3" />
-        </Picker>
-      </View>
+            <Text style={styles.label}>Restroom</Text>
+            <ModalDropdown
+              options={["Gents", "Ladies", "Differently Abled"]}
+              defaultValue={restroom}
+              onSelect={(index, value) => setrestroom(value)}
+              style={styles.dropdown}
+              textStyle={styles.dropdownText}
+              dropdownStyle={styles.dropdownOptions}
+              dropdownTextStyle={styles.dropdownOptionText}
+            />
+          </View>
         </ProgressStep>
         <ProgressStep label="Step 2">
-        <Text  style={styles.pickerLabel}>
-        Type
-      </Text>
-      <View style={styles.pickerContainer}>
-        <ModalDropdown
-          options={["Complaint", "Feedback"]}
-          defaultValue={selectedOption}
-          onSelect={(index, value) => setSelectedOption(value)}
-          style={styles.dropdown}
-          textStyle={styles.dropdownText}
-          dropdownStyle={styles.dropdownOptions}
-          dropdownTextStyle={styles.dropdownOptionText}
-        />
-      </View>
-      <Text  style={styles.pickerLabel}>
-        Domain
-      </Text>
-      <View style={styles.pickerContainer}>
-        <ModalDropdown
-          options={["Cleaning", "Plumbing","Civil & Carpentry","Electrical","Others"]}
-          defaultValue={selectedOption}
-          onSelect={(index, value) => setSelectedOption(value)}
-          style={styles.dropdown}
-          textStyle={styles.dropdownText}
-          dropdownStyle={styles.dropdownOptions}
-          dropdownTextStyle={styles.dropdownOptionText}
-        />
-      </View>
-          <View style={styles.container}>
-          
+          <View style={styles.stepContainer}>
+            <Text style={styles.pickerLabel}>Type</Text>
+            <ModalDropdown
+              options={["Complaint", "Feedback"]}
+              defaultValue={selectedOptionType}
+              onSelect={(index, value) => setSelectedOptionType(value)}
+              style={styles.dropdown}
+              textStyle={styles.dropdownText}
+              dropdownStyle={styles.dropdownOptions}
+              dropdownTextStyle={styles.dropdownOptionText}
+            />
+          </View>
+          <View style={styles.stepContainer}>
+            <Text style={styles.pickerLabel}>Domain</Text>
+            <ModalDropdown
+              options={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical", "Others"]}
+              defaultValue={selectedOptionDomain}
+              onSelect={(index, value) => setSelectedOptionDomain(value)}
+              style={styles.dropdown}
+              textStyle={styles.dropdownText}
+              dropdownStyle={styles.dropdownOptions}
+              dropdownTextStyle={styles.dropdownOptionText}
+            />
+          </View>
+          <View style={styles.stepContainer}>
             <Text style={styles.label}>Content</Text>
             <TextInput
               style={styles.input}
@@ -88,16 +88,13 @@ const ProgressStepsComponent = () => {
             />
           </View>
           <View style={styles.switchContainer}>
-        <Text style={styles.switchLabel}>
-          Anonymous Replies
-        </Text>
-        <Switch
-          value={step2Data.anonymous}
-          onValueChange={handleSwitchChange}
-        />
-      </View>
+            <Text style={styles.switchLabel}>Anonymous Replies</Text>
+            <Switch
+              value={step2Data.anonymous}
+              onValueChange={handleSwitchChange}
+            />
+          </View>
         </ProgressStep>
-        
       </ProgressSteps>
     </View>
   );
@@ -108,55 +105,76 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 15,
-    padding: 10,
+    marginBottom: '2%',
+    padding: '2%',
     borderRadius: 5,
-    backgroundColor: "#fff",
+  
   },
   switchLabel: {
     fontSize: 16,
+    fontFamily:'Raleway_200ExtraLight'
   },
   pickerLabel: {
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: '2%',
+    textAlign: 'left', // Align text to the left
   },
-  pickerContainer: {
-    marginBottom: 20,
+  stepContainer: {
+    alignItems: 'flex-start', // Align items to the left
+    justifyContent: 'center',
+    marginBottom: '5%',
+    width: '100%',
   },
   dropdown: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
+    width: '100%',
+    height: width * 0.15,
+    marginTop:'2%',
+    backgroundColor: '#f5f5f5',
+    borderWidth: 2,
+    borderColor: '#a2c2e8',
+    borderRadius: 10,
+    paddingHorizontal: '5%',
+    marginBottom: '2%',
+    textAlign:'left',
+    justifyContent:'center'
+  
   },
   dropdownText: {
     fontSize: 16,
+    textAlign: 'left', 
   },
   dropdownOptions: {
     width: '80%',
+    backgroundColor: '#f5f5f5',
+  
+    
   },
   dropdownOptionText: {
     fontSize: 16,
-    padding: 10,
+    paddingLeft: '5%',
+    textAlign: 'left', 
   },
   container: {
-    flex:1,
-    padding: 20,
+    flex: 1,
+    padding:'5%' ,
   },
-  label:{
-    fontSize:16,
-    marginHorizontal:5,
-    marginTop:10
-
+  label: {
+    fontSize: 16,
+    
+   
   },
   input: {
     width: '100%',
-    height: 50,
-    backgroundColor: '#e8f5e9',
+    height: width * 0.15,
+    backgroundColor: '#f5f5f5', // Light blue background
+    borderWidth: 2, // Border width
+    borderColor: '#a2c2e8', // Border color
     borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-    marginTop:10
+    paddingHorizontal: '5%',
+    marginBottom: '4%',
+    marginTop: '4%',
   },
+  
 });
 
 export default ProgressStepsComponent;
