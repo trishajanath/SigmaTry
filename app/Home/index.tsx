@@ -15,9 +15,13 @@ import {
   BookOpenIcon,
   BuildingOffice2Icon,
   WrenchScrewdriverIcon,
+  Squares2X2Icon,
+  UserCircleIcon,
+  AdjustmentsHorizontalIcon
 } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
 const { width } = Dimensions.get("window");
+
 const Index = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,49 +32,68 @@ const Index = () => {
     });
   }, [navigation]);
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
+  const onChangeSearch = (query:string) => setSearchQuery(query);
 
   const ovalContainers = [
     {
       id: 1,
-      icon: <BookOpenIcon size={30} color="grey" style={{ padding: 20 }} onPress={() => router.push("/Home/classroom1")}/>,
-      
+      icon: (
+        <Squares2X2Icon
+          size={30}
+          color="grey"
+          style={{ padding: 20 }}
+          onPress={() => router.push("/Home/classroom1")}
+        />
+      ),
     },
     {
       id: 2,
-      icon: <FontAwesome5 name="restroom" size={30} color="black"  onPress={() => router.push("/Home/restroom")}/>,
-      
+      icon: (
+        <BookOpenIcon
+          size={30}
+          color="grey"
+          style={{ padding: 20 }}
+          onPress={() => router.push("/Home/classroom1")}
+        />
+      ),
     },
     {
       id: 3,
       icon: (
-        <BuildingOffice2Icon size={30} color="grey" style={{ padding: 20 }} />
+        <FontAwesome5
+          name="restroom"
+          size={30}
+          color="black"
+          onPress={() => router.push("/Home/restroom")}
+        />
       ),
-      
     },
     {
       id: 4,
-      icon: <FontAwesome6 name="glass-water-droplet" size={30} color="black" />,
-      
+      icon: (
+        <BuildingOffice2Icon size={30} color="grey" style={{ padding: 20 }} />
+      ),
     },
     {
       id: 5,
-      icon: <Foundation name="elevator" size={30} color="black" />,
-      
+      icon: <FontAwesome6 name="glass-water-droplet" size={30} color="black" />,
     },
     {
       id: 6,
-      icon: 
+      icon: <Foundation name="elevator" size={30} color="black" />,
+    },
+    {
+      id: 7,
+      icon: (
         <WrenchScrewdriverIcon size={30} color="grey" style={{ padding: 20 }} />
-      
-
+      ),
     },
   ];
 
   const rectangularContainers = [
-    { id: 1, text: "Rectangular Container 1", color: "#f5cdde" },
-    { id: 2, text: "Rectangular Container 2", color: "#cce1f2" },
-    { id: 3, icon: "", text: "Rectangular Container 3", color: "#c6f8e5" },
+    { id: 1, text: "Rectangular Container 1", color: "#e7bceb" },
+    { id: 2, text: "Rectangular Container 2", color: "#bbbef3" },
+    { id: 3, icon: "", text: "Rectangular Container 3", color: "#a2d9da" },
   ];
 
   return (
@@ -78,7 +101,7 @@ const Index = () => {
       <View
         style={{
           height: "8%",
-          backgroundColor: "white",
+          backgroundColor: "#eeecef",
           marginTop: "12%",
           padding: "5%",
           paddingLeft: "7%",
@@ -97,7 +120,7 @@ const Index = () => {
             elevation: 5,
           }}
         >
-          S I G M A
+          sigma
         </Text>
         <TouchableOpacity
           style={{
@@ -116,17 +139,56 @@ const Index = () => {
         </TouchableOpacity>
       </View>
       <ScrollView style={{ marginTop: "1%", paddingHorizontal: 10 }}>
-        <Searchbar
-          placeholder="Search"
-          onChangeText={onChangeSearch}
-          value={searchQuery}
+        <View
           style={{
-            backgroundColor: "white",
-            marginTop: "5%",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
             marginHorizontal: "3%",
+            marginTop:'5%'
           }}
-        />
-        <RNText style={{ marginTop:"5%", marginLeft:"5%", fontSize: 18 }}>Write a Complaint</RNText>
+        >
+          <Searchbar
+            placeholder="Search for anything"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+            style={{
+              backgroundColor: "#e6e6e4",
+              flex: 1,
+              marginRight: 10,
+            }}
+          />
+          <View
+            style={[
+              styles.circle,
+              {
+                backgroundColor: "#e6e6e4",
+                justifyContent: "center",
+                alignItems: "center",
+                
+              },
+            ]}
+          >
+            <AdjustmentsHorizontalIcon size={20} color="black" />
+            
+            
+          </View>
+          <View
+            style={[
+              styles.circle,
+              {
+                backgroundColor: "#e6e6e4",
+                justifyContent: "center",
+                alignItems: "center",
+                marginLeft: 10,
+              },
+            ]}
+          >
+            <UserCircleIcon size={20} color="black" />
+            
+          </View>
+        </View>
+        <RNText style={styles.boldText}>Write a Complaint</RNText>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -139,8 +201,8 @@ const Index = () => {
               style={{
                 backgroundColor: "white",
                 borderRadius: 40,
-                width: width * 0.22,
-                height: width * 0.3,
+                width: width * 0.21,
+                height: width * 0.27,
                 marginTop: "1%",
                 marginHorizontal: "2%",
                 alignItems: "center",
@@ -149,11 +211,10 @@ const Index = () => {
               }}
             >
               <RNText style={{ fontSize: 18 }}>{item.icon}</RNText>
-              
             </TouchableOpacity>
           ))}
         </ScrollView>
-        <RNText style={{ marginTop:"5%", marginLeft:"5%", fontSize: 18 }}>My Complaints</RNText>
+        <RNText style={styles.boldText}>My Complaints</RNText>
         {rectangularContainers.map((item) => (
           <View
             key={item.id}
@@ -161,7 +222,9 @@ const Index = () => {
               backgroundColor: item.color,
               borderRadius: 10,
               padding: "10%",
+              marginLeft: "5%",
               marginTop: "5%",
+              marginRight: "5%",
               marginVertical: "2%",
               flexDirection: "column",
             }}
@@ -192,4 +255,16 @@ const Index = () => {
 
 export default Index;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  boldText: {
+    marginTop: "5%",
+    marginLeft: "5%",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  circle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+});

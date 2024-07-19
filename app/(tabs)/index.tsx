@@ -25,7 +25,7 @@ const App = () => {
         style={{
           width: width * 0.8,
           height: height * 0.5,
-          backgroundColor: "white",
+          backgroundColor: "eeecef",
           borderRadius: 10,
           padding: wp("5%"),
           borderWidth: 1,
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: wp("5%"),
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "eeecef",
   },
   header: {
     fontSize: wp("8%"),
