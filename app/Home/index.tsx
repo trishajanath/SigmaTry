@@ -6,16 +6,12 @@ import {
   ScrollView,
   Text as RNText,
   Dimensions,
+  TextInput,
 } from "react-native";
 import { router } from "expo-router";
-import { Appbar, Text, Searchbar, Button } from "react-native-paper";
-import { FontAwesome6, FontAwesome5, Foundation } from "@expo/vector-icons";
+import { Appbar, Text, Button } from "react-native-paper";
+import { FontAwesome6, FontAwesome5, Foundation, Feather, Ionicons,MaterialIcons,MaterialCommunityIcons} from "@expo/vector-icons";
 import {
-  QrCodeIcon,
-  BookOpenIcon,
-  BuildingOffice2Icon,
-  WrenchScrewdriverIcon,
-  Squares2X2Icon,
   UserCircleIcon,
   AdjustmentsHorizontalIcon
 } from "react-native-heroicons/outline";
@@ -32,26 +28,23 @@ const Index = () => {
     });
   }, [navigation]);
 
-  const onChangeSearch = (query:string) => setSearchQuery(query);
+  const onChangeSearch = (query: string) => setSearchQuery(query);
 
   const ovalContainers = [
     {
       id: 1,
       icon: (
-        <Squares2X2Icon
-          size={30}
-          color="grey"
-          style={{ padding: 20 }}
-          onPress={() => router.push("/Home/classroom1")}
-        />
+        <Ionicons name="qr-code-outline" size={22} color="#555555" />
       ),
     },
     {
       id: 2,
       icon: (
-        <BookOpenIcon
-          size={30}
-          color="grey"
+       
+        <Feather
+        name="book-open"
+          size={25}
+          color="#555555"
           style={{ padding: 20 }}
           onPress={() => router.push("/Home/classroom1")}
         />
@@ -62,8 +55,8 @@ const Index = () => {
       icon: (
         <FontAwesome5
           name="restroom"
-          size={30}
-          color="black"
+          size={20}
+          color="#555555"
           onPress={() => router.push("/Home/restroom")}
         />
       ),
@@ -71,21 +64,21 @@ const Index = () => {
     {
       id: 4,
       icon: (
-        <BuildingOffice2Icon size={30} color="grey" style={{ padding: 20 }} />
+        <MaterialCommunityIcons name="office-building-outline" size={28} color="#555555" />
       ),
     },
     {
       id: 5,
-      icon: <FontAwesome6 name="glass-water-droplet" size={30} color="black" />,
+      icon: <FontAwesome6 name="glass-water-droplet" size={20} color="#555555" />,
     },
     {
       id: 6,
-      icon: <Foundation name="elevator" size={30} color="black" />,
+      icon: <Foundation name="elevator" size={30} color="#555555" />,
     },
     {
       id: 7,
       icon: (
-        <WrenchScrewdriverIcon size={30} color="grey" style={{ padding: 20 }} />
+        <FontAwesome6 name="screwdriver-wrench" size={20} color="#555555" s />
       ),
     },
   ];
@@ -112,12 +105,8 @@ const Index = () => {
           variant="headlineSmall"
           style={{
             fontWeight: "bold",
-            fontFamily: "SpaceMono",
-            shadowColor: "",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.8,
-            shadowRadius: 2,
-            elevation: 5,
+            fontFamily: "",
+            
           }}
         >
           sigma
@@ -129,13 +118,7 @@ const Index = () => {
             top: "30%",
           }}
         >
-          <QrCodeIcon
-            size={30}
-            color="black"
-            style={{
-              marginTop: "25%",
-            }}
-          />
+          
         </TouchableOpacity>
       </View>
       <ScrollView style={{ marginTop: "1%", paddingHorizontal: 10 }}>
@@ -148,16 +131,21 @@ const Index = () => {
             marginTop:'5%'
           }}
         >
-          <Searchbar
-            placeholder="Search for anything"
-            onChangeText={onChangeSearch}
-            value={searchQuery}
-            style={{
-              backgroundColor: "#e6e6e4",
-              flex: 1,
-              marginRight: 10,
-            }}
-          />
+          <View style={styles.searchContainer}>
+            <MaterialIcons
+              name="search"
+              size={20}
+              color="#555555"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              placeholder="Search for complaints"
+              onChangeText={onChangeSearch}
+              value={searchQuery}
+              placeholderTextColor="#555555"
+              style={styles.searchInput}
+            />
+          </View>
           <View
             style={[
               styles.circle,
@@ -169,7 +157,7 @@ const Index = () => {
               },
             ]}
           >
-            <AdjustmentsHorizontalIcon size={20} color="black" />
+            <AdjustmentsHorizontalIcon size={20} color="#555555" />
             
             
           </View>
@@ -184,7 +172,7 @@ const Index = () => {
               },
             ]}
           >
-            <UserCircleIcon size={20} color="black" />
+            <UserCircleIcon size={20} color="#555555" />
             
           </View>
         </View>
@@ -201,10 +189,10 @@ const Index = () => {
               style={{
                 backgroundColor: "white",
                 borderRadius: 40,
-                width: width * 0.21,
-                height: width * 0.27,
+                width: width * 0.20,
+                height: width * 0.23,
                 marginTop: "1%",
-                marginHorizontal: "2%",
+                marginHorizontal: "1%",
                 alignItems: "center",
                 justifyContent: "center",
                 flexDirection: "column",
@@ -221,6 +209,7 @@ const Index = () => {
             style={{
               backgroundColor: item.color,
               borderRadius: 10,
+              height:width*0.3,
               padding: "10%",
               marginLeft: "5%",
               marginTop: "5%",
@@ -240,7 +229,7 @@ const Index = () => {
               <RNText>{item.icon}</RNText>
             </View>
             <Button
-              style={{ marginTop: 10, alignSelf: "flex-start" }}
+              style={{ marginTop: '2%', alignSelf: "flex-start" }}
               labelStyle={{ color: "white" }}
               compact
             >
@@ -264,7 +253,25 @@ const styles = StyleSheet.create({
   },
   circle: {
     width: 40,
-    height: 40,
-    borderRadius: 20,
+    height: 43,
+    borderRadius: 15,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: "#e6e6e4",
+    borderRadius: 30,
+    marginRight: '3%',
+    flex: 1,
+  },
+  searchIcon: {
+    marginLeft: '7%',
+  },
+  searchInput: {
+    flex: 1,
+    height: width * 0.11,
+    textAlign: 'left',
+    color: "#333333",
+    marginLeft: '5%',
   },
 });
