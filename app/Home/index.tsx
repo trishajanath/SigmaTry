@@ -10,10 +10,18 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { Appbar, Text, Button } from "react-native-paper";
-import { FontAwesome6, FontAwesome5, Foundation, Feather, Ionicons,MaterialIcons,MaterialCommunityIcons} from "@expo/vector-icons";
+import {
+  FontAwesome6,
+  FontAwesome5,
+  Foundation,
+  Feather,
+  Ionicons,
+  MaterialIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import {
   UserCircleIcon,
-  AdjustmentsHorizontalIcon
+  AdjustmentsHorizontalIcon,
 } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
 const { width } = Dimensions.get("window");
@@ -33,16 +41,13 @@ const Index = () => {
   const ovalContainers = [
     {
       id: 1,
-      icon: (
-        <Ionicons name="qr-code-outline" size={22} color="#555555" />
-      ),
+      icon: <Ionicons name="qr-code-outline" size={22} color="#555555" />,
     },
     {
       id: 2,
       icon: (
-       
         <Feather
-        name="book-open"
+          name="book-open"
           size={25}
           color="#555555"
           style={{ padding: 20 }}
@@ -64,12 +69,18 @@ const Index = () => {
     {
       id: 4,
       icon: (
-        <MaterialCommunityIcons name="office-building-outline" size={28} color="#555555" />
+        <MaterialCommunityIcons
+          name="office-building-outline"
+          size={28}
+          color="#555555"
+        />
       ),
     },
     {
       id: 5,
-      icon: <FontAwesome6 name="glass-water-droplet" size={20} color="#555555" />,
+      icon: (
+        <FontAwesome6 name="glass-water-droplet" size={20} color="#555555" />
+      ),
     },
     {
       id: 6,
@@ -94,9 +105,9 @@ const Index = () => {
       <View
         style={{
           height: "8%",
-          backgroundColor: "#eeecef",
+          backgroundColor: "#f2f2f2",
           marginTop: "12%",
-          padding: "5%",
+          padding: "3%",
           paddingLeft: "7%",
           flexDirection: "row",
         }}
@@ -106,7 +117,6 @@ const Index = () => {
           style={{
             fontWeight: "bold",
             fontFamily: "",
-            
           }}
         >
           sigma
@@ -117,9 +127,7 @@ const Index = () => {
             right: "5%",
             top: "30%",
           }}
-        >
-          
-        </TouchableOpacity>
+        ></TouchableOpacity>
       </View>
       <ScrollView style={{ marginTop: "1%", paddingHorizontal: 10 }}>
         <View
@@ -128,7 +136,7 @@ const Index = () => {
             alignItems: "center",
             justifyContent: "space-between",
             marginHorizontal: "3%",
-            marginTop:'5%'
+            marginTop: "5%",
           }}
         >
           <View style={styles.searchContainer}>
@@ -153,13 +161,10 @@ const Index = () => {
                 backgroundColor: "#e6e6e4",
                 justifyContent: "center",
                 alignItems: "center",
-                
               },
             ]}
           >
             <AdjustmentsHorizontalIcon size={20} color="#555555" />
-            
-            
           </View>
           <View
             style={[
@@ -173,7 +178,6 @@ const Index = () => {
             ]}
           >
             <UserCircleIcon size={20} color="#555555" />
-            
           </View>
         </View>
         <RNText style={styles.boldText}>Write a Complaint</RNText>
@@ -189,7 +193,7 @@ const Index = () => {
               style={{
                 backgroundColor: "white",
                 borderRadius: 40,
-                width: width * 0.20,
+                width: width * 0.2,
                 height: width * 0.23,
                 marginTop: "1%",
                 marginHorizontal: "1%",
@@ -209,7 +213,7 @@ const Index = () => {
             style={{
               backgroundColor: item.color,
               borderRadius: 10,
-              height:width*0.3,
+              height: width * 0.3,
               padding: "10%",
               marginLeft: "5%",
               marginTop: "5%",
@@ -229,7 +233,7 @@ const Index = () => {
               <RNText>{item.icon}</RNText>
             </View>
             <Button
-              style={{ marginTop: '2%', alignSelf: "flex-start" }}
+              style={{ marginTop: "2%", alignSelf: "flex-start" }}
               labelStyle={{ color: "white" }}
               compact
             >
@@ -257,21 +261,21 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "#e6e6e4",
     borderRadius: 30,
-    marginRight: '3%',
+    marginRight: "3%",
     flex: 1,
   },
   searchIcon: {
-    marginLeft: '7%',
+    marginLeft: "7%",
   },
   searchInput: {
     flex: 1,
     height: width * 0.11,
-    textAlign: 'left',
+    textAlign: "left",
     color: "#333333",
-    marginLeft: '5%',
+    marginLeft: "5%",
   },
 });

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, Switch} from "react-native";
+import { View, StyleSheet, ScrollView, Switch } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import ModalDropdown from "react-native-modal-dropdown";
@@ -15,17 +15,17 @@ const FormTemplate = () => {
 
   const handleSubmit = () => {
     // Handle form submission
-    console.log("Form submitted with values:", { name, floor});
+    console.log("Form submitted with values:", { name, floor });
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container} alwaysBounceVertical>
       <Text variant="headlineSmall" style={styles.header}>
         Classroom Information
       </Text>
       <Text variant="titleMedium" style={styles.pickerLabel}>
-          Block Name
-        </Text>
+        Block Name
+      </Text>
       <TextInput
         label="Enter Block Name"
         value={name}
@@ -34,8 +34,8 @@ const FormTemplate = () => {
         mode="outlined"
       />
       <Text variant="titleMedium" style={styles.pickerLabel}>
-          Floor Number
-        </Text>
+        Floor Number
+      </Text>
       <TextInput
         label="Enter Floor Number"
         value={floor}
@@ -44,8 +44,8 @@ const FormTemplate = () => {
         mode="outlined"
       />
       <Text variant="titleMedium" style={styles.pickerLabel}>
-          Classroom Number
-        </Text>
+        Classroom Number
+      </Text>
       <TextInput
         label="Enter Classroom Number"
         value={room}
@@ -54,10 +54,9 @@ const FormTemplate = () => {
         mode="outlined"
       />
       <Text variant="titleMedium" style={styles.pickerLabel}>
-          Type
-        </Text>
-       <View style={styles.pickerContainer}>
-        
+        Type
+      </Text>
+      <View style={styles.pickerContainer}>
         <ModalDropdown
           options={["Complaint", "Feedback"]}
           defaultValue={selectedOption}
@@ -69,11 +68,10 @@ const FormTemplate = () => {
         />
       </View>
       <Text variant="titleMedium" style={styles.pickerLabel}>
-          Domain
-        </Text>
+        Domain
+      </Text>
       <View style={styles.pickerContainer}>
-        
-        <Picker 
+        <Picker
           selectedValue={selectOption}
           onValueChange={(itemValue) => setSelectOption(itemValue)}
           style={styles.picker}
@@ -97,14 +95,11 @@ const FormTemplate = () => {
         mode="outlined"
         multiline
       />
-       <View style={styles.switchContainer}>
+      <View style={styles.switchContainer}>
         <Text variant="titleMedium" style={styles.switchLabel}>
           Anonymous Replies
         </Text>
-        <Switch
-          value={isAnonymous}
-          onValueChange={setIsAnonymous}
-        />
+        <Switch value={isAnonymous} onValueChange={setIsAnonymous} />
       </View>
       <Button mode="contained" onPress={handleSubmit} style={styles.button}>
         Submit
@@ -119,7 +114,8 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: "5%",
-    marginTop:"5%",
+    paddingBottom: "15%",
+    marginTop: "3%",
     backgroundColor: "#f5f5f5",
   },
   switchContainer: {
@@ -173,11 +169,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   picker: {
-    marginTop:"10%",
-    height:"10%",  
-        width: "100%",  
-        color: '#344953',  
-        justifyContent: 'center', 
+    marginTop: "10%",
+    height: "10%",
+    width: "100%",
+    color: "#344953",
+    justifyContent: "center",
   },
   button: {
     marginTop: 20,
