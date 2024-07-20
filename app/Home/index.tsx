@@ -136,7 +136,7 @@ const Index = () => {
             alignItems: "center",
             justifyContent: "space-between",
             marginHorizontal: "3%",
-            marginTop: "5%",
+            marginTop: "0%",
           }}
         >
           <View style={styles.searchContainer}>
@@ -164,7 +164,9 @@ const Index = () => {
               },
             ]}
           >
-            <AdjustmentsHorizontalIcon size={20} color="#555555" />
+            <AdjustmentsHorizontalIcon size={20} color="#555555"
+             
+             />
           </View>
           <View
             style={[
@@ -176,8 +178,10 @@ const Index = () => {
                 marginLeft: 10,
               },
             ]}
+
           >
-            <UserCircleIcon size={20} color="#555555" />
+            <UserCircleIcon size={20} color="#555555"
+            onPress={() => router.push("/Home/profile")} />
           </View>
         </View>
         <RNText style={styles.boldText}>Write a Complaint</RNText>
@@ -192,9 +196,9 @@ const Index = () => {
               key={item.id}
               style={{
                 backgroundColor: "white",
-                borderRadius: 40,
-                width: width * 0.2,
-                height: width * 0.23,
+                borderRadius: 35,
+                width: width * 0.16,
+                height: width * 0.20,
                 marginTop: "1%",
                 marginHorizontal: "1%",
                 alignItems: "center",
