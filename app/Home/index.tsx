@@ -42,6 +42,7 @@ const Index = () => {
     {
       id: 1,
       icon: <Ionicons name="qr-code-outline" size={22} color="#555555" />,
+      title: "Scan",
     },
     {
       id: 2,
@@ -54,11 +55,13 @@ const Index = () => {
         />
       ),
       onPress: "/Home/classroom1",
+      title: "Class",
     },
     {
       id: 3,
       icon: <FontAwesome5 name="restroom" size={20} color="#555555" />,
       onPress: "/Home/restroom",
+      title: "Toilet",
     },
     {
       id: 4,
@@ -69,22 +72,31 @@ const Index = () => {
           color="#555555"
         />
       ),
+      onPress: "/Home/Department",
+      title: "Department",
     },
     {
       id: 5,
       icon: (
         <FontAwesome6 name="glass-water-droplet" size={20} color="#555555" />
       ),
+      onPress: "/Home/Water",
+      title: "Water",
     },
     {
       id: 6,
       icon: <Foundation name="elevator" size={30} color="#555555" />,
+      onPress: "/Home/Elevator",
+      title: "Elevator",
     },
+
     {
       id: 7,
       icon: (
         <FontAwesome6 name="screwdriver-wrench" size={20} color="#555555" s />
       ),
+      onPress: "/Home/Maintenance",
+      title: "Maintenance",
     },
   ];
 

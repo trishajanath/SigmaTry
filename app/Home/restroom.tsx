@@ -115,21 +115,15 @@ const ProgressStepsComponent = () => {
               }
             />
             <Text style={styles.label}>Restroom</Text>
-            <SelectList
-              data={["Gents", "Ladies", "Differently Abled"]}
-              setSelected={(value: any) =>
-                dispatch({ type: "SET_RESTROOM", payload: value })
-              }
-              save="value"
-              boxStyles={{
-                height: width * 0.15,
-                width: "100%",
-                backgroundColor: "#f5f5f5",
-                paddingHorizontal: "5%",
-                marginBottom: "2%",
-              }}
-            />
           </View>
+          <SelectList
+            data={["Gents", "Ladies", "Differently Abled"]}
+            setSelected={(value: any) =>
+              dispatch({ type: "SET_RESTROOM", payload: value })
+            }
+            search={false}
+            save="value"
+          />
         </ProgressStep>
         <ProgressStep
           label=""
@@ -145,6 +139,7 @@ const ProgressStepsComponent = () => {
               dispatch({ type: "SET_SELECTED_OPTION_TYPE", payload: value })
             }
             data={["Complaint", "Feedback", "Suggestion"]}
+            search={false}
             save="value"
           />
           <Text style={styles.pickerLabel}>Domain</Text>
