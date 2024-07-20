@@ -51,20 +51,14 @@ const Index = () => {
           size={25}
           color="#555555"
           style={{ padding: 20 }}
-          onPress={() => router.push("/Home/classroom1")}
         />
       ),
+      onPress: "/Home/classroom1",
     },
     {
       id: 3,
-      icon: (
-        <FontAwesome5
-          name="restroom"
-          size={20}
-          color="#555555"
-          onPress={() => router.push("/Home/restroom")}
-        />
-      ),
+      icon: <FontAwesome5 name="restroom" size={20} color="#555555" />,
+      onPress: "/Home/restroom",
     },
     {
       id: 4,
@@ -164,9 +158,7 @@ const Index = () => {
               },
             ]}
           >
-            <AdjustmentsHorizontalIcon size={20} color="#555555"
-             
-             />
+            <AdjustmentsHorizontalIcon size={20} color="#555555" />
           </View>
           <View
             style={[
@@ -178,10 +170,12 @@ const Index = () => {
                 marginLeft: 10,
               },
             ]}
-
           >
-            <UserCircleIcon size={20} color="#555555"
-            onPress={() => router.push("/Home/profile")} />
+            <UserCircleIcon
+              size={20}
+              color="#555555"
+              onPress={() => router.push("/Home/profile")}
+            />
           </View>
         </View>
         <RNText style={styles.boldText}>Write a Complaint</RNText>
@@ -198,13 +192,14 @@ const Index = () => {
                 backgroundColor: "white",
                 borderRadius: 35,
                 width: width * 0.16,
-                height: width * 0.20,
+                height: width * 0.2,
                 marginTop: "1%",
                 marginHorizontal: "1%",
                 alignItems: "center",
                 justifyContent: "center",
                 flexDirection: "column",
               }}
+              onPress={() => router.push(item.onPress ? item.onPress : "/")}
             >
               <RNText style={{ fontSize: 18 }}>{item.icon}</RNText>
             </TouchableOpacity>

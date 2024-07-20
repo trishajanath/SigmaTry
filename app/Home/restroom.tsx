@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,30 +8,71 @@ import {
   Dimensions,
 } from "react-native";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
-import ModalDropdown from "react-native-modal-dropdown";
 import { useNavigation } from "@react-navigation/native";
-import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from "react-native-dropdown-picker-plus";
+import { SelectList } from "@venedicto/react-native-dropdown";
 
 const { width } = Dimensions.get("window");
 
+const initialState = {
+  step1Data: { name: "", number: "", restroom: "" },
+  step2Data: { content: "", anonymous: false },
+  selectedOptionType: "Select Type",
+  selectedOptionDomain: "Select Domain",
+  restroom: "Select Option",
+};
+
+function reducer(state: any, action: any) {
+  switch (action.type) {
+    case "SET_STEP1_DATA":
+      return { ...state, step1Data: { ...state.step1Data, ...action.payload } };
+    case "SET_STEP2_DATA":
+      return { ...state, step2Data: { ...state.step2Data, ...action.payload } };
+    case "SET_SELECTED_OPTION_TYPE":
+      return { ...state, selectedOptionType: action.payload };
+    case "SET_SELECTED_OPTION_DOMAIN":
+      return { ...state, selectedOptionDomain: action.payload };
+    case "SET_RESTROOM":
+      return { ...state, restroom: action.payload };
+    default:
+      return state;
+  }
+}
+
 const ProgressStepsComponent = () => {
-  const [step1Data, setStep1Data] = useState({
-    name: "",
-    number: "",
-    restroom: "",
-  });
+  const [state, dispatch] = useReducer(reducer, initialState);
   const navigation = useNavigation();
-  navigation.setOptions({
-    headerTitle: "",
-  });
-  const [step2Data, setStep2Data] = useState({ content: "", anonymous: false });
-  const [selectedOptionType, setSelectedOptionType] = useState("Select Type");
-  const [selectedOptionDomain, setSelectedOptionDomain] =
-    useState("Select Domain");
-  const [restroom, setRestroom] = useState("Select Option");
-  const handleSwitchChange = (value: boolean) => {
-    setStep2Data({ ...step2Data, anonymous: value });
+  navigation.setOptions({ headerTitle: "" });
+
+  const [openType, setOpenType] = useState(false);
+  const [openDomain, setOpenDomain] = useState(false);
+  const [openRestroom, setOpenRestroom] = useState(false);
+
+  const handleSwitchChange = (value: any) => {
+    dispatch({ type: "SET_STEP2_DATA", payload: { anonymous: value } });
   };
+
+  // Close other dropdowns when one is opened
+  useEffect(() => {
+    if (openType) {
+      setOpenDomain(false);
+      setOpenRestroom(false);
+    }
+  }, [openType]);
+
+  useEffect(() => {
+    if (openDomain) {
+      setOpenType(false);
+      setOpenRestroom(false);
+    }
+  }, [openDomain]);
+
+  useEffect(() => {
+    if (openRestroom) {
+      setOpenType(false);
+      setOpenDomain(false);
+    }
+  }, [openRestroom]);
 
   return (
     <View style={styles.container}>
@@ -50,10 +91,7 @@ const ProgressStepsComponent = () => {
           nextBtnStyle={styles.nextBtn}
           previousBtnStyle={styles.previousBtn}
           scrollViewProps={{
-            contentContainerStyle: {
-              flexGrow: 1,
-              justifyContent: "center",
-            },
+            contentContainerStyle: { flexGrow: 1, justifyContent: "center" },
           }}
         >
           <Text style={styles.main}>Restroom</Text>
@@ -62,35 +100,35 @@ const ProgressStepsComponent = () => {
             <TextInput
               style={styles.input}
               placeholder="Name"
-              value={step1Data.name}
+              value={state.step1Data.name}
               onChangeText={(text) =>
-                setStep1Data({ ...step1Data, name: text })
+                dispatch({ type: "SET_STEP1_DATA", payload: { name: text } })
               }
             />
             <Text style={styles.label}>Floor Number</Text>
             <TextInput
               style={styles.input}
               placeholder="Number"
-              value={step1Data.number}
+              value={state.step1Data.number}
               onChangeText={(text) =>
-                setStep1Data({ ...step1Data, number: text })
+                dispatch({ type: "SET_STEP1_DATA", payload: { number: text } })
               }
             />
             <Text style={styles.label}>Restroom</Text>
-          </View>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={restroom}
-              onValueChange={(itemValue) => setRestroom(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Gents" value="Gents" />
-              <Picker.Item label="Ladies" value="Ladies" />
-              <Picker.Item
-                label="Differently Abled"
-                value="Differently Abled"
-              />
-            </Picker>
+            <SelectList
+              data={["Gents", "Ladies", "Differently Abled"]}
+              setSelected={(value: any) =>
+                dispatch({ type: "SET_RESTROOM", payload: value })
+              }
+              save="value"
+              boxStyles={{
+                height: width * 0.15,
+                width: "100%",
+                backgroundColor: "#f5f5f5",
+                paddingHorizontal: "5%",
+                marginBottom: "2%",
+              }}
+            />
           </View>
         </ProgressStep>
         <ProgressStep
@@ -98,53 +136,40 @@ const ProgressStepsComponent = () => {
           nextBtnStyle={styles.nextBtn}
           previousBtnStyle={styles.previousBtn}
           scrollViewProps={{
-            contentContainerStyle: {
-              flexGrow: 1,
-              justifyContent: "center",
-            },
+            contentContainerStyle: { flexGrow: 1, justifyContent: "center" },
           }}
         >
           <Text style={styles.pickerLabel}>Type</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={selectedOptionType}
-              onValueChange={(itemValue) => setSelectedOptionType(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Complaint" value="Complaint" />
-              <Picker.Item label="Feedback" value="Feedback" />
-            </Picker>
-          </View>
+          <SelectList
+            setSelected={(value: any) =>
+              dispatch({ type: "SET_SELECTED_OPTION_TYPE", payload: value })
+            }
+            data={["Complaint", "Feedback", "Suggestion"]}
+            save="value"
+          />
           <Text style={styles.pickerLabel}>Domain</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={selectedOptionDomain}
-              onValueChange={(itemValue) => setSelectedOptionDomain(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Cleaning" value="cleaning" />
-              <Picker.Item label="Plumbing" value="plumbing" />
-              <Picker.Item label="Civil & Carpentry" value="civil" />
-              <Picker.Item label="Electrical" value="electrical" />
-              <Picker.Item label="Others" value="others" />
-            </Picker>
-          </View>
-
+          <SelectList
+            setSelected={(value: any) =>
+              dispatch({ type: "SET_SELECTED_OPTION_DOMAIN", payload: value })
+            }
+            data={["Hygiene", "Maintenance", "Amenities", "Accessibility"]}
+            save="value"
+          />
           <View style={styles.stepContainer}>
             <Text style={styles.label}>Content</Text>
             <TextInput
               style={styles.input}
               placeholder="Content"
-              value={step2Data.content}
+              value={state.step2Data.content}
               onChangeText={(text) =>
-                setStep2Data({ ...step2Data, content: text })
+                dispatch({ type: "SET_STEP2_DATA", payload: { content: text } })
               }
             />
           </View>
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Anonymous Replies</Text>
             <Switch
-              value={step2Data.anonymous}
+              value={state.step2Data.anonymous}
               onValueChange={handleSwitchChange}
             />
           </View>
@@ -188,10 +213,10 @@ const styles = StyleSheet.create({
   pickerLabel: {
     fontSize: 16,
     marginBottom: "2%",
-    textAlign: "left", // Align text to the left
+    textAlign: "left",
   },
   stepContainer: {
-    alignItems: "flex-start", // Align items to the left
+    alignItems: "flex-start",
     justifyContent: "center",
     marginBottom: "5%",
     width: "100%",
@@ -220,21 +245,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: "5%",
     marginBottom: "2%",
-    textAlign: "left",
     justifyContent: "center",
-  },
-  dropdownText: {
-    fontSize: 16,
-    textAlign: "left",
-  },
-  dropdownOptions: {
-    width: "80%",
-    backgroundColor: "#f5f5f5",
-  },
-  dropdownOptionText: {
-    fontSize: 16,
-    paddingLeft: "5%",
-    textAlign: "left",
   },
   container: {
     flex: 1,
@@ -248,12 +259,9 @@ const styles = StyleSheet.create({
     width: "100%",
     height: width * 0.15,
     backgroundColor: "#f5f5f5",
-    borderWidth: 2,
-    borderColor: "#a2c2e8",
-    borderRadius: 10,
     paddingHorizontal: "5%",
-    marginBottom: "4%",
-    marginTop: "4%",
+    marginBottom: "2%",
+    justifyContent: "center",
   },
 });
 
