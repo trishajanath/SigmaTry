@@ -39,7 +39,7 @@ const Index = () => {
   const onChangeSearch = (query: string) => setSearchQuery(query);
 
   const truncateText = (text: string, length: number): string => {
-    return text.length > length ? text.substring(0, length) + '...' : text;
+    return text.length > length ? text.substring(0, length) + "..." : text;
   };
 
   const constantContainer = {
@@ -51,13 +51,7 @@ const Index = () => {
   const ovalContainers = [
     {
       id: 2,
-      icon: (
-        <Feather
-          name="book-open"
-          size={23}
-          color="#555555"
-        />
-      ),
+      icon: <Feather name="book-open" size={23} color="#555555" />,
       title: "Classroom",
       onPress: "/Home/classroom1",
     },
@@ -104,10 +98,34 @@ const Index = () => {
   ];
 
   const rectangularContainers = [
-    { id: 1, issueType: "Feedback", action: "Opened", color: "#e7bceb", date: "21-07-2024" },
-    { id: 2, issueType: "Feedback", action: "Closed", color: "#bbbef3", date: "22-07-2024" },
-    { id: 3, issueType: "Complaint", action: "Closed", color: "#a3c3e7", date: "23-07-2024" },
-    { id: 4, issueType: "Complaint", action: "Closed", color: "#e7bcec", date: "23-07-2024" },
+    {
+      id: 1,
+      issueType: "Feedback",
+      action: "Opened",
+      color: "#e7bceb",
+      date: "21-07-2024",
+    },
+    {
+      id: 2,
+      issueType: "Feedback",
+      action: "Closed",
+      color: "#bbbef3",
+      date: "22-07-2024",
+    },
+    {
+      id: 3,
+      issueType: "Complaint",
+      action: "Closed",
+      color: "#a3c3e7",
+      date: "23-07-2024",
+    },
+    {
+      id: 4,
+      issueType: "Complaint",
+      action: "Closed",
+      color: "#e7bcec",
+      date: "23-07-2024",
+    },
   ];
 
   return (
@@ -119,9 +137,7 @@ const Index = () => {
         <Text style={styles.headerSubText}>
           {truncateText("22Z334-Kavvya Subramani", 18)}
         </Text>
-        <TouchableOpacity
-          style={styles.headerIconContainer}
-        ></TouchableOpacity>
+        <TouchableOpacity style={styles.headerIconContainer}></TouchableOpacity>
       </View>
       <ScrollView style={{ marginTop: "1%", paddingHorizontal: 10 }}>
         <View
@@ -175,7 +191,11 @@ const Index = () => {
               name="power"
               size={16}
               color="#555555"
-              onPress={() => router.push("/Home/profile")}
+              onPress={() =>
+                router.replace({
+                  pathname: "/(tabs)",
+                })
+              }
             />
           </View>
         </View>
@@ -188,9 +208,7 @@ const Index = () => {
             paddingHorizontal: 7.5,
           }}
         >
-          <TouchableOpacity
-            style={styles.iconContainer}
-          >
+          <TouchableOpacity style={styles.iconContainer}>
             {constantContainer.icon}
             <RNText style={styles.iconText}>
               {truncateText(constantContainer.title, 5)}
@@ -231,7 +249,6 @@ const Index = () => {
               marginVertical: "0%",
               flexDirection: "column",
               position: "relative",
-              
             }}
           >
             <View style={styles.complaintContainer}>
@@ -240,19 +257,15 @@ const Index = () => {
                 <RNText style={styles.dateText}>{item.date}</RNText>
               </View>
               <View style={styles.complaintBody}>
-              
-              <RNText style={styles.actionText}>{item.action}</RNText>
-              <Button
-                style={styles.viewMoreButton}
-                labelStyle={{ color: "white", fontSize: 11 }}
-                compact
-              >
-                View More
-              </Button>
-              
-
+                <RNText style={styles.actionText}>{item.action}</RNText>
+                <Button
+                  style={styles.viewMoreButton}
+                  labelStyle={{ color: "white", fontSize: 11 }}
+                  compact
+                >
+                  View More
+                </Button>
               </View>
-              
             </View>
           </View>
         ))}
@@ -354,8 +367,8 @@ const styles = StyleSheet.create({
   viewMoreButton: {
     alignSelf: "flex-end",
     backgroundColor: "#8283e9",
-    paddingHorizontal: '0%',
-    paddingVertical: '0%',
+    paddingHorizontal: "0%",
+    paddingVertical: "0%",
     width: width * 0.19,
     height: width * 0.09,
     borderRadius: 20,
@@ -372,11 +385,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 5,
   },
-  complaintBody:{
+  complaintBody: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 5,
-    marginTop:10
-  }
+    marginTop: 10,
+  },
 });
