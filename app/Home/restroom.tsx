@@ -5,6 +5,7 @@ import {
   TextInput,
   StyleSheet,
   Switch,
+  Platform,
   Dimensions,
 } from "react-native";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
@@ -130,7 +131,7 @@ const ProgressStepsComponent = () => {
           nextBtnStyle={styles.nextBtn}
           previousBtnStyle={styles.previousBtn}
           scrollViewProps={{
-            contentContainerStyle: { flexGrow: 1, justifyContent: "center" },
+            contentContainerStyle: { flexGrow: 1, justifyContent: "center", marginTop:"-30%" },
           }}
         >
           <Text style={styles.pickerLabel}>Type</Text>
@@ -177,23 +178,27 @@ const ProgressStepsComponent = () => {
 const styles = StyleSheet.create({
   main: {
     fontSize: 20,
-    marginTop: "-13%",
+    marginTop: Platform.OS === 'ios' ? "-45%" : "-13%",
+    
     textAlign: "center",
     marginBottom: "5%",
   },
   nextBtn: {
-    marginTop: 20,
+    marginTop: Platform.OS === 'ios' ? "-130%" : "-100%",
+   
   },
   previousBtn: {
-    marginTop: 20,
+    marginTop: Platform.OS === 'ios' ? "-113%" : "-100%",
+    
   },
   activeStepIconContainer: {
-    marginTop: -10,
+    marginTop: Platform.OS === 'ios' ? "-2%" : "-1%",
   },
   completedStepIconContainer: {
-    marginTop: -10,
+    marginTop: Platform.OS === 'ios' ? "-2%" : "-2%",
   },
   switchContainer: {
+    marginTop:"5%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -207,10 +212,12 @@ const styles = StyleSheet.create({
   },
   pickerLabel: {
     fontSize: 16,
-    marginBottom: "2%",
+    marginTop: Platform.OS === 'ios' ? "11%" : "0%",
+    marginBottom: "3%",
     textAlign: "left",
   },
   stepContainer: {
+    marginTop: Platform.OS === 'ios' ? "10%" : "0%",
     alignItems: "flex-start",
     justifyContent: "center",
     marginBottom: "5%",
@@ -248,7 +255,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    marginBottom: "1%",
+    marginBottom: "3%",
   },
   input: {
     width: "100%",

@@ -1,181 +1,271 @@
-import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, Switch } from "react-native";
-import { TextInput, Button, Text } from "react-native-paper";
-import { Picker } from "@react-native-picker/picker";
-import ModalDropdown from "react-native-modal-dropdown";
+import React, { useReducer, useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Switch,
+  Platform,
+  Dimensions,
+} from "react-native";
+import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
+import { useNavigation } from "@react-navigation/native";
+import DropDownPicker from "react-native-dropdown-picker-plus";
+import { SelectList } from "@venedicto/react-native-dropdown";
 
-const FormTemplate = () => {
-  const [name, setName] = useState("");
-  const [floor, setfloor] = useState("");
-  const [room, setroom] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
-  const [selectOption, setSelectOption] = useState("");
-  const [content, setcontent] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState(false);
+const { width } = Dimensions.get("window");
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log("Form submitted with values:", { name, floor });
+const initialState = {
+  step1Data: { name: "", number: "", classroom: "" },
+  step2Data: { content: "", anonymous: false },
+  selectedOptionType: "Select Type",
+  selectedOptionDomain: "Select Domain",
+  classroom: "Select Option",
+};
+
+function reducer(state: any, action: any) {
+  switch (action.type) {
+    case "SET_STEP1_DATA":
+      return { ...state, step1Data: { ...state.step1Data, ...action.payload } };
+    case "SET_STEP2_DATA":
+      return { ...state, step2Data: { ...state.step2Data, ...action.payload } };
+    case "SET_SELECTED_OPTION_TYPE":
+      return { ...state, selectedOptionType: action.payload };
+    case "SET_SELECTED_OPTION_DOMAIN":
+      return { ...state, selectedOptionDomain: action.payload };
+    case "SET_CLASSROOM":
+      return { ...state, classroom: action.payload };
+    default:
+      return state;
+  }
+}
+
+const ProgressStepsComponent = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const navigation = useNavigation();
+  navigation.setOptions({ headerTitle: "" });
+
+  const [openType, setOpenType] = useState(false);
+  const [openDomain, setOpenDomain] = useState(false);
+  const [openClassroom, setOpenClassroom] = useState(false);
+
+  const handleSwitchChange = (value: any) => {
+    dispatch({ type: "SET_STEP2_DATA", payload: { anonymous: value } });
   };
 
+  // Close other dropdowns when one is opened
+  useEffect(() => {
+    if (openType) {
+      setOpenDomain(false);
+      setOpenClassroom(false);
+    }
+  }, [openType]);
+
+  useEffect(() => {
+    if (openDomain) {
+      setOpenType(false);
+      setOpenClassroom(false);
+    }
+  }, [openDomain]);
+
+  useEffect(() => {
+    if (openClassroom) {
+      setOpenType(false);
+      setOpenDomain(false);
+    }
+  }, [openClassroom]);
+
   return (
-    <ScrollView contentContainerStyle={styles.container} alwaysBounceVertical>
-      <Text variant="headlineSmall" style={styles.header}>
-        Classroom Information
-      </Text>
-      <Text variant="titleMedium" style={styles.pickerLabel}>
-        Block Name
-      </Text>
-      <TextInput
-        label="Enter Block Name"
-        value={name}
-        onChangeText={(text) => setName(text)}
-        style={styles.input}
-        mode="outlined"
-      />
-      <Text variant="titleMedium" style={styles.pickerLabel}>
-        Floor Number
-      </Text>
-      <TextInput
-        label="Enter Floor Number"
-        value={floor}
-        onChangeText={(text) => setfloor(text)}
-        style={styles.input}
-        mode="outlined"
-      />
-      <Text variant="titleMedium" style={styles.pickerLabel}>
-        Classroom Number
-      </Text>
-      <TextInput
-        label="Enter Classroom Number"
-        value={room}
-        onChangeText={(text) => setroom(text)}
-        style={styles.input}
-        mode="outlined"
-      />
-      <Text variant="titleMedium" style={styles.pickerLabel}>
-        Type
-      </Text>
-      <View style={styles.pickerContainer}>
-        <ModalDropdown
-          options={["Complaint", "Feedback"]}
-          defaultValue={selectedOption}
-          onSelect={(index, value) => setSelectedOption(value)}
-          style={styles.dropdown}
-          textStyle={styles.dropdownText}
-          dropdownStyle={styles.dropdownOptions}
-          dropdownTextStyle={styles.dropdownOptionText}
-        />
-      </View>
-      <Text variant="titleMedium" style={styles.pickerLabel}>
-        Domain
-      </Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={selectOption}
-          onValueChange={(itemValue) => setSelectOption(itemValue)}
-          style={styles.picker}
+    <View style={styles.container}>
+      <ProgressSteps
+        activeStepIconBorderColor="#a2c2e8"
+        activeStepIconColor="#e9f7ff"
+        completedStepIconColor="#a2c2e8"
+        activeLabelColor="#a2c2e8"
+        completedProgressBarColor="#a2c2e8"
+        progressBarColor="#eeecef"
+        activeStepIconContainer={styles.activeStepIconContainer}
+        completedStepIconContainer={styles.completedStepIconContainer}
+      >
+        <ProgressStep
+          label=""
+          nextBtnStyle={styles.nextBtn}
+          previousBtnStyle={styles.previousBtn}
+          scrollViewProps={{
+            contentContainerStyle: { flexGrow: 1, justifyContent: "center" },
+          }}
         >
-          <Picker.Item label="Cleaning" value="cleaning" />
-          <Picker.Item label="Plumbing" value="plumbing" />
-          <Picker.Item label="Civil & Carpentry" value="civil" />
-          <Picker.Item label="Electrical" value="electrical" />
-          <Picker.Item label="AV and Projectors" value="av" />
-          <Picker.Item label="Others" value="others" />
-        </Picker>
-      </View>
-      <Text variant="titleMedium" style={styles.pickerLabel}>
-        Content
-      </Text>
-      <TextInput
-        label="Content"
-        value={content}
-        onChangeText={(text) => setcontent(text)}
-        style={styles.input}
-        mode="outlined"
-        multiline
-      />
-      <View style={styles.switchContainer}>
-        <Text variant="titleMedium" style={styles.switchLabel}>
-          Anonymous Replies
-        </Text>
-        <Switch value={isAnonymous} onValueChange={setIsAnonymous} />
-      </View>
-      <Button mode="contained" onPress={handleSubmit} style={styles.button}>
-        Submit
-      </Button>
-    </ScrollView>
+          <Text style={styles.main}>Classroom</Text>
+          <View style={styles.stepContainer}>
+            <Text style={styles.label}>Block Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={state.step1Data.name}
+              onChangeText={(text) =>
+                dispatch({ type: "SET_STEP1_DATA", payload: { name: text } })
+              }
+            />
+            <Text style={styles.label}>Floor Number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Number"
+              value={state.step1Data.number}
+              onChangeText={(text) =>
+                dispatch({ type: "SET_STEP1_DATA", payload: { number: text } })
+              }
+            />
+            
+          </View>
+          <Text style={styles.label}>Classroom Number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Number"
+              value={state.step1Data.number}
+              onChangeText={(text) =>
+                dispatch({ type: "SET_STEP1_DATA", payload: { number: text } })
+              }
+            />
+        </ProgressStep>
+        <ProgressStep
+          label=""
+          nextBtnStyle={styles.nextBtn}
+          previousBtnStyle={styles.previousBtn}
+          scrollViewProps={{
+            contentContainerStyle: { flexGrow: 1, justifyContent: "center", marginTop:"-30%" },
+          }}
+        >
+          <Text style={styles.pickerLabel}>Type</Text>
+          <SelectList
+            setSelected={(value: any) =>
+              dispatch({ type: "SET_SELECTED_OPTION_TYPE", payload: value })
+            }
+            data={["Complaint", "Feedback", "Suggestion"]}
+            search={false}
+            save="value"
+          />
+          <Text style={styles.pickerLabel}>Domain</Text>
+          <SelectList
+            setSelected={(value: any) =>
+              dispatch({ type: "SET_SELECTED_OPTION_DOMAIN", payload: value })
+            }
+            data={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical","AV and Projectors","Others"]}
+            save="value"
+          />
+          <View style={styles.stepContainer}>
+            <Text style={styles.label}>Content</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Content"
+              value={state.step2Data.content}
+              onChangeText={(text) =>
+                dispatch({ type: "SET_STEP2_DATA", payload: { content: text } })
+              }
+            />
+          </View>
+          <View style={styles.switchContainer}>
+            <Text style={styles.switchLabel}>Anonymous Replies</Text>
+            <Switch
+              value={state.step2Data.anonymous}
+              onValueChange={handleSwitchChange}
+            />
+          </View>
+        </ProgressStep>
+      </ProgressSteps>
+    </View>
   );
 };
 
-export default FormTemplate;
-
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: "5%",
-    paddingBottom: "15%",
-    marginTop: "3%",
-    backgroundColor: "#f5f5f5",
+  main: {
+    fontSize: 20,
+    marginTop: Platform.OS === 'ios' ? "-35%" : "-13%",
+    
+    textAlign: "center",
+    marginBottom: "5%",
+  },
+  nextBtn: {
+    marginTop: Platform.OS === 'ios' ? "-130%" : "-100%",
+   
+  },
+  previousBtn: {
+    marginTop: Platform.OS === 'ios' ? "-113%" : "-100%",
+    
+  },
+  activeStepIconContainer: {
+    marginTop: Platform.OS === 'ios' ? "-2%" : "-1%",
+  },
+  completedStepIconContainer: {
+    marginTop: Platform.OS === 'ios' ? "-2%" : "-2%",
   },
   switchContainer: {
+    marginTop:"5%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 15,
-    padding: 10,
+    marginBottom: "2%",
+    padding: "2%",
     borderRadius: 5,
-    backgroundColor: "#fff",
   },
   switchLabel: {
     fontSize: 16,
-  },
-  header: {
-    marginTop: "0%",
-    textAlign: "center",
-    marginBottom: 20,
-    fontWeight: "bold",
-  },
-  input: {
-    marginBottom: 15,
-  },
-  pickerContainer: {
-    marginBottom: "2%",
-    padding: "2%",
-    borderRadius: 10,
-    backgroundColor: "#fff",
+    fontFamily: "Raleway_200ExtraLight",
   },
   pickerLabel: {
-    marginBottom: 5,
-  },
-  dropdown: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-  },
-  dropdownText: {
     fontSize: 16,
+    marginTop: Platform.OS === 'ios' ? "11%" : "0%",
+    marginBottom: "3%",
+    textAlign: "left",
   },
-  dropdownOptions: {
-    width: "80%",
-    marginLeft: "0%",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-  },
-  dropdownOptionText: {
-    fontSize: 16,
-    padding: 10,
+  stepContainer: {
+    marginTop: Platform.OS === 'ios' ? "10%" : "0%",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    marginBottom: "5%",
+    width: "100%",
   },
   picker: {
-    marginTop: "10%",
-    height: "10%",
+    height: "4%",
     width: "100%",
     color: "#344953",
     justifyContent: "center",
   },
-  button: {
-    marginTop: 20,
+  pickerContainer: {
+    marginBottom: "2%",
+    height: "13%",
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#a2c2e8",
+    backgroundColor: "#fff",
+  },
+  dropdown: {
+    width: "100%",
+    height: width * 0.15,
+    marginTop: "2%",
+    backgroundColor: "#f5f5f5",
+    borderWidth: 2,
+    borderColor: "#a2c2e8",
+    borderRadius: 10,
+    paddingHorizontal: "5%",
+    marginBottom: "2%",
+    justifyContent: "center",
+  },
+  container: {
+    flex: 1,
+    padding: "5%",
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: "3%",
+  },
+  input: {
+    width: "100%",
+    height: width * 0.15,
+    backgroundColor: "#f5f5f5",
+    paddingHorizontal: "5%",
+    marginBottom: "2%",
+    justifyContent: "center",
   },
 });
+
+export default ProgressStepsComponent;
