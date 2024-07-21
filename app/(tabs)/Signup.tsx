@@ -1,101 +1,200 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
 import React, { useReducer } from "react";
-import { Button, TextInput } from "react-native-paper";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-const { width, height } = Dimensions.get("window");
 
-const initialState = {
-  collegeId: "",
-  password: "",
-  loading: false,
-  error: "",
+type RootStackParamList = {
+  Login: undefined;
+  SignUp: undefined;
 };
 
-interface Action {
-  type: string;
-  payload: string;
-}
-
-interface State {
-  collegeId: string;
+type State = {
+  fullName: string;
+  email: string;
   password: string;
-}
+  confirmPassword: string;
+};
 
-const reducer = (state: State, action: Action) => {
+type Action =
+  | { type: "SET_FULL_NAME"; payload: string }
+  | { type: "SET_EMAIL"; payload: string }
+  | { type: "SET_PASSWORD"; payload: string }
+  | { type: "SET_CONFIRM_PASSWORD"; payload: string };
+
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case "collegeId":
-      return { ...state, collegeId: action.payload };
-    case "password":
+    case "SET_FULL_NAME":
+      return { ...state, fullName: action.payload };
+    case "SET_EMAIL":
+      return { ...state, email: action.payload };
+    case "SET_PASSWORD":
       return { ...state, password: action.payload };
-    case "loading":
-      return { ...state, loading: true };
-    case "error":
-      return { ...state, error: action.payload, loading: false };
+    case "SET_CONFIRM_PASSWORD":
+      return { ...state, confirmPassword: action.payload };
     default:
       return state;
   }
 };
 
-const Signup = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+const SignUpScreen = () => {
+  const [state, dispatch] = useReducer(reducer, {
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const navigation = useNavigation();
+  navigation.setOptions({
+    headerTitle: "",
+  });
   return (
     <View style={styles.container}>
-      <TextInput
-        label={"College ID"}
-        style={styles.input}
-        value={state.collegeId}
-        mode="outlined"
-        onChangeText={(text) => {
-          dispatch({ type: "collegeId", payload: text });
+      <View
+        style={{
+          padding: 5,
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
         }}
-      />
-      <TextInput
-        label={"Password"}
-        style={styles.input}
-        mode="outlined"
-        secureTextEntry
-        value={state.password}
-        onChangeText={(text) => {
-          dispatch({ type: "password", payload: text });
-        }}
-      />
-      <Text style={styles.forgotPassword}>Forgot password?</Text>
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={() => router.replace("Home")}
       >
-        Signup
-      </Button>
+        <Text style={styles.title}>Create Account</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <MaterialCommunityIcons name="account-outline" size={20} color="#999" />
+        <TextInput
+          style={styles.input}
+          placeholder="Full Name"
+          placeholderTextColor="#999"
+          value={state.fullName}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_FULL_NAME", payload: text })
+          }
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#999"
+          value={state.email}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_EMAIL", payload: text })
+          }
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <MaterialCommunityIcons name="lock-outline" size={20} color="#999" />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#999"
+          secureTextEntry
+          value={state.password}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_PASSWORD", payload: text })
+          }
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <MaterialCommunityIcons name="lock-outline" size={20} color="#999" />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          placeholderTextColor="#999"
+          secureTextEntry
+          value={state.confirmPassword}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_CONFIRM_PASSWORD", payload: text })
+          }
+        />
+      </View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          /* handle sign up */
+        }}
+      >
+        <Text style={styles.buttonText}>SIGN UP</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => router.back()}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          marginBottom: "4%",
+        }}
+      >
+        <Text style={styles.signUpText}>
+          Already have an account?
+          <Text style={styles.signUpLink}>Sign in</Text>
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-export default Signup;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: width * 0.1,
-    width: "100%",
-    alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    alignItems: "center",
+    padding: 20,
+    gap: 15,
+    backgroundColor: "#fff",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "900",
+    fontVariant: ["small-caps"],
+    marginLeft: "-30%",
+    marginBottom: 20,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    borderColor: "#ddd",
+    borderBottomWidth: 1,
+    borderRadius: 8,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   input: {
-    width: "100%",
-    marginBottom: height * 0.02,
-    borderRadius: 10,
-  },
-  forgotPassword: {
-    alignSelf: "center",
-    textDecorationLine: "underline",
-    color: "blue",
-    marginTop: height * 0.02,
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+    color: "#333",
   },
   button: {
-    width: "100%",
-    marginTop: height * 0.02,
-    borderRadius: 10,
+    backgroundColor: "#ff9f00",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    width: "40%",
+    marginRight: "-45%",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  signUpText: {
+    fontSize: 14,
+    color: "#999",
+  },
+  signUpLink: {
+    color: "#ff9f00",
   },
 });
+
+export default SignUpScreen;

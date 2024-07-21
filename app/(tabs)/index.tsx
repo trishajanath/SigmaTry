@@ -1,41 +1,126 @@
-import AnimatedButton from "@/components/AnimatedButton";
-import React from "react";
+import React, { useReducer, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  Dimensions,
-  Animated,
+  TextInput,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
-import { SegmentedButtons, Surface } from "react-native-paper";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { RouteProp } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router, useNavigation } from "expo-router";
 
-const { width, height } = Dimensions.get("window");
+type RootStackParamList = {
+  Login: undefined;
+  SignUp: undefined;
+};
 
-const App = () => {
-  const [value, setValue] = React.useState("first");
+type State = {
+  email: string;
+  password: string;
+};
 
+type Action =
+  | { type: "SET_EMAIL"; payload: string }
+  | { type: "SET_PASSWORD"; payload: string };
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case "SET_EMAIL":
+      return { ...state, email: action.payload };
+    case "SET_PASSWORD":
+      return { ...state, password: action.payload };
+    default:
+      return state;
+  }
+};
+
+const LoginScreen = () => {
+  const [state, dispatch] = useReducer(reducer, { email: "", password: "" });
+  const [isEmailFocused, setEmailFocused] = useState(false);
+  const [isPasswordFocused, setPasswordFocused] = useState(false);
+  const [secureText, setSecureText] = useState(true);
+  const navigation = useNavigation();
+  React.useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
   return (
     <View style={styles.container}>
-      <Surface
-        style={{
-          width: width * 0.8,
-          height: height * 0.5,
-          backgroundColor: "eeecef",
-          borderRadius: 10,
-          padding: wp("5%"),
-          borderWidth: 1,
-          borderColor: "#f5f5f5",
-        }}
-        elevation={3}
+      <View style={{ padding: 20 }}>
+        <Text style={styles.title}>Login</Text>
+        <Text style={styles.subtitle}>Please sign in to continue.</Text>
+      </View>
+      <View
+        style={[
+          styles.inputContainer,
+          isEmailFocused && styles.inputContainerFocused,
+        ]}
       >
-        <AnimatedButton />
-      </Surface>
-      
+        <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#999"
+          value={state.email}
+          onFocus={() => setEmailFocused(true)}
+          onBlur={() => setEmailFocused(false)}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_EMAIL", payload: text })
+          }
+        />
+      </View>
+      <View
+        style={[
+          styles.inputContainer,
+          isPasswordFocused && styles.inputContainerFocused,
+        ]}
+      >
+        <MaterialCommunityIcons name="lock-outline" size={20} color="#999" />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#999"
+          secureTextEntry={secureText}
+          value={state.password}
+          onFocus={() => setPasswordFocused(true)}
+          onBlur={() => setPasswordFocused(false)}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_PASSWORD", payload: text })
+          }
+        />
+        <TouchableOpacity
+          onPress={() => {
+            setSecureText(!secureText);
+          }}
+        >
+          <MaterialCommunityIcons
+            name={secureText ? "eye" : "eye-off"}
+            size={20}
+            color="#999"
+          />
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          router.replace("/Home");
+        }}
+      >
+        <Text style={styles.buttonText}>LOGIN</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => router.push("/(tabs)/Signup")}
+        style={{
+          position: "absolute",
+          bottom: "4%",
+        }}
+      >
+        <Text style={styles.signUpText}>
+          Don't have an account? <Text style={styles.signUpLink}>Sign up</Text>
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -44,19 +129,74 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    gap: 15,
     alignItems: "center",
-    padding: wp("5%"),
-    backgroundColor: "eeecef",
+    padding: 20,
+    backgroundColor: "#fff",
   },
-  header: {
-    fontSize: wp("8%"),
-    fontWeight: "bold",
-    marginBottom: hp("2%"),
+  title: {
+    fontSize: 32,
+    fontWeight: "800",
+    fontVariant: ["small-caps"],
+    marginBottom: 5,
+    marginLeft: "-40%",
   },
-  paragraph: {
-    fontSize: wp("5%"),
-    textAlign: "center",
+  subtitle: {
+    fontSize: 16,
+    color: "#999",
+    marginBottom: 20,
+    marginLeft: "-40%",
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "95%",
+    borderColor: "#dddddd",
+    borderBottomWidth: 2,
+    borderRadius: 8,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  inputContainerFocused: {
+    elevation: 5,
+    shadowColor: "#dddddd",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+    color: "#333",
+    borderBlockColor: "#ddd",
+  },
+  forgotText: {
+    color: "#ff9f00",
+    fontSize: 14,
+  },
+  button: {
+    backgroundColor: "#ff9f00",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    width: "40%",
+    marginRight: "-45%",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  signUpText: {
+    fontSize: 14,
+    color: "#999",
+  },
+  signUpLink: {
+    color: "#ff9f00",
   },
 });
 
-export default App;
+export default LoginScreen;
