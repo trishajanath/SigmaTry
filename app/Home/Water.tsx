@@ -9,8 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
-import { useNavigation } from "@react-navigation/native";
-import DropDownPicker from "react-native-dropdown-picker-plus";
+import { useNavigation } from "@react-navigation/native"; 
 import { SelectList } from "@venedicto/react-native-dropdown";
 
 const { width } = Dimensions.get("window");
@@ -79,11 +78,11 @@ const ProgressStepsComponent = () => {
     
     <View style={styles.container}>
       <ProgressSteps
-        activeStepIconBorderColor="#a2c2e8"
-        activeStepIconColor="#e9f7ff"
-        completedStepIconColor="#a2c2e8"
-        activeLabelColor="#a2c2e8"
-        completedProgressBarColor="#a2c2e8"
+        activeStepIconBorderColor="#8283e9"
+        activeStepIconColor="#d6d7f8"
+        completedStepIconColor="#8283e9"
+        activeLabelColor="#8283e9"
+        completedProgressBarColor="#8283e9"
         progressBarColor="#eeecef"
         activeStepIconContainer={styles.activeStepIconContainer}
         completedStepIconContainer={styles.completedStepIconContainer}
@@ -92,6 +91,8 @@ const ProgressStepsComponent = () => {
           label=""
           nextBtnStyle={styles.nextBtn}
           previousBtnStyle={styles.previousBtn}
+          nextBtnTextStyle={styles.nextBtnText}
+          previousBtnTextStyle={styles.previousBtnText}
           scrollViewProps={{
             contentContainerStyle: { flexGrow: 1, justifyContent: "center" },
           }}
@@ -132,8 +133,10 @@ const ProgressStepsComponent = () => {
           label=""
           nextBtnStyle={styles.nextBtn}
           previousBtnStyle={styles.previousBtn}
+          nextBtnTextStyle={styles.nextBtnText}
+          previousBtnTextStyle={styles.previousBtnText}
           scrollViewProps={{
-            contentContainerStyle: { flexGrow: 1, justifyContent: "center", marginTop:"-30%" },
+            contentContainerStyle: { flexGrow: 1, justifyContent: "flex-start" },
           }}
         >
           <Text style={styles.pickerLabel}>Type</Text>
@@ -172,19 +175,26 @@ const ProgressStepsComponent = () => {
 
 const styles = StyleSheet.create({
   main: {
-    fontSize: 20,
-    marginTop: Platform.OS === 'ios' ? "-35%" : "-13%",
-    
-    textAlign: "center",
-    marginBottom: "5%",
+    fontSize: 22,
+    marginTop: Platform.OS === 'ios' ? "-47%" : "-10%",
+    marginBottom:'5%',
+    textAlign: "left",
   },
   nextBtn: {
-    marginTop: Platform.OS === 'ios' ? "-190%" : "-100%",
-   
+    backgroundColor: "transparent", 
+    marginTop: Platform.OS === 'ios' ? "-330%" : "-10%",
   },
   previousBtn: {
-    marginTop: Platform.OS === 'ios' ? "-163%" : "-100%",
-    
+    backgroundColor: "transparent", 
+    marginTop: Platform.OS === 'ios' ? "-285%" : "-10%",
+  },
+  nextBtnText: {
+    color: "#8283e9", // Text color
+    fontSize: 16,
+  },
+  previousBtnText: {
+    color: "#8283e9", // Text color
+    fontSize: 16,
   },
   activeStepIconContainer: {
     marginTop: Platform.OS === 'ios' ? "-2%" : "-1%",
@@ -193,7 +203,7 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'ios' ? "-2%" : "-2%",
   },
   switchContainer: {
-    marginTop:"5%",
+    marginTop: "5%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -207,12 +217,12 @@ const styles = StyleSheet.create({
   },
   pickerLabel: {
     fontSize: 16,
-    marginTop: Platform.OS === 'ios' ? "-9%" : "0%",
+    marginTop: Platform.OS === 'ios' ? "7%" : "0%",
     marginBottom: "3%",
     textAlign: "left",
   },
   stepContainer: {
-    marginTop: Platform.OS === 'ios' ? "10%" : "0%",
+    marginTop: Platform.OS === 'ios' ? "3%" : "0%",
     alignItems: "flex-start",
     justifyContent: "center",
     marginBottom: "5%",
@@ -244,21 +254,49 @@ const styles = StyleSheet.create({
     marginBottom: "2%",
     justifyContent: "center",
   },
+  dropdownWrapper: {
+    width: "100%", // Ensure the dropdown wrapper takes the full width
+    borderWidth: 0, // Remove the border width
+    borderColor: "transparent", // Set border color to transparent
+    paddingHorizontal: 0, // Adjust padding to fit your design
+    marginBottom: "2%",
+    justifyContent: "center",
+  },
   container: {
     flex: 1,
     padding: "5%",
   },
   label: {
     fontSize: 16,
-    marginBottom: "3%",
+    marginBottom: '4%',  
   },
   input: {
     width: "100%",
-    height: width * 0.15,
+    height: 40, 
     backgroundColor: "#f5f5f5",
-    paddingHorizontal: "5%",
-    marginBottom: "2%",
-    justifyContent: "center",
+    paddingHorizontal: '2%',
+    marginBottom: '5%',  
+    shadowColor: "#8283e9",  
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    borderRadius: 5,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    marginBottom: "5%",
+    paddingLeft: "2%",
+  },
+  icon: {
+    position: "absolute",
+    left: "5%",
+    top: "50%",
+    transform: [{ translateY: -10 }],
+    zIndex: 1,
   },
 });
 

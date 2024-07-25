@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect } from "react";
+import React, { useReducer } from "react";
 import {
   View,
   Text,
@@ -10,17 +10,14 @@ import {
 } from "react-native";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 import { useNavigation } from "@react-navigation/native";
-import DropDownPicker from "react-native-dropdown-picker-plus";
 import { SelectList } from "@venedicto/react-native-dropdown";
 
 const { width } = Dimensions.get("window");
 
 const initialState = {
-  step1Data: { name: "", number: "", classroom: "" },
+  step1Data: { name: "", number: "", classroom: "", type: "Select Type" },
   step2Data: { content: "", anonymous: false },
-  selectedOptionType: "Select Type",
   selectedOptionDomain: "Select Domain",
-  classroom: "Select Option",
 };
 
 function reducer(state: any, action: any) {
@@ -29,12 +26,8 @@ function reducer(state: any, action: any) {
       return { ...state, step1Data: { ...state.step1Data, ...action.payload } };
     case "SET_STEP2_DATA":
       return { ...state, step2Data: { ...state.step2Data, ...action.payload } };
-    case "SET_SELECTED_OPTION_TYPE":
-      return { ...state, selectedOptionType: action.payload };
     case "SET_SELECTED_OPTION_DOMAIN":
       return { ...state, selectedOptionDomain: action.payload };
-    case "SET_CLASSROOM":
-      return { ...state, classroom: action.payload };
     default:
       return state;
   }
@@ -45,44 +38,18 @@ const ProgressStepsComponent = () => {
   const navigation = useNavigation();
   navigation.setOptions({ headerTitle: "" });
 
-  const [openType, setOpenType] = useState(false);
-  const [openDomain, setOpenDomain] = useState(false);
-  const [openClassroom, setOpenClassroom] = useState(false);
-
   const handleSwitchChange = (value: any) => {
     dispatch({ type: "SET_STEP2_DATA", payload: { anonymous: value } });
   };
 
-  // Close other dropdowns when one is opened
-  useEffect(() => {
-    if (openType) {
-      setOpenDomain(false);
-      setOpenClassroom(false);
-    }
-  }, [openType]);
-
-  useEffect(() => {
-    if (openDomain) {
-      setOpenType(false);
-      setOpenClassroom(false);
-    }
-  }, [openDomain]);
-
-  useEffect(() => {
-    if (openClassroom) {
-      setOpenType(false);
-      setOpenDomain(false);
-    }
-  }, [openClassroom]);
-
   return (
     <View style={styles.container}>
       <ProgressSteps
-        activeStepIconBorderColor="#a2c2e8"
-        activeStepIconColor="#e9f7ff"
-        completedStepIconColor="#a2c2e8"
-        activeLabelColor="#a2c2e8"
-        completedProgressBarColor="#a2c2e8"
+        activeStepIconBorderColor="#8283e9"
+        activeStepIconColor="#d6d7f8"
+        completedStepIconColor="#8283e9"
+        activeLabelColor="#8283e9"
+        completedProgressBarColor="#8283e9"
         progressBarColor="#eeecef"
         activeStepIconContainer={styles.activeStepIconContainer}
         completedStepIconContainer={styles.completedStepIconContainer}
@@ -91,6 +58,8 @@ const ProgressStepsComponent = () => {
           label=""
           nextBtnStyle={styles.nextBtn}
           previousBtnStyle={styles.previousBtn}
+          nextBtnTextStyle={styles.nextBtnText}
+          previousBtnTextStyle={styles.previousBtnText}
           scrollViewProps={{
             contentContainerStyle: { flexGrow: 1, justifyContent: "center" },
           }}
@@ -115,9 +84,7 @@ const ProgressStepsComponent = () => {
                 dispatch({ type: "SET_STEP1_DATA", payload: { number: text } })
               }
             />
-            
-          </View>
-          <Text style={styles.label}>Classroom Number</Text>
+            <Text style={styles.label}>Classroom</Text>
             <TextInput
               style={styles.input}
               placeholder="Number"
@@ -126,37 +93,43 @@ const ProgressStepsComponent = () => {
                 dispatch({ type: "SET_STEP1_DATA", payload: { number: text } })
               }
             />
+            <Text style={styles.pickerLabel}>Type</Text>
+            <View style={styles.dropdownWrapper}>
+              <SelectList
+                setSelected={(value: any) =>
+                  dispatch({ type: "SET_STEP1_DATA", payload: { type: value } })
+                }
+                data={["Complaint", "Feedback", "Suggestion"]}
+                search={false}
+                save="value"
+              />
+            </View>
+          </View>
         </ProgressStep>
         <ProgressStep
           label=""
           nextBtnStyle={styles.nextBtn}
           previousBtnStyle={styles.previousBtn}
+          nextBtnTextStyle={styles.nextBtnText}
+          previousBtnTextStyle={styles.previousBtnText}
           scrollViewProps={{
-            contentContainerStyle: { flexGrow: 1, justifyContent: "center", marginTop:"-30%" },
+            contentContainerStyle: { flexGrow: 1, justifyContent: "flex-start" },
           }}
         >
-          <Text style={styles.pickerLabel}>Type</Text>
-          <SelectList
-            setSelected={(value: any) =>
-              dispatch({ type: "SET_SELECTED_OPTION_TYPE", payload: value })
-            }
-            data={["Complaint", "Feedback", "Suggestion"]}
-            search={false}
-            save="value"
-          />
           <Text style={styles.pickerLabel}>Domain</Text>
-          <SelectList
-            setSelected={(value: any) =>
-              dispatch({ type: "SET_SELECTED_OPTION_DOMAIN", payload: value })
-            }
-            data={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical","AV and Projectors","Others"]}
-            save="value"
-          />
+          <View style={styles.dropdownWrapper}>
+            <SelectList
+              setSelected={(value: any) =>
+                dispatch({ type: "SET_SELECTED_OPTION_DOMAIN", payload: value })
+              }
+              data={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical", "AV and Projectors", "Others"]}
+              save="value"
+            />
+          </View>
           <View style={styles.stepContainer}>
             <Text style={styles.label}>Content</Text>
             <TextInput
               style={styles.input}
-              placeholder="Content"
               value={state.step2Data.content}
               onChangeText={(text) =>
                 dispatch({ type: "SET_STEP2_DATA", payload: { content: text } })
@@ -178,19 +151,26 @@ const ProgressStepsComponent = () => {
 
 const styles = StyleSheet.create({
   main: {
-    fontSize: 20,
-    marginTop: Platform.OS === 'ios' ? "-35%" : "-13%",
-    
-    textAlign: "center",
-    marginBottom: "5%",
+    fontSize: 22,
+    marginTop: Platform.OS === 'ios' ? "-17%" : "-10%",
+    marginBottom:'5%',
+    textAlign: "left",
   },
   nextBtn: {
-    marginTop: Platform.OS === 'ios' ? "-130%" : "-100%",
-   
+    backgroundColor: "transparent", 
+    marginTop: Platform.OS === 'ios' ? "-120%" : "-10%",
   },
   previousBtn: {
-    marginTop: Platform.OS === 'ios' ? "-113%" : "-100%",
-    
+    backgroundColor: "transparent", // Make background transparent
+    marginTop: Platform.OS === 'ios' ? "-100%" : "-10%",
+  },
+  nextBtnText: {
+    color: "#8283e9", // Text color
+    fontSize: 16,
+  },
+  previousBtnText: {
+    color: "#8283e9", // Text color
+    fontSize: 16,
   },
   activeStepIconContainer: {
     marginTop: Platform.OS === 'ios' ? "-2%" : "-1%",
@@ -199,7 +179,7 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'ios' ? "-2%" : "-2%",
   },
   switchContainer: {
-    marginTop:"5%",
+    marginTop: "5%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -213,12 +193,12 @@ const styles = StyleSheet.create({
   },
   pickerLabel: {
     fontSize: 16,
-    marginTop: Platform.OS === 'ios' ? "11%" : "0%",
+    marginTop: Platform.OS === 'ios' ? "8%" : "0%",
     marginBottom: "3%",
     textAlign: "left",
   },
   stepContainer: {
-    marginTop: Platform.OS === 'ios' ? "10%" : "0%",
+    marginTop: Platform.OS === 'ios' ? "5%" : "0%",
     alignItems: "flex-start",
     justifyContent: "center",
     marginBottom: "5%",
@@ -250,21 +230,49 @@ const styles = StyleSheet.create({
     marginBottom: "2%",
     justifyContent: "center",
   },
+  dropdownWrapper: {
+    width: "100%", // Ensure the dropdown wrapper takes the full width
+    borderWidth: 0, // Remove the border width
+    borderColor: "transparent", // Set border color to transparent
+    paddingHorizontal: 0, // Adjust padding to fit your design
+    marginBottom: "2%",
+    justifyContent: "center",
+  },
   container: {
     flex: 1,
     padding: "5%",
   },
   label: {
     fontSize: 16,
-    marginBottom: "3%",
+    marginBottom: '4%',  
   },
   input: {
     width: "100%",
-    height: width * 0.15,
+    height: 40, 
     backgroundColor: "#f5f5f5",
-    paddingHorizontal: "5%",
-    marginBottom: "2%",
-    justifyContent: "center",
+    paddingHorizontal: '2%',
+    marginBottom: '5%',  
+    shadowColor: "#8283e9",  
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    borderRadius: 5,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    marginBottom: "5%",
+    paddingLeft: "2%",
+  },
+  icon: {
+    position: "absolute",
+    left: "5%",
+    top: "50%",
+    transform: [{ translateY: -10 }],
+    zIndex: 1,
   },
 });
 

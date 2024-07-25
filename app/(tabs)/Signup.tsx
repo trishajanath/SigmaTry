@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from "react-native";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -55,7 +56,13 @@ const SignUpScreen = () => {
     headerTitle: "",
   });
   return (
+    
     <View style={styles.container}>
+      <Image
+  source={require('../../assets/images/sigmalogo.png')} 
+  style={styles.logo}
+/>
+      
       <View
         style={{
           padding: 5,
@@ -64,6 +71,7 @@ const SignUpScreen = () => {
           justifyContent: "center",
         }}
       >
+        
         <Text style={styles.title}>Create Account</Text>
       </View>
       <View style={styles.inputContainer}>
@@ -175,7 +183,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   button: {
-    backgroundColor: "#ff9f00",
+    backgroundColor: "#8283e9",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 25,
@@ -193,7 +201,13 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   signUpLink: {
-    color: "#ff9f00",
+    color: "#8283e9"
+  },
+  logo: {
+    width: 300, // Adjust the width as needed
+    height: 300, // Adjust the height as needed
+    marginBottom:"-20%",
+    marginTop:'-50%' // Add some margin if needed
   },
 });
 

@@ -1,3 +1,4 @@
+
 import React, { useReducer, useState } from "react";
 import {
   View,
@@ -9,6 +10,7 @@ import {
 import { RouteProp } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
+import { Image } from 'react-native';
 
 type RootStackParamList = {
   Login: undefined;
@@ -41,13 +43,22 @@ const LoginScreen = () => {
   const [isPasswordFocused, setPasswordFocused] = useState(false);
   const [secureText, setSecureText] = useState(true);
   const navigation = useNavigation();
+  
   React.useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
+
   return (
+    
     <View style={styles.container}>
+      <Image
+  source={require('../../assets/images/sigmalogo.png')} 
+  style={styles.logo}
+/>
+
+      
       <View style={{ padding: 20 }}>
         <Text style={styles.title}>Login</Text>
         <Text style={styles.subtitle}>Please sign in to continue.</Text>
@@ -134,6 +145,13 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
+  logo: {
+    width: 300, // Adjust the width as needed
+    height: 300, // Adjust the height as needed
+    marginBottom:"-20%",
+    marginTop:'-50%' // Add some margin if needed
+  },
+  
   title: {
     fontSize: 32,
     fontWeight: "800",
@@ -177,7 +195,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   button: {
-    backgroundColor: "#ff9f00",
+    backgroundColor: "#8283e9",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 25,
@@ -195,8 +213,9 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   signUpLink: {
-    color: "#ff9f00",
+    color: "#8283e9",
   },
 });
+
 
 export default LoginScreen;
