@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { Image } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from "@/Hooks/userContext";
+import * as jwt from "jwt-decode";
 
 type RootStackParamList = {
   Login: undefined;
@@ -77,6 +78,32 @@ const LoginScreen = () => {
       headerShown: false,
     });
   }, [navigation]);
+
+  const checkToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const decode = jwt.jwtDecode(token ? token : "");
+      const body = {
+        id: decode.sub,
+      };
+      const response = await axios.post(
+        "https://api.gms.intellx.in/client/account",
+        body
+      );
+      updateUser({
+        name: response.data.user.name,
+        id: response.data.user.id,
+        confirmed: true,
+      });
+      router.replace("/Home");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   return (
     <View style={styles.container}>

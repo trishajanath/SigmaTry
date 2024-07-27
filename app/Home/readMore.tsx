@@ -1,5 +1,5 @@
 // app/details.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   View,
@@ -8,9 +8,13 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
-import { useGlobalSearchParams, useNavigation } from "expo-router";
+import { router, useGlobalSearchParams, useNavigation } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+import { useUser } from "@/Hooks/userContext";
+import axios from "axios";
 
 const { width, height } = Dimensions.get("window");
 
@@ -40,22 +44,121 @@ interface Issue {
 export default function IssueDetails() {
   const navigation = useNavigation();
   const params = useGlobalSearchParams();
-  const issue: Issue = params.issue
-    ? JSON.parse(Array.isArray(params.issue) ? params.issue[0] : params.issue)
-    : null;
-
+  const issueID = params.id;
+  const user = useUser();
+  const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState("");
-  const [comments, setComments] = useState(issue.comments);
+  const [issue, setIssue] = useState<Issue | undefined>();
+  const [comments, setComments] = useState(issue?.comments || []);
 
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      const newCommentObj = {
-        date: new Date().toLocaleString(),
-        by: "CurrentUser",
-        content: newComment,
+  const fetchIssue = async () => {
+    try {
+      const body = {
+        user_id: user.id,
       };
-      setComments([...comments, newCommentObj]);
-      setNewComment("");
+      const response = await axios.post(
+        `https://api.gms.intellx.in/client/issue/status/${issueID}`,
+        body
+      );
+      setIssue(response.data.issue);
+      setComments(response.data.issue.comments);
+      setLoading(false);
+    } catch (error: any) {
+      console.error(error);
+      console.log(error.response);
+      Alert.alert("Error", "Failed to fetch issue details", [
+        {
+          text: "OK",
+          onPress: () => router.back(),
+        },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    fetchIssue();
+  }, []);
+
+  const reopenIssue = async () => {
+    try {
+      const body = {
+        user_id: user.id,
+      };
+      const response = await axios.post(
+        `https://api.gms.intellx.in/task/open/${issue?.issueNo}`,
+        body
+      );
+      if (response.status === 200) {
+        Alert.alert("Issue has been reopened successfully");
+        navigation.goBack();
+      }
+    } catch (error) {
+      // Check if error is an Axios error
+      if (axios.isAxiosError(error)) {
+        console.error("Axios Error:", error.response?.data || error.message);
+        Alert.alert("Failed to reopen issue", `Error: ${error.message}`);
+      } else {
+        console.error("Unexpected Error:", error);
+        Alert.alert("Failed to reopen issue", "An unexpected error occurred.");
+      }
+    }
+  };
+  const CloseISsue = async () => {
+    try {
+      const body = {
+        user_id: user.id,
+      };
+      const response = await axios.post(
+        `https://api.gms.intellx.in/task/close/${issue?.issueNo}`,
+        body
+      );
+      if (response.status === 200) {
+        Alert.alert("Issue has been closed successfully");
+        navigation.goBack();
+      }
+    } catch (error) {
+      // Check if error is an Axios error
+      if (axios.isAxiosError(error)) {
+        console.error("Axios Error:", error.response?.data || error.message);
+        Alert.alert("Failed to close issue", `Error: ${error.message}`);
+      } else {
+        console.error("Unexpected Error:", error);
+        Alert.alert("Failed to close issue", "An unexpected error occurred.");
+      }
+    }
+  };
+
+  const handleAddComment = async () => {
+    try {
+      if (newComment.trim()) {
+        const newCommentObj = {
+          date: new Date().toLocaleString(),
+          by: user.id, // replace with actual current user ID
+          content: newComment,
+        };
+        setComments([...comments, newCommentObj]);
+        const body = {
+          user_id: user.id,
+          content: newComment,
+        };
+        const response = await axios.post(
+          `https://api.gms.intellx.in/client/issue/add-comment/${issue?.issueNo}`,
+          body
+        );
+        if (response.status === 200) {
+          Alert.alert("Comment added successfully");
+        }
+        setNewComment("");
+      }
+    } catch (error) {
+      // Check if error is an Axios error
+      if (axios.isAxiosError(error)) {
+        console.error("Axios Error:", error.response?.data || error.message);
+        Alert.alert("Failed to add comment", `Error: ${error.message}`);
+      } else {
+        console.error("Unexpected Error:", error);
+        Alert.alert("Failed to add comment", "An unexpected error occurred.");
+      }
     }
   };
 
@@ -64,6 +167,20 @@ export default function IssueDetails() {
       headerShown: false,
     });
   }, [navigation]);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="#003366" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
@@ -83,33 +200,49 @@ export default function IssueDetails() {
           <View style={styles.row}>
             <View style={styles.box}>
               <Text style={styles.label}>Category</Text>
-              <Text style={styles.value}>{issue.issue.issueCat}</Text>
+              <Text style={styles.value}>{issue?.issue.issueCat}</Text>
             </View>
             <View style={styles.box}>
               <Text style={styles.label}>Status</Text>
-              <Text style={styles.value}>{issue.status}</Text>
+              <Text style={styles.value}>{issue?.status}</Text>
             </View>
           </View>
           <View style={styles.detailsBox}>
-            <Text style={styles.detailsText}>Block: {issue.issue.block}</Text>
-            <Text style={styles.detailsText}>Floor: {issue.issue.floor}</Text>
+            <Text style={styles.detailsText}>Block: {issue?.issue.block}</Text>
+            <Text style={styles.detailsText}>Floor: {issue?.issue.floor}</Text>
             <Text style={styles.detailsText}>
-              Type: {issue.issue.issueType}
+              Type: {issue?.issue.issueType}
             </Text>
             <Text style={styles.detailsText}>
-              Content: {issue.issue.issueContent}
+              Content: {issue?.issue.issueContent}
             </Text>
             <Text style={styles.detailsText}>
-              Action Item: {issue.issue.actionItem}
+              Action Item: {issue?.issue.actionItem}
             </Text>
             <Text style={styles.detailsText}>
-              Last Update: {issue.issue.issueLastUpdateDate}{" "}
-              {issue.issue.issueLastUpdateTime}
+              Last Update: {issue?.issue.issueLastUpdateDate}{" "}
+              {issue?.issue.issueLastUpdateTime}
             </Text>
           </View>
-          <TouchableOpacity style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>CLOSE THIS ISSUE</Text>
-          </TouchableOpacity>
+          {issue?.status === "OPEN" ? (
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                CloseISsue();
+              }}
+            >
+              <Text style={styles.closeButtonText}>CLOSE THIS ISSUE</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                reopenIssue();
+              }}
+            >
+              <Text style={styles.closeButtonText}>REOPEN THIS ISSUE</Text>
+            </TouchableOpacity>
+          )}
           <Text style={styles.commentsHeading}>COMMENTS</Text>
           {comments.map((comment, index) => (
             <View key={index} style={styles.commentBox}>
