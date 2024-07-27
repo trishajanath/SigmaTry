@@ -59,11 +59,11 @@ const rectangularContainers = [
       actionItem: "K428",
       block: "K",
       floor: "3",
-      issueCat: "CLEANING",
+      issueCat: "Cleaning",
       issueContent: "Floor Dirty",
       issueLastUpdateDate: "17/07/24",
       issueLastUpdateTime: "11:26 PM",
-      issueType: "ISSUE",
+      issueType: "Issue",
     },
     issueNo: "4ESF0",
     log: [
@@ -122,11 +122,11 @@ const rectangularContainers = [
       actionItem: "Lift",
       block: "J",
       floor: "0",
-      issueCat: "MISCELLANEOUS",
+      issueCat: "Miscellaneous",
       issueContent: "Lift is not working",
       issueLastUpdateDate: "27/07/24",
       issueLastUpdateTime: "07:54 AM",
-      issueType: "ISSUE",
+      issueType: "Issue",
     },
     issueNo: "GPM73",
     log: [
@@ -192,11 +192,11 @@ const rectangularContainers = [
       actionItem: "M401",
       block: "M",
       floor: "3",
-      issueCat: "MISCELLANEOUS",
+      issueCat: "Miscellaneous",
       issueContent: "",
       issueLastUpdateDate: "17/07/24",
       issueLastUpdateTime: "11:35 PM",
-      issueType: "ISSUE",
+      issueType: "Issue",
     },
     issueNo: "IHU1B",
     log: [
@@ -234,11 +234,11 @@ const rectangularContainers = [
       actionItem: "",
       block: "Y",
       floor: "3",
-      issueCat: "PLUMBING",
+      issueCat: "Plumbing",
       issueContent: "Not working ",
       issueLastUpdateDate: "03/12/23",
       issueLastUpdateTime: "07:31 PM",
-      issueType: "ISSUE",
+      issueType: "Issue",
     },
     issueNo: "5986Y",
     log: [
@@ -337,11 +337,17 @@ const Index = () => {
   ];
 
   const handleSort = () => {
-    const sorted = [...rectangularContainers].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    const sorted = [...rectangularContainers].sort((a, b) => {
+    
+      if (a.status === "OPEN" && b.status !== "OPEN") return -1;
+      if (a.status !== "OPEN" && b.status === "OPEN") return 1;
+  
+      // If statuses are the same, sort by date (latest first)
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
     setSortedComplaints(sorted);
   };
+  
 
   const getCardColor = (action: string) => {
     switch (action) {
@@ -499,7 +505,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   scrollViewContentContainer: {
-    paddingBottom: 20, // Ensure there's padding at the bottom for better scrolling
+    paddingBottom: 20,
   },
   searchAndSortContainer: {
     flexDirection: "row",
@@ -547,9 +553,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
-    width: 40,
+    width: '11%',
     height: 43,
-    marginLeft: 10,
+    marginLeft:'2%',
   },
   iconWrapper: {
     flexDirection: "row",

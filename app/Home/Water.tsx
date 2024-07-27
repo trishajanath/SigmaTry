@@ -12,6 +12,7 @@ import {
 import { SelectList } from "@venedicto/react-native-dropdown";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { router } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
@@ -54,6 +55,7 @@ const SinglePageForm = () => {
 
   const handleSubmit = () => {
     console.log("Form submitted with data:", state);
+    router.push("/Home/submitPage"); 
   };
 
   return (

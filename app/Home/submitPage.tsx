@@ -11,7 +11,7 @@ const SubmitPage: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.acknowledgmentContainer}>
+      
         <Text style={styles.title}>Thank You!</Text>
         <Text style={styles.message}>
           Your form has been successfully submitted. 
@@ -20,7 +20,6 @@ const SubmitPage: React.FC = () => {
           <Text style={styles.homeButtonText}>Go to Home</Text>
         </TouchableOpacity>
       </View>
-    </View>
   );
 };
 
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f2f2f2", // Light background for contrast
+    backgroundColor: "#f2f2f2", 
   },
   acknowledgmentContainer: {
     width: width * 0.9,
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   homeButton: {
-    backgroundColor: "#bbbef3", // Your shade of blue
+    backgroundColor: "#bbbef3", 
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 5,

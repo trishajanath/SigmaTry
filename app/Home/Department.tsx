@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { SelectList } from "@venedicto/react-native-dropdown";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { router } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
@@ -82,7 +83,7 @@ const SinglePageForm: React.FC = () => {
 
   const handleSubmit = () => {
     console.log("Form submitted with data:", state);
-    ('/submitPage'); // Use navigate to go to the submitPage
+    router.push("/Home/submitPage"); 
   };
 
   return (
