@@ -30,42 +30,244 @@ const { width } = Dimensions.get("window");
 
 const rectangularContainers = [
   {
-    id: 1,
-    issueType: "Feedback",
-    action: "Opened",
-    date: "21-07-2024",
-    category: "Plumbing",
+    anonymity: "false",
+    comments: [
+      {
+        by: "21Z202",
+        content: "Floor Dirty",
+        date: "03-12-23 12:06 PM",
+      },
+      {
+        by: "21Z202",
+        content: "Cleaned.",
+        date: "03-12-23 19:22",
+      },
+      {
+        by: "21Z202",
+        content: "Cleaned.",
+        date: "03-12-23 19:22",
+      },
+      {
+        by: "21Z202",
+        content: "Cleaned.",
+        date: "03-12-23 19:22",
+      },
+    ],
+    date: "03/12/23",
+    delay_days: 10,
+    issue: {
+      actionItem: "K428",
+      block: "K",
+      floor: "3",
+      issueCat: "CLEANING",
+      issueContent: "Floor Dirty",
+      issueLastUpdateDate: "17/07/24",
+      issueLastUpdateTime: "11:26 PM",
+      issueType: "ISSUE",
+    },
+    issueNo: "4ESF0",
+    log: [
+      {
+        action: "opened",
+        by: "21Z202",
+        date: "03-12-23 12:06",
+      },
+      {
+        action: "closed",
+        by: "21Z202",
+        date: "03-12-23 19:23",
+      },
+      {
+        action: "opened",
+        by: "21Z202",
+        date: "11-02-24 00:08",
+      },
+      {
+        action: "closed",
+        by: "22N228",
+        date: "17-07-24 22:59",
+      },
+      {
+        action: "closed",
+        by: "22N228",
+        date: "17-07-24 23:11",
+      },
+      {
+        action: "opened",
+        by: "22N228",
+        date: "17-07-24 23:26",
+      },
+    ],
+    priority: 1,
+    raised_by: {
+      name: "Aaditya Rengarajan",
+      personId: "21Z202",
+    },
+    status: "OPEN",
+    survey: {},
+    time: "12:06 PM",
   },
   {
-    id: 2,
-    issueType: "Feedback",
-    action: "Closed",
-    date: "22-07-2024",
-    category: "Electrical",
-    status: "Resolved",
+    anonymity: "false",
+    comments: [
+      {
+        by: "21Z202",
+        content: "Lift is not working",
+        date: "03-12-23 07:15 PM",
+      },
+    ],
+    date: "03/12/23",
+    delay_days: 0,
+    issue: {
+      actionItem: "Lift",
+      block: "J",
+      floor: "0",
+      issueCat: "MISCELLANEOUS",
+      issueContent: "Lift is not working",
+      issueLastUpdateDate: "27/07/24",
+      issueLastUpdateTime: "07:54 AM",
+      issueType: "ISSUE",
+    },
+    issueNo: "GPM73",
+    log: [
+      {
+        action: "opened",
+        by: "21Z202",
+        date: "03-12-23 19:15",
+      },
+      {
+        action: "closed",
+        by: "21Z202",
+        date: "03-12-23 19:16",
+      },
+      {
+        action: "opened",
+        by: "21Z202",
+        date: "26-06-24 01:02",
+      },
+      {
+        action: "closed",
+        by: "21Z202",
+        date: "26-06-24 01:03",
+      },
+      {
+        action: "opened",
+        by: "22z201",
+        date: "27-07-24 07:54",
+      },
+    ],
+    priority: 1,
+    raised_by: {
+      name: "Aaditya Rengarajan",
+      personId: "21Z202",
+    },
+    status: "OPEN",
+    survey: {
+      "Cleanliness ": "satisfactory",
+    },
+    time: "07:15 PM",
   },
   {
-    id: 3,
-    issueType: "Complaint",
-    action: "Pending",
-    date: "23-07-2024",
-    category: "Others",
-    status: "Resolved",
+    anonymity: "false",
+    comments: [
+      {
+        by: "UKS.AMCS",
+        content: "",
+        date: "11-01-24 12:34 PM",
+      },
+      {
+        by: "22N228",
+        content: "close",
+        date: "17-07-24 23:28",
+      },
+      {
+        by: "22N228",
+        content: "hi",
+        date: "17-07-24 23:35",
+      },
+    ],
+    date: "11/01/24",
+    delay_days: 10,
+    issue: {
+      actionItem: "M401",
+      block: "M",
+      floor: "3",
+      issueCat: "MISCELLANEOUS",
+      issueContent: "",
+      issueLastUpdateDate: "17/07/24",
+      issueLastUpdateTime: "11:35 PM",
+      issueType: "ISSUE",
+    },
+    issueNo: "IHU1B",
+    log: [
+      {
+        action: "opened",
+        by: "UKS.AMCS",
+        date: "11-01-24 12:34",
+      },
+    ],
+    priority: 1,
+    raised_by: {
+      name: "Sridevi",
+      personId: "UKS.AMCS",
+    },
+    status: "OPEN",
+    survey: {},
+    time: "12:34 PM",
   },
   {
-    id: 4,
-    issueType: "Complaint",
-    action: "Closed",
-    date: "23-07-2024",
-    category: "Cleaning",
-    status: "Resolved",
+    anonymity: "false",
+    comments: [
+      {
+        by: "22Z323",
+        content: "Not working ",
+        date: "03-12-23 07:23 PM",
+      },
+      {
+        by: "21Z202",
+        content: "Thank You.",
+        date: "03-12-23 19:31",
+      },
+    ],
+    date: "03/12/23",
+    issue: {
+      actionItem: "",
+      block: "Y",
+      floor: "3",
+      issueCat: "PLUMBING",
+      issueContent: "Not working ",
+      issueLastUpdateDate: "03/12/23",
+      issueLastUpdateTime: "07:31 PM",
+      issueType: "ISSUE",
+    },
+    issueNo: "5986Y",
+    log: [
+      {
+        action: "opened",
+        by: "22Z323",
+        date: "03-12-23 19:23",
+      },
+      {
+        action: "closed",
+        by: "21Z202",
+        date: "03-12-23 19:31",
+      },
+    ],
+    raised_by: {
+      name: "Giri prassath.S",
+      personId: "22Z323",
+    },
+    status: "CLOSE",
+    survey: {},
+    time: "07:23 PM",
   },
 ];
-
 const Index = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortedComplaints, setSortedComplaints] = useState(rectangularContainers);
+  const [sortedComplaints, setSortedComplaints] = useState(
+    rectangularContainers
+  );
 
   useEffect(() => {
     navigation.setOptions({
@@ -135,28 +337,34 @@ const Index = () => {
   ];
 
   const handleSort = () => {
-    const sorted = [...rectangularContainers].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const sorted = [...rectangularContainers].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
     setSortedComplaints(sorted);
   };
 
   const getCardColor = (action: string) => {
     switch (action) {
-      case "Opened":
+      case "OPEN":
         return "#e7bcec";
-      case "Closed":
+      case "CLOSE":
         return "#bbbef3";
       case "Pending":
-        return "#a3c3e7"; 
+        return "#a3c3e7";
       default:
-        return "#ffffff"; 
+        return "#ffffff";
     }
   };
 
-  const renderComplaintItem = ({ item }: { item: typeof rectangularContainers[0] }) => (
+  const renderComplaintItem = ({
+    item,
+  }: {
+    item: (typeof rectangularContainers)[0];
+  }) => (
     <View
-      key={item.id}
+      key={item.issueNo}
       style={{
-        backgroundColor: getCardColor(item.action),
+        backgroundColor: getCardColor(item.status),
         borderRadius: 12,
         width: width * 0.89,
         padding: "3%", // Adjusted padding inside container
@@ -170,17 +378,22 @@ const Index = () => {
     >
       <View style={styles.complaintContainer}>
         <View style={styles.complaintHeader}>
-          <RNText style={styles.issueTypeText}>{item.issueType}</RNText>
+          <RNText style={styles.issueTypeText}>{item.issue.issueType}</RNText>
           <RNText style={styles.dateText}>{item.date}</RNText>
         </View>
         <View style={styles.complaintBody}>
-          <RNText style={styles.categoryText}> {item.category}</RNText>
-          <RNText style={styles.statusText}> {item.action}</RNText>
+          <RNText style={styles.categoryText}> {item.issue.issueCat}</RNText>
+          <RNText style={styles.statusText}> {item.status}</RNText>
         </View>
         <TouchableOpacity
           style={styles.readMoreButton}
           onPress={() => {
-            router.replace("/Home/readMore");
+            router.replace({
+              pathname: "/Home/readMore",
+              params: {
+                issue: JSON.stringify(item),
+              },
+            });
           }}
         >
           <Text style={styles.readMoreButtonText}>Read More</Text>
@@ -188,7 +401,6 @@ const Index = () => {
       </View>
     </View>
   );
-  
 
   return (
     <>
@@ -205,9 +417,7 @@ const Index = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContentContainer}
       >
-        <View
-          style={styles.searchAndSortContainer}
-        >
+        <View style={styles.searchAndSortContainer}>
           <View style={styles.searchContainer}>
             <MaterialIcons
               name="search"
@@ -224,7 +434,11 @@ const Index = () => {
             />
           </View>
           <View style={styles.iconButtonContainer}>
-            <AdjustmentsHorizontalIcon size={20} color="#555555" onPress={handleSort} />
+            <AdjustmentsHorizontalIcon
+              size={20}
+              color="#555555"
+              onPress={handleSort}
+            />
           </View>
           <View style={styles.iconButtonContainer}>
             <Feather
@@ -270,7 +484,7 @@ const Index = () => {
         <FlatList
           data={sortedComplaints}
           renderItem={renderComplaintItem}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.issueNo}
         />
       </ScrollView>
     </>
@@ -316,7 +530,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#8283e9",
     paddingVertical: 12,
-    paddingHorizontal:'2%',
+    paddingHorizontal: "2%",
     borderRadius: 25,
     width: "25%",
     height: width * 0.09,
@@ -383,20 +597,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: '2%',
+    marginBottom: "2%",
   },
   readMoreButton: {
     backgroundColor: "#8283e9",
     paddingVertical: 10, // Increase vertical padding
     paddingHorizontal: 10, // Increase horizontal padding
     borderRadius: 25,
-    alignSelf: 'flex-start',
-    marginTop: '-1%', // Adjust margin if needed
+    alignSelf: "flex-start",
+    marginTop: "-1%", // Adjust margin if needed
   },
   readMoreButtonText: {
     color: "#fff",
     fontSize: 10, // Increase font size
-    textAlign: 'center',
+    textAlign: "center",
   },
   headerContainer: {
     height: "8%",
@@ -442,7 +656,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#0d0907",
     marginBottom: 0,
-    textAlign: 'right', // Align text to the right
+    textAlign: "right", // Align text to the right
     flex: 1, // Allow text to take up available space
   },
   issueTypeText: {

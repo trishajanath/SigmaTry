@@ -39,7 +39,6 @@ interface Issue {
 
 export default function IssueDetails() {
   const navigation = useNavigation();
-
   const params = useGlobalSearchParams();
   const issue: Issue = params.issue
     ? JSON.parse(Array.isArray(params.issue) ? params.issue[0] : params.issue)
@@ -52,7 +51,7 @@ export default function IssueDetails() {
     if (newComment.trim()) {
       const newCommentObj = {
         date: new Date().toLocaleString(),
-        by: "CurrentUser", 
+        by: "CurrentUser",
         content: newComment,
       };
       setComments([...comments, newCommentObj]);
