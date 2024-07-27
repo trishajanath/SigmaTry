@@ -12,6 +12,8 @@ import {
 import { SelectList } from "@venedicto/react-native-dropdown";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { router } from "expo-router";
+import axios from "axios";
+import { useUser } from "@/Hooks/userContext";
 
 const { width } = Dimensions.get("window");
 
@@ -47,15 +49,44 @@ function reducer(state: any, action: any) {
 }
 
 const SinglePageForm = () => {
+  const user=useUser();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleSwitchChange = (value: boolean) => {
     dispatch({ type: "SET_ANONYMOUS", payload: value });
   };
 
-  const handleSubmit = () => {
-    console.log("Form submitted with data:", state);
-    router.push("/Home/submitPage"); 
+  const handleSubmit = async() => {
+    try {
+      const Submit={
+        name:user.name,
+        id:user.id,
+        issueType:state.type,
+        issueCat:state.domain,
+        actionType:state.department,
+        block:state.name,
+        floor:state.number,
+        issueContent:`${state.restroom}\n${state.content}`,
+        comments: [
+          {
+            by: user.id,
+            content: "",
+          },
+        ],
+        
+
+      }
+      const response=await axios.post("https://api.gms.intellx.in/client/issue/report",Submit)
+      console.log(response.data)
+      router.back();
+
+      
+    } catch (error) {
+      console.log(error);
+      
+    
+
+    }
   };
 
   return (

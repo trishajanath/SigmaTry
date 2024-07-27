@@ -90,18 +90,27 @@ const SinglePageForm: React.FC = () => {
         name:user.name,
         id:user.id,
         issueType:state.type,
+        
         issueCat:state.domain,
-        issueContent:`${state.department}\n${state.content}`,
+        actionType:state.department,
+        
         block:state.name,
         floor:state.number,
-        actionType:state.department,
+        issueContent:`${state.department}\n${state.content}`,
+        
+        comments:[
+          {
+            by:user.name,
+            content:""
+          }
+        ]
 
 
       }
-      console.log(Submit);
-      //const response=await axios.post("https://api.gms.intellx.in/client/issue/report",Submit)
-      //console.log(response.data);
-      //router.back();
+      
+      const response=await axios.post("https://api.gms.intellx.in/client/issue/report",Submit)
+      console.log(response.data);
+      router.back();
       
 
       }

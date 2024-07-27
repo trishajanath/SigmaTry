@@ -13,7 +13,8 @@ import { SelectList } from "@venedicto/react-native-dropdown";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { router } from "expo-router";
-
+import axios from "axios";
+import { useUser } from "@/Hooks/userContext";
 const { width } = Dimensions.get("window");
 
 const initialState = {
@@ -45,6 +46,7 @@ function reducer(state: any, action: any) {
 }
 
 const SinglePageForm = () => {
+  const user=useUser();
   const [state, dispatch] = useReducer(reducer, initialState);
   const navigation = useNavigation();
   navigation.setOptions({ headerTitle: "" });
@@ -53,10 +55,40 @@ const SinglePageForm = () => {
     dispatch({ type: "SET_ANONYMOUS", payload: value });
   };
 
-  const handleSubmit = () => {
-    console.log("Form submitted with data:", state);
-    router.push("/Home/submitPage"); 
+  const handleSubmit = async() => {
+    try {
+      const Submit={
+        name:user.name,
+        id:user.id,
+        issueType:state.selectedOptionType,
+        issueCat:"",
+        actionType:state.dispenserName,
+        block:state.name,
+        floor:state.number,
+        issueContent:state.content,
+        comments: [
+          {
+            by: user.id,
+            content: "",
+          },
+        ],
+      }
+      const response=await axios.post("https://api.gms.intellx.in/client/issue/report",Submit)
+      console.log(response.data)
+      router.back();
+      
+    } catch(error) {
+      console.log(error);
+
+    }
+  
+     
+      
+    
+    
+    
   };
+
 
   return (
     <KeyboardAwareScrollView

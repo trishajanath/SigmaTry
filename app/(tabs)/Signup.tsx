@@ -126,7 +126,7 @@ const SignUpScreen = () => {
         <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Register Number"
           placeholderTextColor="#999"
           value={state.email}
           onChangeText={(text) =>

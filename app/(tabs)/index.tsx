@@ -15,6 +15,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from "@/Hooks/userContext";
 import * as jwt from "jwt-decode";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type RootStackParamList = {
   Login: undefined;
@@ -106,6 +107,11 @@ const LoginScreen = () => {
   }, []);
 
   return (
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.scrollView}
+      enableOnAndroid={true}
+      extraHeight={100}
+    >
     <View style={styles.container}>
       <Image
         source={require("../../assets/images/sigmalogo.png")}
@@ -125,7 +131,7 @@ const LoginScreen = () => {
         <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Register Number"
           placeholderTextColor="#999"
           value={state.email}
           onFocus={() => setEmailFocused(true)}
@@ -187,6 +193,7 @@ const LoginScreen = () => {
         </Text>
       </TouchableOpacity>
     </View>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -237,6 +244,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
   },
+  scrollView: {
+    flexGrow: 1,
+    padding: "2%"
+},
   input: {
     flex: 1,
     height: 40,
