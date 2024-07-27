@@ -29,11 +29,243 @@ import { useUser } from "@/Hooks/userContext";
 import axios from "axios";
 
 const { width } = Dimensions.get("window");
-
+const rectangularContainers = [
+  {
+    anonymity: "false",
+    comments: [
+      {
+        by: "21Z202",
+        content: "Floor Dirty",
+        date: "03-12-23 12:06 PM",
+      },
+      {
+        by: "21Z202",
+        content: "Cleaned.",
+        date: "03-12-23 19:22",
+      },
+      {
+        by: "21Z202",
+        content: "Cleaned.",
+        date: "03-12-23 19:22",
+      },
+      {
+        by: "21Z202",
+        content: "Cleaned.",
+        date: "03-12-23 19:22",
+      },
+    ],
+    date: "03/12/23",
+    delay_days: 10,
+    issue: {
+      actionItem: "K428",
+      block: "K",
+      floor: "3",
+      issueCat: "Cleaning",
+      issueContent: "Floor Dirty",
+      issueLastUpdateDate: "17/07/24",
+      issueLastUpdateTime: "11:26 PM",
+      issueType: "Issue",
+    },
+    issueNo: "4ESF0",
+    log: [
+      {
+        action: "opened",
+        by: "21Z202",
+        date: "03-12-23 12:06",
+      },
+      {
+        action: "closed",
+        by: "21Z202",
+        date: "03-12-23 19:23",
+      },
+      {
+        action: "opened",
+        by: "21Z202",
+        date: "11-02-24 00:08",
+      },
+      {
+        action: "closed",
+        by: "22N228",
+        date: "17-07-24 22:59",
+      },
+      {
+        action: "closed",
+        by: "22N228",
+        date: "17-07-24 23:11",
+      },
+      {
+        action: "opened",
+        by: "22N228",
+        date: "17-07-24 23:26",
+      },
+    ],
+    priority: 1,
+    raised_by: {
+      name: "Aaditya Rengarajan",
+      personId: "21Z202",
+    },
+    status: "OPEN",
+    survey: {},
+    time: "12:06 PM",
+  },
+  {
+    anonymity: "false",
+    comments: [
+      {
+        by: "21Z202",
+        content: "Lift is not working",
+        date: "03-12-23 07:15 PM",
+      },
+    ],
+    date: "03/12/23",
+    delay_days: 0,
+    issue: {
+      actionItem: "Lift",
+      block: "J",
+      floor: "0",
+      issueCat: "Miscellaneous",
+      issueContent: "Lift is not working",
+      issueLastUpdateDate: "27/07/24",
+      issueLastUpdateTime: "07:54 AM",
+      issueType: "Issue",
+    },
+    issueNo: "GPM73",
+    log: [
+      {
+        action: "opened",
+        by: "21Z202",
+        date: "03-12-23 19:15",
+      },
+      {
+        action: "closed",
+        by: "21Z202",
+        date: "03-12-23 19:16",
+      },
+      {
+        action: "opened",
+        by: "21Z202",
+        date: "26-06-24 01:02",
+      },
+      {
+        action: "closed",
+        by: "21Z202",
+        date: "26-06-24 01:03",
+      },
+      {
+        action: "opened",
+        by: "22z201",
+        date: "27-07-24 07:54",
+      },
+    ],
+    priority: 1,
+    raised_by: {
+      name: "Aaditya Rengarajan",
+      personId: "21Z202",
+    },
+    status: "OPEN",
+    survey: {
+      "Cleanliness ": "satisfactory",
+    },
+    time: "07:15 PM",
+  },
+  {
+    anonymity: "false",
+    comments: [
+      {
+        by: "UKS.AMCS",
+        content: "",
+        date: "11-01-24 12:34 PM",
+      },
+      {
+        by: "22N228",
+        content: "close",
+        date: "17-07-24 23:28",
+      },
+      {
+        by: "22N228",
+        content: "hi",
+        date: "17-07-24 23:35",
+      },
+    ],
+    date: "11/01/24",
+    delay_days: 10,
+    issue: {
+      actionItem: "M401",
+      block: "M",
+      floor: "3",
+      issueCat: "Miscellaneous",
+      issueContent: "",
+      issueLastUpdateDate: "17/07/24",
+      issueLastUpdateTime: "11:35 PM",
+      issueType: "Issue",
+    },
+    issueNo: "IHU1B",
+    log: [
+      {
+        action: "opened",
+        by: "UKS.AMCS",
+        date: "11-01-24 12:34",
+      },
+    ],
+    priority: 1,
+    raised_by: {
+      name: "Sridevi",
+      personId: "UKS.AMCS",
+    },
+    status: "OPEN",
+    survey: {},
+    time: "12:34 PM",
+  },
+  {
+    anonymity: "false",
+    comments: [
+      {
+        by: "22Z323",
+        content: "Not working ",
+        date: "03-12-23 07:23 PM",
+      },
+      {
+        by: "21Z202",
+        content: "Thank You.",
+        date: "03-12-23 19:31",
+      },
+    ],
+    date: "03/12/23",
+    issue: {
+      actionItem: "",
+      block: "Y",
+      floor: "3",
+      issueCat: "Plumbing",
+      issueContent: "Not working ",
+      issueLastUpdateDate: "03/12/23",
+      issueLastUpdateTime: "07:31 PM",
+      issueType: "Issue",
+    },
+    issueNo: "5986Y",
+    log: [
+      {
+        action: "opened",
+        by: "22Z323",
+        date: "03-12-23 19:23",
+      },
+      {
+        action: "closed",
+        by: "21Z202",
+        date: "03-12-23 19:31",
+      },
+    ],
+    raised_by: {
+      name: "Giri prassath.S",
+      personId: "22Z323",
+    },
+    status: "CLOSE",
+    survey: {},
+    time: "07:23 PM",
+  },
+];
 const Index = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [rectangularContainers, setRectangularContainers] = useState<>([]);
   const [sortedComplaints, setSortedComplaints] = useState(
     rectangularContainers
   );
@@ -45,6 +277,9 @@ const Index = () => {
       headerShown: false,
     });
   }, [navigation]);
+  useEffect(() => {
+    FetchAllIssues();
+  },[])
 
   const onChangeSearch = (query: string) => setSearchQuery(query);
 
@@ -54,8 +289,11 @@ const Index = () => {
 
   const FetchAllIssues = async () => {
     try {
-      const response = await axios.get("");
-    } catch (error) {}
+      const response = await axios.get("https://api.gms.intellx.in/tasks");
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const constantContainer = {

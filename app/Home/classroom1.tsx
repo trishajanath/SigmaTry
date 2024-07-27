@@ -12,7 +12,8 @@ import {
 import { SelectList } from "@venedicto/react-native-dropdown";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { router } from "expo-router";
-
+import axios from "axios";
+import { useUser } from "@/Hooks/userContext";
 const { width } = Dimensions.get("window");
 
 interface FormData {
@@ -24,6 +25,9 @@ interface FormData {
   selectedOptionType: string;
   selectedOptionDomain: string;
 }
+
+
+
 
 const initialState: FormData = {
   name: "",
@@ -48,16 +52,39 @@ function reducer(state: FormData, action: Action): FormData {
 }
 
 const SinglePageForm: React.FC = () => {
+  const users=useUser();
+  
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleSwitchChange = (value: boolean) => {
     dispatch({ type: "SET_FORM_DATA", payload: { anonymous: value } });
   };
+  
 
-  const handleSubmit = () => {
-    console.log("Form submitted with data:", state);
-    router.push("/Home/submitPage"); 
-  };
+  const handleSubmit =async () => {
+    try {
+      const Submit={
+        name:users.name,
+        id:users.id,
+        type:state.selectedOptionType,
+        cat:state.selectedOptionDomain,
+        content:state.content,
+        block:state.name,
+        floor:state.number,
+        class:state.classroom,
+        comments:[]
+        
+      }
+      console.log(Submit)
+
+      const response=await axios.post("https://api.gms.intellx.in/client/issue/report",Submit)
+      console.log(response.data);
+      router.back();
+    } catch (error) {
+      console.log(error)
+      
+    }
+  }
 
   return (
     <KeyboardAwareScrollView
@@ -101,7 +128,7 @@ const SinglePageForm: React.FC = () => {
               setSelected={(value: string) =>
                 dispatch({ type: "SET_FORM_DATA", payload: { selectedOptionType: value } })
               }
-              data={["Complaint", "Feedback", "Suggestion"]}
+              data={["Issue", "Feedback","Suggestion"]}
               search={false}
               save="value"
             />

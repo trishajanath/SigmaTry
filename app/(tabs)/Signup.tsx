@@ -73,6 +73,7 @@ const SignUpScreen = () => {
 
     setLoading(true);
     try {
+      console.log(state)
       const response = await axios.post(
         "https://api.gms.intellx.in/client/register",
         {
@@ -93,7 +94,7 @@ const SignUpScreen = () => {
       }
     } catch (error: any) {
       Alert.alert("Error", error.message);
-      console.error("Error creating user:", error);
+      console.error("Error creating user:", error.response);
     } finally {
       setLoading(false);
     }
