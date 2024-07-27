@@ -1,4 +1,3 @@
-
 import React, { useReducer, useState } from "react";
 import {
   View,
@@ -6,11 +5,15 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
-import { Image } from 'react-native';
+import { Image } from "react-native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useUser } from "@/Hooks/userContext";
 
 type RootStackParamList = {
   Login: undefined;
@@ -43,7 +46,32 @@ const LoginScreen = () => {
   const [isPasswordFocused, setPasswordFocused] = useState(false);
   const [secureText, setSecureText] = useState(true);
   const navigation = useNavigation();
-  
+  const { updateUser } = useUser();
+
+  const Login = async () => {
+    try {
+      const body = {
+        id: state.email,
+        password: state.password,
+      };
+      const response = await axios.post(
+        "https://api.gms.intellx.in/client/login",
+        body
+      );
+      console.log(response.data);
+      await AsyncStorage.setItem("token", response.data.token);
+      updateUser({
+        name: response.data.user.name,
+        id: response.data.user.id,
+        confirmed: true,
+      });
+      router.replace("/Home");
+    } catch (error: any) {
+      Alert.alert("Error", error.response.data.message);
+      console.error(error.response);
+    }
+  };
+
   React.useEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -51,14 +79,12 @@ const LoginScreen = () => {
   }, [navigation]);
 
   return (
-    
     <View style={styles.container}>
       <Image
-  source={require('../../assets/images/sigmalogo.png')} 
-  style={styles.logo}
-/>
+        source={require("../../assets/images/sigmalogo.png")}
+        style={styles.logo}
+      />
 
-      
       <View style={{ padding: 20 }}>
         <Text style={styles.title}>Login</Text>
         <Text style={styles.subtitle}>Please sign in to continue.</Text>
@@ -116,7 +142,8 @@ const LoginScreen = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          router.replace("/Home");
+          Login();
+          // router.replace("/Home");
         }}
       >
         <Text style={styles.buttonText}>LOGIN</Text>
@@ -148,10 +175,10 @@ const styles = StyleSheet.create({
   logo: {
     width: 200, // Adjust the width as needed
     height: 200, // Adjust the height as needed
-    marginBottom:"-20%",
-    marginTop:'-50%' // Add some margin if needed
+    marginBottom: "-20%",
+    marginTop: "-50%", // Add some margin if needed
   },
-  
+
   title: {
     fontSize: 32,
     fontWeight: "800",
@@ -216,6 +243,5 @@ const styles = StyleSheet.create({
     color: "#8283e9",
   },
 });
-
 
 export default LoginScreen;

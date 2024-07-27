@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from "react-native";
-import { RouteProp, useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 import { router } from "expo-router";
-
-type RootStackParamList = {
-  Login: undefined;
-  SignUp: undefined;
-};
 
 type State = {
   fullName: string;
@@ -51,27 +48,65 @@ const SignUpScreen = () => {
     password: "",
     confirmPassword: "",
   });
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+
   navigation.setOptions({
     headerTitle: "",
   });
+
+  const validateInputs = () => {
+    const { fullName, email, password, confirmPassword } = state;
+    if (!fullName || !email || !password || !confirmPassword) {
+      Alert.alert("Error", "All fields are required.");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match.");
+      return false;
+    }
+    return true;
+  };
+
+  const CreateNewUser = async () => {
+    if (!validateInputs()) return;
+
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "https://api.gms.intellx.in/client/register",
+        {
+          name: state.fullName,
+          id: state.email,
+          password: state.password,
+        }
+      );
+
+      if (response.status === 201) {
+        Alert.alert(
+          "Success",
+          "Please Check your email to verify your account."
+        );
+        router.back(); // Navigate back to the previous screen
+      } else {
+        Alert.alert("Error", "Failed to create user.");
+      }
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+      console.error("Error creating user:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    
     <View style={styles.container}>
       <Image
-  source={require('../../assets/images/sigmalogo.png')} 
-  style={styles.logo}
-/>
-      
-      <View
-        style={{
-          padding: 5,
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        
+        source={require("../../assets/images/sigmalogo.png")}
+        style={styles.logo}
+      />
+
+      <View style={styles.titleContainer}>
         <Text style={styles.title}>Create Account</Text>
       </View>
       <View style={styles.inputContainer}>
@@ -126,22 +161,19 @@ const SignUpScreen = () => {
       </View>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => {
-          /* handle sign up */
-        }}
+        onPress={CreateNewUser}
+        disabled={loading}
       >
-        <Text style={styles.buttonText}>SIGN UP</Text>
+        <Text style={styles.buttonText}>
+          {loading ? "SIGNING UP..." : "SIGN UP"}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => router.back()}
-        style={{
-          position: "absolute",
-          bottom: 0,
-          marginBottom: "4%",
-        }}
+        style={styles.signInContainer}
       >
         <Text style={styles.signUpText}>
-          Already have an account?
+          Already have an account?{" "}
           <Text style={styles.signUpLink}>Sign in</Text>
         </Text>
       </TouchableOpacity>
@@ -157,6 +189,12 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 15,
     backgroundColor: "#fff",
+  },
+  titleContainer: {
+    padding: 5,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 28,
@@ -196,18 +234,23 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
+  signInContainer: {
+    position: "absolute",
+    bottom: 0,
+    marginBottom: "4%",
+  },
   signUpText: {
     fontSize: 14,
     color: "#999",
   },
   signUpLink: {
-    color: "#8283e9"
+    color: "#8283e9",
   },
   logo: {
     width: 200, // Adjust the width as needed
     height: 200, // Adjust the height as needed
-    marginBottom:"-20%",
-    marginTop:'-50%' // Add some margin if needed
+    marginBottom: "-20%",
+    marginTop: "-50%", // Add some margin if needed
   },
 });
 

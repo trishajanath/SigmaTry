@@ -12,6 +12,7 @@ import "react-native-reanimated";
 import { LogBox } from "react-native";
 import { useColorScheme } from "@/components/useColorScheme";
 import React from "react";
+import { UserProvider } from "@/Hooks/userContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -54,8 +55,10 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
   LogBox.ignoreAllLogs();
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+    <UserProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </UserProvider>
   );
 }
