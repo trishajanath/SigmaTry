@@ -63,20 +63,24 @@ const SinglePageForm: React.FC = () => {
 
   const handleSubmit =async () => {
     try {
-      const Submit={
-        name:users.name,
-        id:users.id,
-        type:state.selectedOptionType,
-        cat:state.selectedOptionDomain,
-        content:state.content,
-        block:state.name,
-        floor:state.number,
-        class:state.classroom,
-        comments:[]
-        
+      const Submit = {
+        name: users.name,
+        id: users.id,
+        type: state.selectedOptionType,
+        cat: state.selectedOptionDomain,
+        content: state.content,
+        block: state.name,
+        floor: state.number,
+        class: state.classroom,
+        comments: [
+          {
+            by: users.id,
+            content: ""  
+          }
+        ]
+    
       }
-      console.log(Submit)
-
+      console.log(Submit);
       const response=await axios.post("https://api.gms.intellx.in/client/issue/report",Submit)
       console.log(response.data);
       router.back();

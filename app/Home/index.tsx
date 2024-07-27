@@ -544,8 +544,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#0d0907",
     marginBottom: 0,
-    textAlign: "right", // Align text to the right
-    flex: 1, // Allow text to take up available space
+    textAlign: "right", 
+    flex: 1, 
   },
   issueTypeText: {
     fontSize: 18,

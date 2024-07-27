@@ -12,6 +12,8 @@ import {
 import { SelectList } from "@venedicto/react-native-dropdown";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { router } from "expo-router";
+import axios from "axios";
+import { useUser } from "@/Hooks/userContext";
 
 const { width } = Dimensions.get("window");
 
@@ -50,6 +52,7 @@ function reducer(state: State, action: Action): State {
 }
 
 const SinglePageForm: React.FC = () => {
+  const user=useUser();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const [openType, setOpenType] = useState(false);
@@ -81,10 +84,34 @@ const SinglePageForm: React.FC = () => {
     }
   }, [openCabin]);
 
-  const handleSubmit = () => {
-    console.log("Form submitted with data:", state);
-    router.push("/Home/submitPage"); 
-  };
+  const handleSubmit =async () => {
+    try{
+      const Submit={
+        name:user.name,
+        id:user.id,
+        issueType:state.type,
+        issueCat:state.domain,
+        issueContent:`${state.department}\n${state.content}`,
+        block:state.name,
+        floor:state.number,
+        actionType:state.department,
+
+
+      }
+      console.log(Submit);
+      //const response=await axios.post("https://api.gms.intellx.in/client/issue/report",Submit)
+      //console.log(response.data);
+      //router.back();
+      
+
+      }
+      catch(error){
+        console.log(error);
+      }
+    }
+   
+  
+
 
   return (
     <KeyboardAwareScrollView
