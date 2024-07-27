@@ -7,283 +7,198 @@ import {
   Switch,
   Platform,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
-import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
-import { useNavigation } from "@react-navigation/native";
 import { SelectList } from "@venedicto/react-native-dropdown";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width } = Dimensions.get("window");
 
-const initialState = {
-  step1Data: { name: "", number: "", department: "" },
-  step2Data: { content: "", anonymous: false },
-  selectedOptionType: "Select Type",
-  selectedOptionDomain: "Select Domain",
-  department: "Select Option",
+interface State {
+  name: string;
+  number: string;
+  department: string;
+  cabin: string;
+  type: string;
+  domain: string;
+  content: string;
+  anonymous: boolean;
+}
+
+const initialState: State = {
+  name: "",
+  number: "",
+  department: "",
+  cabin: "Select Option",
+  type: "Select Type",
+  domain: "Select Domain",
+  content: "",
+  anonymous: false,
 };
 
-function reducer(state: any, action: any) {
+type Action =
+  | { type: "SET_FIELD"; field: keyof State; value: string | boolean };
+
+function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case "SET_STEP1_DATA":
-      return { ...state, step1Data: { ...state.step1Data, ...action.payload } };
-    case "SET_STEP2_DATA":
-      return { ...state, step2Data: { ...state.step2Data, ...action.payload } };
-    case "SET_SELECTED_OPTION_TYPE":
-      return { ...state, selectedOptionType: action.payload };
-    case "SET_SELECTED_OPTION_DOMAIN":
-      return { ...state, selectedOptionDomain: action.payload };
-    case "SET_DEPARTMENT":
-      return { ...state, department: action.payload };
+    case "SET_FIELD":
+      return { ...state, [action.field]: action.value };
     default:
       return state;
   }
 }
 
-const ProgressStepsComponent = () => {
+const SinglePageForm: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const navigation = useNavigation();
-  navigation.setOptions({ headerTitle: "" });
 
   const [openType, setOpenType] = useState(false);
   const [openDomain, setOpenDomain] = useState(false);
-  const [openDepartment, setOpenDepartment] = useState(false);
+  const [openCabin, setOpenCabin] = useState(false);
 
-  const handleSwitchChange = (value: any) => {
-    dispatch({ type: "SET_STEP2_DATA", payload: { anonymous: value } });
+  const handleSwitchChange = (value: boolean) => {
+    dispatch({ type: "SET_FIELD", field: "anonymous", value });
   };
 
   useEffect(() => {
     if (openType) {
       setOpenDomain(false);
-      setOpenDepartment(false);
+      setOpenCabin(false);
     }
   }, [openType]);
 
   useEffect(() => {
     if (openDomain) {
       setOpenType(false);
-      setOpenDepartment(false);
+      setOpenCabin(false);
     }
   }, [openDomain]);
 
   useEffect(() => {
-    if (openDepartment) {
+    if (openCabin) {
       setOpenType(false);
       setOpenDomain(false);
     }
-  }, [openDepartment]);
+  }, [openCabin]);
+
+  const handleSubmit = () => {
+    console.log("Form submitted with data:", state);
+    ('/submitPage'); // Use navigate to go to the submitPage
+  };
 
   return (
-    <View style={styles.container}>
-      <ProgressSteps
-        activeStepIconBorderColor="#8283e9"
-        activeStepIconColor="#d6d7f8"
-        completedStepIconColor="#8283e9"
-        activeLabelColor="#8283e9"
-        completedProgressBarColor="#8283e9"
-        progressBarColor="#eeecef"
-        activeStepIconContainer={styles.activeStepIconContainer}
-        completedStepIconContainer={styles.completedStepIconContainer}
-      >
-        <ProgressStep
-          label=""
-          nextBtnStyle={styles.nextBtn}
-          previousBtnStyle={styles.previousBtn}
-          nextBtnTextStyle={styles.nextBtnText}
-          previousBtnTextStyle={styles.previousBtnText}
-          scrollViewProps={{
-            contentContainerStyle: { flexGrow: 1, justifyContent: "center" },
-          }}
-        >
-          <Text style={styles.main}>Department</Text>
-          <View style={styles.stepContainer}>
-            <Text style={styles.label}>Block Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Name"
-              value={state.step1Data.name}
-              onChangeText={(text) =>
-                dispatch({ type: "SET_STEP1_DATA", payload: { name: text } })
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.scrollView}
+      enableOnAndroid={true}
+      extraHeight={100}
+    >
+      <View style={styles.container}>
+        <Text style={styles.main}>Department Report Form</Text>
+        <View style={styles.formContainer}>
+          <Text style={styles.label}>Block Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={state.name}
+            onChangeText={(text) =>
+              dispatch({ type: "SET_FIELD", field: "name", value: text })
+            }
+          />
+          <Text style={styles.label}>Floor Number</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Number"
+            value={state.number}
+            onChangeText={(text) =>
+              dispatch({ type: "SET_FIELD", field: "number", value: text })
+            }
+          />
+          <Text style={styles.label}>Department Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Department"
+            value={state.department}
+            onChangeText={(text) =>
+              dispatch({ type: "SET_FIELD", field: "department", value: text })
+            }
+          />
+          <Text style={styles.label}>Cabin</Text>
+          <View style={styles.dropdownWrapper}>
+            <SelectList
+              data={["Faculty Cabin", "HoD Cabin", "Department Office","Labs"]}
+              setSelected={(value: string) =>
+                dispatch({ type: "SET_FIELD", field: "cabin", value })
               }
+              search={false}
+              save="value"
             />
-            <Text style={styles.label}>Floor Number</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Number"
-              value={state.step1Data.number}
-              onChangeText={(text) =>
-                dispatch({ type: "SET_STEP1_DATA", payload: { number: text } })
-              }
-            />
-            <Text style={styles.label}>Department Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Department Name"
-              value={state.step1Data.department}
-              onChangeText={(text) =>
-                dispatch({ type: "SET_STEP1_DATA", payload: { department: text } })
-              }
-            />
-            <Text style={styles.pickerLabel}>Cabin</Text>
-            <View style={styles.dropdownWrapper}>
-              <SelectList
-                setSelected={(value: any) =>
-                  dispatch({ type: "SET_SELECTED_OPTION_TYPE", payload: value })
-                }
-                data={["Faculty Cabin", "HoD Cabin", "Department Office", "Labs"]}
-                search={false}
-                save="value"
-              />
-            </View>
           </View>
-        </ProgressStep>
-        <ProgressStep
-          label=""
-          nextBtnStyle={styles.nextBtn}
-          previousBtnStyle={styles.previousBtn}
-          nextBtnTextStyle={styles.nextBtnText}
-          previousBtnTextStyle={styles.previousBtnText}
-          scrollViewProps={{
-            contentContainerStyle: { flexGrow: 1, justifyContent: "flex-start" },
-          }}
-        >
+          
           <Text style={styles.pickerLabel}>Type</Text>
           <View style={styles.dropdownWrapper}>
             <SelectList
-              setSelected={(value: any) =>
-                dispatch({ type: "SET_SELECTED_OPTION_TYPE", payload: value })
+              setSelected={(value: string) =>
+                dispatch({ type: "SET_FIELD", field: "type", value })
               }
               data={["Complaint", "Feedback", "Suggestion"]}
               search={false}
               save="value"
             />
           </View>
+          
           <Text style={styles.pickerLabel}>Domain</Text>
           <View style={styles.dropdownWrapper}>
             <SelectList
-              setSelected={(value: any) =>
-                dispatch({ type: "SET_SELECTED_OPTION_DOMAIN", payload: value })
+              setSelected={(value: string) =>
+                dispatch({ type: "SET_FIELD", field: "domain", value })
               }
-              data={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical", "Others"]}
+              data={["Hygiene", "Maintenance", "Amenities", "Accessibility"]}
+              search={false}
               save="value"
             />
           </View>
-          <View style={styles.stepContainer}>
-            <Text style={styles.label}>Content</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Content"
-              value={state.step2Data.content}
-              onChangeText={(text) =>
-                dispatch({ type: "SET_STEP2_DATA", payload: { content: text } })
-              }
-            />
-          </View>
+          
+          <Text style={styles.label}>Content</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Content"
+            value={state.content}
+            onChangeText={(text) =>
+              dispatch({ type: "SET_FIELD", field: "content", value: text })
+            }
+          />
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Anonymous Replies</Text>
             <Switch
-              value={state.step2Data.anonymous}
+              style={styles.switch}
+              value={state.anonymous}
               onValueChange={handleSwitchChange}
             />
           </View>
-        </ProgressStep>
-      </ProgressSteps>
-    </View>
+        </View>
+        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
+          <Text style={styles.submitBtnText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAwareScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+    padding: '2%',
+  },
   main: {
-    fontSize: 22,
-    marginTop: Platform.OS === 'ios' ? "-17%" : "-10%",
-    marginBottom:'5%',
-    textAlign: "left",
+    fontSize: 20,
+    marginTop: Platform.OS === 'ios' ? '1%' : '1%',
+    textAlign: "center",
+    marginBottom: '10%',  
   },
-  nextBtn: {
-    backgroundColor: "transparent", 
-    marginTop: Platform.OS === 'ios' ? "-130%" : "-10%",
-  },
-  previousBtn: {
-    backgroundColor: "transparent", 
-    marginTop: Platform.OS === 'ios' ? "-112%" : "-10%",
-  },
-  nextBtnText: {
-    color: "#8283e9", // Text color
-    fontSize: 16,
-  },
-  previousBtnText: {
-    color: "#8283e9", // Text color
-    fontSize: 16,
-  },
-  activeStepIconContainer: {
-    marginTop: Platform.OS === 'ios' ? "-2%" : "-1%",
-  },
-  completedStepIconContainer: {
-    marginTop: Platform.OS === 'ios' ? "-2%" : "-2%",
-  },
-  switchContainer: {
-    marginTop: "5%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "2%",
-    padding: "2%",
-    borderRadius: 5,
-  },
-  switchLabel: {
-    fontSize: 16,
-    fontFamily: "Raleway_200ExtraLight",
-  },
-  pickerLabel: {
-    fontSize: 16,
-    marginTop: Platform.OS === 'ios' ? "7%" : "0%",
-    marginBottom: "3%",
-    textAlign: "left",
-  },
-  stepContainer: {
-    marginTop: Platform.OS === 'ios' ? "3%" : "0%",
+  formContainer: {
     alignItems: "flex-start",
     justifyContent: "center",
-    marginBottom: "5%",
+    marginBottom: '10%',  
     width: "100%",
-  },
-  picker: {
-    height: "4%",
-    width: "100%",
-    color: "#344953",
-    justifyContent: "center",
-  },
-  pickerContainer: {
-    marginBottom: "2%",
-    height: "13%",
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "#a2c2e8",
-    backgroundColor: "#fff",
-  },
-  dropdown: {
-    width: "100%",
-    height: width * 0.15,
-    marginTop: "2%",
-    backgroundColor: "#f5f5f5",
-    borderWidth: 2,
-    borderColor: "#a2c2e8",
-    borderRadius: 10,
-    paddingHorizontal: "5%",
-    marginBottom: "2%",
-    justifyContent: "center",
-  },
-  dropdownWrapper: {
-    width: "100%", // Ensure the dropdown wrapper takes the full width
-    borderWidth: 0, // Remove the border width
-    borderColor: "transparent", // Set border color to transparent
-    paddingHorizontal: 0, // Adjust padding to fit your design
-    marginBottom: "2%",
-    justifyContent: "center",
-  },
-  container: {
-    flex: 1,
-    padding: "5%",
   },
   label: {
     fontSize: 16,
@@ -302,21 +217,47 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderRadius: 5,
   },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    marginBottom: "5%",
-    paddingLeft: "2%",
+  dropdownWrapper: {
+    width: "100%",
+    marginBottom: '4%',  
   },
-  icon: {
-    position: "absolute",
-    left: "5%",
-    top: "50%",
-    transform: [{ translateY: -10 }],
-    zIndex: 1,
+  pickerLabel: {
+    fontSize: 16,
+    marginTop: Platform.OS === 'ios' ? '2%' : 0,
+    marginBottom: '3%',  
+  },
+  switchContainer: {
+    marginTop: 20,  
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: '5%',  
+    padding: '1%',
+    borderRadius: 5,
+  },
+  switchLabel: {
+    fontSize: 16,
+  },
+  switch: {
+    alignItems:'flex-end',
+    marginLeft: '39%',  
+  },
+  submitBtn: {
+    backgroundColor: "#8283e9",
+    paddingVertical: '3%',
+    paddingHorizontal: '3%',
+    borderRadius: 5,
+    marginTop: '-9%',
+    alignItems: "center",
+  },
+  submitBtnText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  container: {
+    flex: 1,
+    padding: '5%',
   },
 });
 
-export default ProgressStepsComponent;
+export default SinglePageForm;

@@ -159,9 +159,9 @@ const Index = () => {
         backgroundColor: getCardColor(item.action),
         borderRadius: 12,
         width: width * 0.89,
-        padding: "5%",
+        padding: "3%", // Adjusted padding inside container
         marginLeft: "3%",
-        marginTop: "5%",
+        marginTop: "4%",
         marginRight: "5%",
         marginVertical: "0%",
         flexDirection: "column",
@@ -177,16 +177,18 @@ const Index = () => {
           <RNText style={styles.categoryText}> {item.category}</RNText>
           <RNText style={styles.statusText}> {item.action}</RNText>
         </View>
-        <Button
+        <TouchableOpacity
           style={styles.readMoreButton}
-          labelStyle={{ color: "white", fontSize: 10 }}
-          compact
+          onPress={() => {
+            router.replace("/Home/readMore");
+          }}
         >
-          Read More
-        </Button>
+          <Text style={styles.readMoreButtonText}>Read More</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
+  
 
   return (
     <>
@@ -311,6 +313,21 @@ const styles = StyleSheet.create({
     marginLeft: "5%",
     fontSize: 11,
   },
+  button: {
+    backgroundColor: "#8283e9",
+    paddingVertical: 12,
+    paddingHorizontal:'2%',
+    borderRadius: 25,
+    width: "25%",
+    height: width * 0.09,
+    marginRight: "-45%",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
   iconButtonContainer: {
     backgroundColor: "#e6e6e4",
     borderRadius: 15,
@@ -370,11 +387,16 @@ const styles = StyleSheet.create({
   },
   readMoreButton: {
     backgroundColor: "#8283e9",
-    paddingHorizontal: '1%', 
-    paddingVertical: '0%', 
-    borderRadius: 20,
+    paddingVertical: 10, // Increase vertical padding
+    paddingHorizontal: 10, // Increase horizontal padding
+    borderRadius: 25,
     alignSelf: 'flex-start',
-    marginTop: '-1%', 
+    marginTop: '-1%', // Adjust margin if needed
+  },
+  readMoreButtonText: {
+    color: "#fff",
+    fontSize: 10, // Increase font size
+    textAlign: 'center',
   },
   headerContainer: {
     height: "8%",

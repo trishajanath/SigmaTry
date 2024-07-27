@@ -1451,10 +1451,10 @@
     json5 "^2.2.2"
     write-file-atomic "^2.3.0"
 
-"@expo/metro-config@~0.18.6", "@expo/metro-config@0.18.8":
-  version "0.18.8"
-  resolved "https://registry.npmjs.org/@expo/metro-config/-/metro-config-0.18.8.tgz"
-  integrity sha512-YGpTlVc1/6EPzPbt0LZt92Bwrpjngulup6uHSTRbwn/heMPfFaVv1Y4VE3GAUkx7/Qwu+dTVIV0Kys4pLOAIiw==
+"@expo/metro-config@~0.18.6", "@expo/metro-config@0.18.9":
+  version "0.18.9"
+  resolved "https://registry.npmjs.org/@expo/metro-config/-/metro-config-0.18.9.tgz"
+  integrity sha512-kcqT/wuO43zxuFeR5AR/pMuq/O9qtIyuTI1wYvBY97blHAYU/wfPJKW3xFL14fDkPqQOc87hEEhjlJiXoebvcw==
   dependencies:
     "@babel/core" "^7.20.0"
     "@babel/generator" "^7.20.5"
@@ -5317,16 +5317,16 @@ expo-web-browser@~13.0.3:
   resolved "https://registry.npmjs.org/expo-web-browser/-/expo-web-browser-13.0.3.tgz"
   integrity sha512-HXb7y82ApVJtqk8tManyudtTrCtx8xcUnVzmJECeHCB0SsWSQ+penVLZxJkcyATWoJOsFMnfVSVdrTcpKKGszQ==
 
-expo@*, expo@^51.0.21:
-  version "51.0.21"
-  resolved "https://registry.npmjs.org/expo/-/expo-51.0.21.tgz"
-  integrity sha512-tCKJUw4U4F15FecFPwJTFnAwHZMmUD1Wm7FX0Z/Oj3Jr14MOkom8Lnt2OkBK6BtM91lz33EF9OhgqReX6kchLA==
+expo@*, expo@^51.0.22:
+  version "51.0.22"
+  resolved "https://registry.npmjs.org/expo/-/expo-51.0.22.tgz"
+  integrity sha512-AtdqmtKNRC+cRBTsYGfwQFMLWAWWC531V2V+bAO3S9wVSTP2eLh34V06/IsBIjCCAJQPaaeR05XcST8U3apXFw==
   dependencies:
     "@babel/runtime" "^7.20.0"
     "@expo/cli" "0.18.25"
     "@expo/config" "9.0.3"
     "@expo/config-plugins" "8.0.8"
-    "@expo/metro-config" "0.18.8"
+    "@expo/metro-config" "0.18.9"
     "@expo/vector-icons" "^14.0.0"
     babel-preset-expo "~11.0.12"
     expo-asset "~10.0.10"
@@ -5859,6 +5859,11 @@ hermes-profile-transformer@^0.0.6:
   integrity sha512-cnN7bQUm65UWOy6cbGcCcZ3rpwW8Q/j4OP5aWRhEry4Z2t2aR1cjrbp0BS+KiBN0smvP1caBgAuxutvyvJILzQ==
   dependencies:
     source-map "^0.7.3"
+
+heroicons-react@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.npmjs.org/heroicons-react/-/heroicons-react-1.4.1.tgz"
+  integrity sha512-lFB8N44eeju73p5IjaeRrRejXsWWjsmeLK1LQrXGI5UnV9qvkzk2VZoMx5HKLnp1xJI4i9pFh/g2uRc7M1jrjQ==
 
 hoist-non-react-statics@^3.3.0:
   version "3.3.2"
@@ -8559,7 +8564,7 @@ react-test-renderer@18.2.0:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.0"
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.6.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0-rc.1", "react@^16.8.0 || ^17.0.0-rc.1 || ^18.0.0", react@^18.0.0, react@^18.2.0, react@>=16.3.0, react@>=16.8, react@>=17.0.0, react@>=18.2.0, react@18.2.0:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.6.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0-rc.1", "react@^16.8.0 || ^17.0.0-rc.1 || ^18.0.0", react@^18.0.0, react@^18.2.0, react@>=16.13, react@>=16.3.0, react@>=16.8, react@>=17.0.0, react@>=18.2.0, react@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==

@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect } from "react";
+import React, { useReducer } from "react";
 import {
   View,
   Text,
@@ -15,25 +15,31 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 const { width } = Dimensions.get("window");
 
 const initialState = {
-  step1Data: { name: "", number: "", restroom: "" },
-  step2Data: { content: "", anonymous: false },
-  selectedOptionType: "Select Type",
-  selectedOptionDomain: "Select Domain",
+  name: "",
+  number: "",
   restroom: "Select Option",
+  type: "Select Type",
+  domain: "Select Domain",
+  content: "",
+  anonymous: false,
 };
 
 function reducer(state: any, action: any) {
   switch (action.type) {
-    case "SET_STEP1_DATA":
-      return { ...state, step1Data: { ...state.step1Data, ...action.payload } };
-    case "SET_STEP2_DATA":
-      return { ...state, step2Data: { ...state.step2Data, ...action.payload } };
-    case "SET_SELECTED_OPTION_TYPE":
-      return { ...state, selectedOptionType: action.payload };
-    case "SET_SELECTED_OPTION_DOMAIN":
-      return { ...state, selectedOptionDomain: action.payload };
+    case "SET_NAME":
+      return { ...state, name: action.payload };
+    case "SET_NUMBER":
+      return { ...state, number: action.payload };
     case "SET_RESTROOM":
       return { ...state, restroom: action.payload };
+    case "SET_TYPE":
+      return { ...state, type: action.payload };
+    case "SET_DOMAIN":
+      return { ...state, domain: action.payload };
+    case "SET_CONTENT":
+      return { ...state, content: action.payload };
+    case "SET_ANONYMOUS":
+      return { ...state, anonymous: action.payload };
     default:
       return state;
   }
@@ -42,34 +48,9 @@ function reducer(state: any, action: any) {
 const SinglePageForm = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const [openType, setOpenType] = useState(false);
-  const [openDomain, setOpenDomain] = useState(false);
-  const [openRestroom, setOpenRestroom] = useState(false);
-
-  const handleSwitchChange = (value: any) => {
-    dispatch({ type: "SET_STEP2_DATA", payload: { anonymous: value } });
+  const handleSwitchChange = (value: boolean) => {
+    dispatch({ type: "SET_ANONYMOUS", payload: value });
   };
-
-  useEffect(() => {
-    if (openType) {
-      setOpenDomain(false);
-      setOpenRestroom(false);
-    }
-  }, [openType]);
-
-  useEffect(() => {
-    if (openDomain) {
-      setOpenType(false);
-      setOpenRestroom(false);
-    }
-  }, [openDomain]);
-
-  useEffect(() => {
-    if (openRestroom) {
-      setOpenType(false);
-      setOpenDomain(false);
-    }
-  }, [openRestroom]);
 
   const handleSubmit = () => {
     console.log("Form submitted with data:", state);
@@ -83,79 +64,85 @@ const SinglePageForm = () => {
     >
       <View style={styles.container}>
         <Text style={styles.main}>Restroom Report Form</Text>
-        <View style={styles.stepContainer}>
-          <Text style={styles.label}>Block Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={state.step1Data.name}
-            onChangeText={(text) =>
-              dispatch({ type: "SET_STEP1_DATA", payload: { name: text } })
+        
+        <Text style={styles.label}>Block Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={state.name}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_NAME", payload: text })
+          }
+        />
+        
+        <Text style={styles.label}>Floor Number</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Number"
+          value={state.number}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_NUMBER", payload: text })
+          }
+        />
+        
+        <Text style={styles.label}>Restroom</Text>
+        <View style={styles.dropdownWrapper}>
+          <SelectList
+            data={["Gents", "Ladies", "Differently Abled"]}
+            setSelected={(value: any) =>
+              dispatch({ type: "SET_RESTROOM", payload: value })
             }
+            search={false}
+            save="value"
+            placeholder={state.restroom}
           />
-          <Text style={styles.label}>Floor Number</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Number"
-            value={state.step1Data.number}
-            onChangeText={(text) =>
-              dispatch({ type: "SET_STEP1_DATA", payload: { number: text } })
-            }
-          />
-          <Text style={styles.label}>Restroom</Text>
-          <View style={styles.dropdownWrapper}>
-            <SelectList
-              data={["Gents", "Ladies", "Differently Abled"]}
-              setSelected={(value: any) =>
-                dispatch({ type: "SET_RESTROOM", payload: value })
-              }
-              search={false}
-              save="value"
-            />
-          </View>
-          
-          <Text style={styles.pickerLabel}>Type</Text>
-          <View style={styles.dropdownWrapper}>
-            <SelectList
-              setSelected={(value: any) =>
-                dispatch({ type: "SET_SELECTED_OPTION_TYPE", payload: value })
-              }
-              data={["Complaint", "Feedback", "Suggestion"]}
-              search={false}
-              save="value"
-            />
-          </View>
-          
-          <Text style={styles.pickerLabel}>Domain</Text>
-          <View style={styles.dropdownWrapper}>
-            <SelectList
-              setSelected={(value: any) =>
-                dispatch({ type: "SET_SELECTED_OPTION_DOMAIN", payload: value })
-              }
-              data={["Hygiene", "Maintenance", "Amenities", "Accessibility"]}
-              search={false}
-              save="value"
-            />
-          </View>
-          
-          <Text style={styles.label}>Content</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Content"
-            value={state.step2Data.content}
-            onChangeText={(text) =>
-              dispatch({ type: "SET_STEP2_DATA", payload: { content: text } })
-            }
-          />
-          <View style={styles.switchContainer}>
-            <Text style={styles.switchLabel}>Anonymous Replies</Text>
-            <Switch
-              style={styles.switch}
-              value={state.step2Data.anonymous}
-              onValueChange={handleSwitchChange}
-            />
-          </View>
         </View>
+
+        <Text style={styles.pickerLabel}>Type</Text>
+        <View style={styles.dropdownWrapper}>
+          <SelectList
+            setSelected={(value: any) =>
+              dispatch({ type: "SET_TYPE", payload: value })
+            }
+            data={["Complaint", "Feedback", "Suggestion"]}
+            search={false}
+            save="value"
+            placeholder={state.type}
+          />
+        </View>
+        
+        <Text style={styles.pickerLabel}>Domain</Text>
+        <View style={styles.dropdownWrapper}>
+          <SelectList
+            setSelected={(value: any) =>
+              dispatch({ type: "SET_DOMAIN", payload: value })
+            }
+            data={["Hygiene", "Maintenance", "Amenities", "Accessibility"]}
+            search={false}
+            save="value"
+            placeholder={state.domain}
+          />
+        </View>
+        
+        <Text style={styles.label}>Content</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Content"
+          value={state.content}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_CONTENT", payload: text })
+          }
+        />
+        
+        <View style={styles.switchContainer}>
+          <Text style={styles.switchLabel}>Anonymous Replies</Text>
+          <Switch
+            style={styles.switch}
+            value={state.anonymous}
+            onValueChange={handleSwitchChange}
+          />
+        </View>
+        
         <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
           <Text style={styles.submitBtnText}>Submit</Text>
         </TouchableOpacity>
@@ -174,12 +161,6 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'ios' ? '1%' : '1%',
     textAlign: "center",
     marginBottom: '10%',  
-  },
-  stepContainer: {
-    alignItems: "flex-start",
-    justifyContent: "center",
-    marginBottom: '10%',  
-    width: "100%",
   },
   label: {
     fontSize: 16,
@@ -201,7 +182,6 @@ const styles = StyleSheet.create({
   dropdownWrapper: {
     width: "100%",
     marginBottom: '4%',
-      
   },
   pickerLabel: {
     fontSize: 16,
@@ -221,7 +201,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   switch: {
-    alignItems:'flex-end',
+    alignItems: 'flex-end',
     marginLeft: '39%',  
   },
   submitBtn: {
@@ -229,7 +209,7 @@ const styles = StyleSheet.create({
     paddingVertical: '3%',
     paddingHorizontal: '3%',
     borderRadius: 5,
-    marginTop: '-10%',
+    marginTop: '0%',
     alignItems: "center",
   },
   submitBtnText: {

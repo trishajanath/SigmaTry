@@ -146,8 +146,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   logo: {
-    width: 300, // Adjust the width as needed
-    height: 300, // Adjust the height as needed
+    width: 200, // Adjust the width as needed
+    height: 200, // Adjust the height as needed
     marginBottom:"-20%",
     marginTop:'-50%' // Add some margin if needed
   },
