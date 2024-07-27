@@ -1,6 +1,12 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import { router } from "expo-router";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
+import { router, useNavigation } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
@@ -8,18 +14,23 @@ const SubmitPage: React.FC = () => {
   const handleRedirect = () => {
     router.push("/Home");
   };
+  const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
-      
-        <Text style={styles.title}>Thank You!</Text>
-        <Text style={styles.message}>
-          Your form has been successfully submitted. 
-        </Text>
-        <TouchableOpacity style={styles.homeButton} onPress={handleRedirect}>
-          <Text style={styles.homeButtonText}>Go to Home</Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.title}>Thank You!</Text>
+      <Text style={styles.message}>
+        Your form has been successfully submitted.
+      </Text>
+      <TouchableOpacity style={styles.homeButton} onPress={handleRedirect}>
+        <Text style={styles.homeButtonText}>Go to Home</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -28,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f2f2f2", 
+    backgroundColor: "#f2f2f2",
   },
   acknowledgmentContainer: {
     width: width * 0.9,
@@ -55,7 +66,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   homeButton: {
-    backgroundColor: "#bbbef3", 
+    backgroundColor: "#bbbef3",
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 5,
