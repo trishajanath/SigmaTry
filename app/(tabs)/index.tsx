@@ -67,7 +67,7 @@ const LoginScreen = () => {
         id: response.data.user.id,
         confirmed: true,
       });
-      router.replace("/Home");
+      router.replace("/Home/index");
     } catch (error: any) {
       Alert.alert("Error", error.response.data.message);
       console.error(error.response);
@@ -112,87 +112,88 @@ const LoginScreen = () => {
       enableOnAndroid={true}
       extraHeight={100}
     >
-    <View style={styles.container}>
-      <Image
-        source={require("../../assets/images/sigmalogo.png")}
-        style={styles.logo}
-      />
+      <View style={styles.container}>
+        <Image
+          source={require("../../assets/images/sigmalogo.png")}
+          style={styles.logo}
+        />
 
-      <View style={{ padding: 20 }}>
-        <Text style={styles.title}>Login</Text>
-        <Text style={styles.subtitle}>Please sign in to continue.</Text>
-      </View>
-      <View
-        style={[
-          styles.inputContainer,
-          isEmailFocused && styles.inputContainerFocused,
-        ]}
-      >
-        <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
-        <TextInput
-          style={styles.input}
-          placeholder="Register Number"
-          placeholderTextColor="#999"
-          value={state.email}
-          onFocus={() => setEmailFocused(true)}
-          onBlur={() => setEmailFocused(false)}
-          onChangeText={(text) =>
-            dispatch({ type: "SET_EMAIL", payload: text })
-          }
-        />
-      </View>
-      <View
-        style={[
-          styles.inputContainer,
-          isPasswordFocused && styles.inputContainerFocused,
-        ]}
-      >
-        <MaterialCommunityIcons name="lock-outline" size={20} color="#999" />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#999"
-          secureTextEntry={secureText}
-          value={state.password}
-          onFocus={() => setPasswordFocused(true)}
-          onBlur={() => setPasswordFocused(false)}
-          onChangeText={(text) =>
-            dispatch({ type: "SET_PASSWORD", payload: text })
-          }
-        />
+        <View style={{ padding: 20 }}>
+          <Text style={styles.title}>Login</Text>
+          <Text style={styles.subtitle}>Please sign in to continue.</Text>
+        </View>
+        <View
+          style={[
+            styles.inputContainer,
+            isEmailFocused && styles.inputContainerFocused,
+          ]}
+        >
+          <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
+          <TextInput
+            style={styles.input}
+            placeholder="Register Number"
+            placeholderTextColor="#999"
+            value={state.email}
+            onFocus={() => setEmailFocused(true)}
+            onBlur={() => setEmailFocused(false)}
+            onChangeText={(text) =>
+              dispatch({ type: "SET_EMAIL", payload: text })
+            }
+          />
+        </View>
+        <View
+          style={[
+            styles.inputContainer,
+            isPasswordFocused && styles.inputContainerFocused,
+          ]}
+        >
+          <MaterialCommunityIcons name="lock-outline" size={20} color="#999" />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#999"
+            secureTextEntry={secureText}
+            value={state.password}
+            onFocus={() => setPasswordFocused(true)}
+            onBlur={() => setPasswordFocused(false)}
+            onChangeText={(text) =>
+              dispatch({ type: "SET_PASSWORD", payload: text })
+            }
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setSecureText(!secureText);
+            }}
+          >
+            <MaterialCommunityIcons
+              name={secureText ? "eye" : "eye-off"}
+              size={20}
+              color="#999"
+            />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity
+          style={styles.button}
           onPress={() => {
-            setSecureText(!secureText);
+            Login();
+            // router.replace("/Home");
           }}
         >
-          <MaterialCommunityIcons
-            name={secureText ? "eye" : "eye-off"}
-            size={20}
-            color="#999"
-          />
+          <Text style={styles.buttonText}>LOGIN</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)/Signup")}
+          style={{
+            position: "absolute",
+            bottom: "4%",
+          }}
+        >
+          <Text style={styles.signUpText}>
+            Don't have an account?{" "}
+            <Text style={styles.signUpLink}>Sign up</Text>
+          </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          Login();
-          // router.replace("/Home");
-        }}
-      >
-        <Text style={styles.buttonText}>LOGIN</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => router.push("/(tabs)/Signup")}
-        style={{
-          position: "absolute",
-          bottom: "4%",
-        }}
-      >
-        <Text style={styles.signUpText}>
-          Don't have an account? <Text style={styles.signUpLink}>Sign up</Text>
-        </Text>
-      </TouchableOpacity>
-    </View>
     </KeyboardAwareScrollView>
   );
 };
@@ -246,8 +247,8 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
-    padding: "2%"
-},
+    padding: "2%",
+  },
   input: {
     flex: 1,
     height: 40,

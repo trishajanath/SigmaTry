@@ -11,9 +11,10 @@ import {
 } from "react-native";
 import { SelectList } from "@venedicto/react-native-dropdown";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import axios from "axios";
 import { useUser } from "@/Hooks/userContext";
+import { Appbar } from "react-native-paper";
 const { width } = Dimensions.get("window");
 
 interface FormData {
@@ -49,12 +50,18 @@ function reducer(state: FormData, action: Action): FormData {
 
 const SinglePageForm: React.FC = () => {
   const users = useUser();
-
+  const navigation = useNavigation();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleSwitchChange = (value: boolean) => {
     dispatch({ type: "SET_FORM_DATA", payload: { anonymous: value } });
   };
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -88,99 +95,107 @@ const SinglePageForm: React.FC = () => {
   };
 
   return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={styles.scrollView}
-      enableOnAndroid={true}
-      extraHeight={100}
-    >
-      <View style={styles.container}>
-        <Text style={styles.main}>Classroom Report Form</Text>
-        <View style={styles.formContainer}>
-          <Text style={styles.label}>Block Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={state.name}
-            onChangeText={(text) =>
-              dispatch({ type: "SET_FORM_DATA", payload: { name: text } })
-            }
-          />
-          <Text style={styles.label}>Floor Number</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Number"
-            value={state.number}
-            onChangeText={(text) =>
-              dispatch({ type: "SET_FORM_DATA", payload: { number: text } })
-            }
-          />
-          <Text style={styles.label}>Classroom</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Class"
-            value={state.classroom}
-            onChangeText={(text) =>
-              dispatch({ type: "SET_FORM_DATA", payload: { classroom: text } })
-            }
-          />
-          <Text style={styles.pickerLabel}>Type</Text>
-          <View style={styles.dropdownWrapper}>
-            <SelectList
-              setSelected={(value: string) =>
+    <>
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => router.back()} />
+      </Appbar.Header>
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollView}
+        enableOnAndroid={true}
+        extraHeight={100}
+      >
+        <View style={styles.container}>
+          <Text style={styles.main}>Classroom Report Form</Text>
+          <View style={styles.formContainer}>
+            <Text style={styles.label}>Block Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={state.name}
+              onChangeText={(text) =>
+                dispatch({ type: "SET_FORM_DATA", payload: { name: text } })
+              }
+            />
+            <Text style={styles.label}>Floor Number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Number"
+              value={state.number}
+              onChangeText={(text) =>
+                dispatch({ type: "SET_FORM_DATA", payload: { number: text } })
+              }
+            />
+            <Text style={styles.label}>Classroom</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Class"
+              value={state.classroom}
+              onChangeText={(text) =>
                 dispatch({
                   type: "SET_FORM_DATA",
-                  payload: { selectedOptionType: value },
+                  payload: { classroom: text },
                 })
               }
-              data={["Complaint", "Feedback"]}
-              search={false}
-              save="value"
             />
-          </View>
-          <Text style={styles.pickerLabel}>Domain</Text>
-          <View style={styles.dropdownWrapper}>
-            <SelectList
-              setSelected={(value: string) =>
-                dispatch({
-                  type: "SET_FORM_DATA",
-                  payload: { selectedOptionDomain: value },
-                })
+            <Text style={styles.pickerLabel}>Type</Text>
+            <View style={styles.dropdownWrapper}>
+              <SelectList
+                setSelected={(value: string) =>
+                  dispatch({
+                    type: "SET_FORM_DATA",
+                    payload: { selectedOptionType: value },
+                  })
+                }
+                data={["Complaint", "Feedback"]}
+                search={false}
+                save="value"
+              />
+            </View>
+            <Text style={styles.pickerLabel}>Domain</Text>
+            <View style={styles.dropdownWrapper}>
+              <SelectList
+                setSelected={(value: string) =>
+                  dispatch({
+                    type: "SET_FORM_DATA",
+                    payload: { selectedOptionDomain: value },
+                  })
+                }
+                data={[
+                  "Cleaning",
+                  "Plumbing",
+                  "Civil & Carpentry",
+                  "Electrical",
+                  "AV and Projectors",
+                  "Others",
+                ]}
+                search={false}
+                save="value"
+              />
+            </View>
+            <Text style={styles.label}>Content</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Content"
+              value={state.content}
+              onChangeText={(text) =>
+                dispatch({ type: "SET_FORM_DATA", payload: { content: text } })
               }
-              data={[
-                "Cleaning",
-                "Plumbing",
-                "Civil & Carpentry",
-                "Electrical",
-                "AV and Projectors",
-                "Others",
-              ]}
-              search={false}
-              save="value"
             />
+            <View style={styles.switchContainer}>
+              <Text style={styles.switchLabel}>Anonymous Replies</Text>
+              <Switch
+                style={styles.switch}
+                value={state.anonymous}
+                onValueChange={handleSwitchChange}
+              />
+            </View>
           </View>
-          <Text style={styles.label}>Content</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Content"
-            value={state.content}
-            onChangeText={(text) =>
-              dispatch({ type: "SET_FORM_DATA", payload: { content: text } })
-            }
-          />
-          <View style={styles.switchContainer}>
-            <Text style={styles.switchLabel}>Anonymous Replies</Text>
-            <Switch
-              style={styles.switch}
-              value={state.anonymous}
-              onValueChange={handleSwitchChange}
-            />
-          </View>
+          <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
+            <Text style={styles.submitBtnText}>Submit</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-          <Text style={styles.submitBtnText}>Submit</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </>
   );
 };
 
