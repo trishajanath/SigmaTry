@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Button, Alert } from "react-native";
 import { Camera, CameraView } from "expo-camera";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
+import { Appbar } from "react-native-paper";
 
 const QRCodeScanner = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -12,6 +13,13 @@ const QRCodeScanner = () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
     })();
+  }, []);
+
+  const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
   }, []);
 
   const handleBarCodeScanned = ({ type, data }: { type: any; data: any }) => {
@@ -38,15 +46,20 @@ const QRCodeScanner = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <CameraView
-        style={styles.camera}
-        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-        barcodeScannerSettings={{
-          barcodeTypes: ["qr"],
-        }}
-      ></CameraView>
-    </View>
+    <>
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => router.back()} />
+      </Appbar.Header>
+      <View style={styles.container}>
+        <CameraView
+          style={styles.camera}
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barcodeScannerSettings={{
+            barcodeTypes: ["qr"],
+          }}
+        ></CameraView>
+      </View>
+    </>
   );
 };
 
