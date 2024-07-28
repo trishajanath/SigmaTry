@@ -43,6 +43,7 @@ const constantContainer = {
   id: 1,
   icon: <Ionicons name="qr-code-outline" size={23} color="#555555" />,
   title: "Scan",
+  onPress: "/qrScanner",
 };
 
 const ovalContainers = [
@@ -334,7 +335,14 @@ const Index = () => {
 
         <RNText style={styles.boldText}>Write a Complaint</RNText>
         <View style={styles.iconWrapper}>
-          <TouchableOpacity style={styles.iconContainer}>
+          <TouchableOpacity
+            style={styles.iconContainer}
+            onPress={() => {
+              router.push(
+                constantContainer.onPress ? constantContainer.onPress : "/"
+              );
+            }}
+          >
             {constantContainer.icon}
             <RNText style={styles.iconText}>
               {truncateText(constantContainer.title, 5)}
@@ -544,8 +552,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#0d0907",
     marginBottom: 0,
-    textAlign: "right", 
-    flex: 1, 
+    textAlign: "right",
+    flex: 1,
   },
   issueTypeText: {
     fontSize: 18,
