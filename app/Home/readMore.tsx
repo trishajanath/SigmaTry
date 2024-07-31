@@ -15,6 +15,7 @@ import { router, useGlobalSearchParams, useNavigation } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import { useUser } from "@/Hooks/userContext";
 import axios from "axios";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const { width, height } = Dimensions.get("window");
 
@@ -170,6 +171,7 @@ export default function IssueDetails() {
 
   if (loading) {
     return (
+      
       <View
         style={{
           flex: 1,
@@ -184,6 +186,11 @@ export default function IssueDetails() {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollView}
+        enableOnAndroid={true}
+        extraHeight={100}
+      >
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
@@ -266,6 +273,7 @@ export default function IssueDetails() {
           </View>
         </View>
       </View>
+      </KeyboardAwareScrollView>
     </ScrollView>
   );
 }

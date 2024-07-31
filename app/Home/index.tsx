@@ -231,6 +231,7 @@ const Index = () => {
 
   return (
     <Provider>
+      
       <View style={styles.headerContainer}>
         <Text variant="headlineSmall" style={styles.headerText}>
           sigma
@@ -268,7 +269,7 @@ const Index = () => {
                 onPress={() => setMenuVisible(true)}
                 style={styles.iconButtonContainer1}
               >
-                <AdjustmentsHorizontalIcon size={20} color="#555555" />
+                <AdjustmentsHorizontalIcon size={20} color="#555555"  />
               </TouchableOpacity>
             }
           >
@@ -400,7 +401,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#e6e6e4",
     borderRadius: 30,
-    marginRight: "3%",
+    marginRight: "1%",
     flex: 1,
   },
   searchIcon: {
@@ -411,7 +412,7 @@ const styles = StyleSheet.create({
     height: width * 0.11,
     textAlign: "left",
     color: "#333333",
-    marginLeft: "5%",
+    marginLeft: "3%",
     fontSize: 11,
   },
   button: {
@@ -437,15 +438,18 @@ const styles = StyleSheet.create({
     width: "11%",
     height: 43,
     marginLeft: "2%",
+    marginRight:"2%"
   },
   iconButtonContainer1: {
     backgroundColor: "#e6e6e4",
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
-    width: "120%",
+    width: "110%",
     height: 43,
-    marginLeft: "2%",
+    marginLeft:"2%",
+    marginRight:"2%"
+    
   },
   iconWrapper: {
     flexDirection: "row",
