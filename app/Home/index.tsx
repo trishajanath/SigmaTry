@@ -399,7 +399,7 @@ const Index = () => {
         
         <RNText style={styles.boldText}>My Complaints</RNText>
         <Text style={styles.headerSubTex}>
-    {truncateText(`Pending:${finalCount("Pending")} Closed:${finalCount("Closed")}`,30)}
+    {truncateText(`Pending:${finalCount("OPEN")} Closed:${finalCount("CLOSE")}`,30)}
   </Text>
        
         <FlatList
