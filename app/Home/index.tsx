@@ -361,7 +361,18 @@ const Index = () => {
         </View>
 
         <RNText style={styles.boldText}>Write a Complaint</RNText>
-        <RNText style={styles.headerSubTex}>View all</RNText>
+        <TouchableOpacity
+          
+          onPress={() => {
+            router.push({
+              pathname: "/Home/viewMore",
+            });
+          }}
+        >
+          <RNText style={styles.headerSubTex}>View all</RNText>
+        </TouchableOpacity>
+        
+        
         <View style={styles.iconWrapper}>
           <TouchableOpacity
             style={styles.iconContainer}
@@ -408,14 +419,34 @@ const Index = () => {
           keyExtractor={(item) => item.code}
         />
         
+     
+      <View style={styles.footer}>
+        <RNText style={styles.footerText}>Powered by SIGMA</RNText>
+      </View>
       </ScrollView>
     </Provider>
+    
   );
 };
 
 export default Index;
 
 const styles = StyleSheet.create({
+  footer: {
+    padding: 16,
+
+    alignItems: "center",
+    position: "relative",
+    bottom: 0,
+    marginTop:'1%',
+    width: "100%",
+    
+   
+    
+  },
+  footerText: {
+    color: "#555",
+  },
   scrollView: {
     marginTop: "1%",
     paddingHorizontal: 10,
@@ -471,7 +502,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "11%",
     height: 43,
-    marginLeft: "2%",
+    marginLeft: "3%",
     marginRight:"2%"
   },
   iconButtonContainer1: {
@@ -481,8 +512,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "110%",
     height: 43,
-    marginLeft:"2%",
-    marginRight:"2%"
+    marginLeft:"3%",
+    marginRight:"2%",
+  
     
   },
   iconWrapper: {
@@ -609,4 +641,3 @@ const styles = StyleSheet.create({
     color: "#333",
   },
 });
-u
