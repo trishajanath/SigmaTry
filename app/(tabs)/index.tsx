@@ -67,7 +67,7 @@ const LoginScreen = () => {
         id: response.data.user.id,
         confirmed: true,
       });
-      router.replace("/Home/index");
+      router.replace("/Home");
     } catch (error: any) {
       Alert.alert("Error", error.response.data.message);
       console.error(error.response);

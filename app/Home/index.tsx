@@ -32,12 +32,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
-interface Issue {
-  category: string;
-  code: string;
-  desc: string;
-  status: string;
-}
+  interface Issue {
+    category: string;
+    code: string;
+    desc: string;
+    status: string;
+  }
+
+  
+
+
+  
 
 const constantContainer = {
   id: 1,
@@ -174,18 +179,45 @@ const Index = () => {
     } catch (error) {}
   };
 
-  const getCardColor = (action: string) => {
+ const statusCounts = {
+  OPEN: 0,
+  CLOSE: 0,
+  
+};
+
+
+const UpdateCount = (action: string) => {
+  
+  if (action === "OPEN") {
+    statusCounts.OPEN += 1;
+  } else if (action === "CLOSE") {
+    statusCounts.CLOSE += 1;
+  } 
+  };
+  const finalCount=(action:string)=>{
+    if(action=="Pending"){
+      return statusCounts.OPEN;
+    }
+    else if(action=="Closed"){
+      return statusCounts.CLOSE;
+  }
+}
+
+  const getCardColor=(action:string)=>{
     switch (action) {
       case "OPEN":
-        return "#e7bcec";
+        return "#a3c3e7";
       case "CLOSE":
         return "#bbbef3";
       case "Pending":
-        return "#a3c3e7";
+        return "#e7bcec";
       default:
         return "#ffffff";
     }
+
   };
+  
+
 
   const renderComplaintItem = ({ item }: { item: (typeof issues)[0] }) => (
     <View
@@ -228,6 +260,7 @@ const Index = () => {
       </View>
     </View>
   );
+  
 
   return (
     <Provider>
@@ -335,6 +368,7 @@ const Index = () => {
         </View>
 
         <RNText style={styles.boldText}>Write a Complaint</RNText>
+        <RNText style={styles.headerSubTex}>View all</RNText>
         <View style={styles.iconWrapper}>
           <TouchableOpacity
             style={styles.iconContainer}
@@ -368,12 +402,19 @@ const Index = () => {
             ))}
           </ScrollView>
         </View>
+        
+        
         <RNText style={styles.boldText}>My Complaints</RNText>
+        <Text style={styles.headerSubTex}>
+    {truncateText(`Pending:${finalCount("Pending")} Closed:${finalCount("Closed")}`,30)}
+  </Text>
+       
         <FlatList
           data={filteredIssues}
           renderItem={renderComplaintItem}
           keyExtractor={(item) => item.code}
         />
+        
       </ScrollView>
     </Provider>
   );
@@ -532,6 +573,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     flex: 2,
     textAlign: "right",
+  },
+  headerSubTex:{
+    color: "#555555",
+    marginLeft: 10,
+    fontSize: 12,
+    flex: 2,
+    textAlign: "right",
+    marginTop:"-5%",
+    marginRight:"4%"
+
   },
   headerIconContainer: {
     position: "absolute",

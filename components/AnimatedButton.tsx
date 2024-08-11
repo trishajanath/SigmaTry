@@ -1,4 +1,4 @@
-import Login from "@/app/(tabs)/Login";
+import Login from "@/app/(tabs)/index";
 import Signup from "@/app/(tabs)/Signup";
 import React, { useState, useRef } from "react";
 import {
