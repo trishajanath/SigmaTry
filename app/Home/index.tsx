@@ -186,22 +186,15 @@ const Index = () => {
 };
 
 
-const UpdateCount = (action: string) => {
-  
-  if (action === "OPEN") {
-    statusCounts.OPEN += 1;
-  } else if (action === "CLOSE") {
-    statusCounts.CLOSE += 1;
-  } 
-  };
-  const finalCount=(action:string)=>{
-    if(action=="Pending"){
-      return statusCounts.OPEN;
+  const finalCount = (action: string): number => {
+  let count = 0;
+  issues.forEach((item) => {
+    if (item.status === action) {
+      count++;
     }
-    else if(action=="Closed"){
-      return statusCounts.CLOSE;
-  }
-}
+  });
+  return count;
+};
 
   const getCardColor=(action:string)=>{
     switch (action) {
@@ -616,3 +609,4 @@ const styles = StyleSheet.create({
     color: "#333",
   },
 });
+u
