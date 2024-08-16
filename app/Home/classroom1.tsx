@@ -98,6 +98,7 @@ const SinglePageForm: React.FC = () => {
     <>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
+        <Appbar.Content title="Sigma - GMS " />
       </Appbar.Header>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
@@ -105,12 +106,12 @@ const SinglePageForm: React.FC = () => {
         extraHeight={100}
       >
         <View style={styles.container}>
-          <Text style={styles.main}>Classroom Report Form</Text>
+          <Text style={styles.main}>Classroom Complaint</Text>
           <View style={styles.formContainer}>
             <Text style={styles.label}>Block Name</Text>
             <TextInput
               style={styles.input}
-              placeholder="Name"
+              placeholder="Block Name as - A"
               value={state.name}
               onChangeText={(text) =>
                 dispatch({ type: "SET_FORM_DATA", payload: { name: text } })
@@ -119,7 +120,7 @@ const SinglePageForm: React.FC = () => {
             <Text style={styles.label}>Floor Number</Text>
             <TextInput
               style={styles.input}
-              placeholder="Number"
+              placeholder="Floor Number as - 1 "
               value={state.number}
               onChangeText={(text) =>
                 dispatch({ type: "SET_FORM_DATA", payload: { number: text } })
@@ -128,7 +129,7 @@ const SinglePageForm: React.FC = () => {
             <Text style={styles.label}>Classroom</Text>
             <TextInput
               style={styles.input}
-              placeholder="Class"
+              placeholder="Class Room Number as - A-101"
               value={state.classroom}
               onChangeText={(text) =>
                 dispatch({
@@ -137,7 +138,7 @@ const SinglePageForm: React.FC = () => {
                 })
               }
             />
-            <Text style={styles.pickerLabel}>Type</Text>
+            <Text style={styles.label}>Type</Text>
             <View style={styles.dropdownWrapper}>
               <SelectList
                 setSelected={(value: string) =>
@@ -151,7 +152,7 @@ const SinglePageForm: React.FC = () => {
                 save="value"
               />
             </View>
-            <Text style={styles.pickerLabel}>Domain</Text>
+            <Text style={styles.label}>Category</Text>
             <View style={styles.dropdownWrapper}>
               <SelectList
                 setSelected={(value: string) =>
@@ -172,10 +173,10 @@ const SinglePageForm: React.FC = () => {
                 save="value"
               />
             </View>
-            <Text style={styles.label}>Content</Text>
+            <Text style={styles.label}>Comment</Text>
             <TextInput
               style={styles.input}
-              placeholder="Content"
+              placeholder="Comment Related to the issue"
               value={state.content}
               onChangeText={(text) =>
                 dispatch({ type: "SET_FORM_DATA", payload: { content: text } })
@@ -207,8 +208,8 @@ const styles = StyleSheet.create({
   main: {
     fontSize: 20,
     marginTop: Platform.OS === "ios" ? "1%" : "1%",
-    textAlign: "center",
-    marginBottom: "10%",
+    marginBottom: "7%",
+    fontWeight: "bold",
   },
   formContainer: {
     alignItems: "flex-start",
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: "4%",
   },
   input: {

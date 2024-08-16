@@ -19,7 +19,7 @@ const NavigationPage = () => {
     <View style={styles.container}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
-        <Appbar.Content title="Write A Complaint" />
+        <Appbar.Content title="Sigma - GMS" />
       </Appbar.Header>
       <ScrollView contentContainerStyle={styles.menuContainer}>
         <Text style={styles.heading}>Select a Category</Text>
@@ -86,22 +86,22 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   heading: {
-    fontSize: 24,
+    fontSize: 25,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
     color: '#333',
-    textAlign: 'center',
-    alignSelf: 'center',
+    marginLeft: 5,
   },
   menuItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 20,
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
     marginBottom: 12,
-    borderBottomWidth: 1,  // Added a bottom border
-    borderBottomColor: '#e0e0e0', // Light gray color
+    borderWidth : 1, 
+    borderRadius: 10, // Added a bottom border
+    borderColor : "#D3D3D3",
     width: '100%',
   },
   menuItemText: {
