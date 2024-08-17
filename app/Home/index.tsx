@@ -226,10 +226,7 @@ const Index = () => {
           <RNText style={styles.issueTypeText}>
             {item.category == "" ? "MISCELLANEOUS" : item.category}
           </RNText>
-          <RNText style={styles.statusText}>
-            {item.status == "CLOSE" ? "CLOSED " : item.status}
-            {/* issueLastUpdateDate : {item.date} */}
-          </RNText>
+          {(item.status == "CLOSE") ? <Feather name="check-circle" size={20} color="green" />  :<SimpleLineIcons name="close" size={20} color="red" /> }
         </View>
         <View style={styles.complaintBody}>
           <RNText style={styles.categoryText}>
@@ -238,8 +235,8 @@ const Index = () => {
           <RNText style={styles.categoryText}> | ID : {item.code}</RNText>
         </View>
         <View style={styles.readMoreContainer}>
-        {/* <RNText style={styles.dateText}> {(item.status == "OPEN") ? "Hang Tight Our Personnel are working on it !" : (item.status == "PENDING") ? "Final Stages of the Work !" : "Issue Solved Thank you !"} </RNText> */}
-        {(item.status == "CLOSE") ? <Feather name="check-circle" size={20} color="green" />  :<SimpleLineIcons name="close" size={20} color="red" /> }
+        <RNText style={styles.dateText}> {(item.status == "OPEN") ? "Hang Tight Our Personnel are working on it !" : (item.status == "PENDING") ? "Final Stages of the Work !" : "Issue Solved Thank you !"} </RNText>
+       
           <TouchableOpacity
             style={styles.readMoreButton}
             onPress={() => {
