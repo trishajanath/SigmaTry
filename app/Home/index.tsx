@@ -352,7 +352,7 @@ const Index = () => {
               ]);
             }}
           >
-            <Feather name="power" size={16} color="#555555" />
+            <MaterialIcons name="logout" size={18} color="#555555" />
           </TouchableOpacity>
         </View>
 

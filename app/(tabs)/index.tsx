@@ -1,5 +1,6 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState,Suspense } from "react";
 import {
+  ActivityIndicator,
   View,
   Text,
   TextInput,
@@ -17,6 +18,7 @@ import { useUser } from "@/Hooks/userContext";
 import * as jwt from "jwt-decode";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from 'react-native-toast-message';
+
 
 
 type RootStackParamList = {
@@ -43,12 +45,27 @@ const reducer = (state: State, action: Action): State => {
       return state;
   }
 };
+const LazyHomeScreen = React.lazy(() => import("../Home/index"));
 
+const HomeScreenLoader = () => {
+  return (
+    <Suspense
+      fallback={
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="small" color="#a3c3e7" />
+        </View>
+      }
+    >
+      <LazyHomeScreen />
+    </Suspense>
+  );
+};
 const LoginScreen = () => {
   const [state, dispatch] = useReducer(reducer, { email: "", password: "" });
   const [isEmailFocused, setEmailFocused] = useState(false);
   const [isPasswordFocused, setPasswordFocused] = useState(false);
   const [secureText, setSecureText] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigation = useNavigation();
   const { updateUser } = useUser();
 
@@ -74,7 +91,7 @@ const LoginScreen = () => {
         id: response.data.user.id,
         confirmed: true,
       });
-      router.replace("/Home");
+      setIsLoggedIn(true);
     } catch (error: any) {
       // Alert.alert("Error", error.response.data.message);
       // console.error(error.response);
@@ -121,7 +138,9 @@ const LoginScreen = () => {
   }, []);
 
   return (
-    <KeyboardAwareScrollView
+    <>
+    {!isLoggedIn ? ( 
+      <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
       enableOnAndroid={true}
       extraHeight={100}
@@ -209,6 +228,12 @@ const LoginScreen = () => {
         </TouchableOpacity>
       </View>
     </KeyboardAwareScrollView>
+    ) : (
+      <HomeScreenLoader />
+
+    )}
+    </>
+    
   );
 };
 

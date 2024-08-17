@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { Suspense, useReducer, useState } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,28 @@ import {
   StyleSheet,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { router } from "expo-router";
+import Toast from "react-native-toast-message";
+const LazyHomeScreen = React.lazy(() => import("./index"));
 
+const HomeScreenLoader = () => {
+  return (
+    <Suspense
+      fallback={
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="small" color="#a3c3e7" />
+        </View>
+      }
+    >
+      <LazyHomeScreen />
+    </Suspense>
+  );
+};
 type State = {
   fullName: string;
   email: string;
@@ -73,6 +89,11 @@ const SignUpScreen = () => {
 
     setLoading(true);
     try {
+      Toast.show({
+        type: "info", 
+        text1: "Signed up successfully",
+        visibilityTime: 1000, 
+      });
       console.log(state)
       const response = await axios.post(
         "https://api.gms.intellx.in/client/register",
@@ -92,9 +113,17 @@ const SignUpScreen = () => {
       } else {
         Alert.alert("Error", "Failed to create user.");
       }
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
-      console.error("Error creating user:", error.response);
+    } 
+
+    catch (error: any) {
+      // Alert.alert("Error", error.message);
+      // console.error("Error creating user:", error.response);
+      Toast.show({
+        type:"error",
+        text1:"Invalid information or user already registered",
+        visibilityTime:2000,
+        
+      })
     } finally {
       setLoading(false);
     }
