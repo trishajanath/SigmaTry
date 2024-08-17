@@ -84,6 +84,7 @@ const SinglePageForm = () => {
     <>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
+        <Appbar.Content title="Sigma - GMS " />
       </Appbar.Header>
 
       <KeyboardAwareScrollView
@@ -142,11 +143,17 @@ const styles = StyleSheet.create({
   main: {
     fontSize: 20,
     marginTop: Platform.OS === "ios" ? "1%" : "1%",
-    textAlign: "center",
+    marginBottom: "7%",
+    fontWeight: "bold",
+  },
+  formContainer: {
+    alignItems: "flex-start",
+    justifyContent: "center",
     marginBottom: "10%",
+    width: "100%",
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: "4%",
   },
   input: {
@@ -192,7 +199,7 @@ const styles = StyleSheet.create({
     paddingVertical: "3%",
     paddingHorizontal: "3%",
     borderRadius: 5,
-    marginTop: "1%",
+    marginTop: "2%",
     alignItems: "center",
   },
   submitBtnText: {

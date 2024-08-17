@@ -16,6 +16,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from "@/Hooks/userContext";
 import * as jwt from "jwt-decode";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Toast from 'react-native-toast-message';
+
 
 type RootStackParamList = {
   Login: undefined;
@@ -52,6 +54,11 @@ const LoginScreen = () => {
 
   const Login = async () => {
     try {
+    Toast.show({
+      type: "info", 
+      text1: "Logging in...",
+      visibilityTime: 1000, 
+    });
       const body = {
         id: state.email,
         password: state.password,
@@ -69,8 +76,15 @@ const LoginScreen = () => {
       });
       router.replace("/Home");
     } catch (error: any) {
-      Alert.alert("Error", error.response.data.message);
-      console.error(error.response);
+      // Alert.alert("Error", error.response.data.message);
+      // console.error(error.response);
+      Toast.show({
+        type:"error",
+        text1:"Invalid Credentials",
+        text2:"Please enter valid register number and password",
+        visibilityTime:2000,
+        
+      })
     }
   };
 

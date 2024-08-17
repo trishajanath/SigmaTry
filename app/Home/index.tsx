@@ -154,7 +154,7 @@ const Index = () => {
     // Search issues
     if (searchQuery) {
       updatedIssues = updatedIssues.filter((issue) =>
-        issue.desc.toLowerCase().includes(searchQuery.toLowerCase())
+        issue.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -306,14 +306,14 @@ const Index = () => {
                 setSortOption("status");
                 setMenuVisible(false);
               }}
-              title="Sort by Status"
+              title={<Text style={{color:'white'}}>Sort by Status</Text>}
             />
             <Menu.Item
               onPress={() => {
                 setSortOption("date");
                 setMenuVisible(false);
               }}
-              title="Sort by Date"
+              title={<Text style={{color:'white'}}>Sort by Date</Text>}
             />
             <Divider />
             <Menu.Item
@@ -321,29 +321,23 @@ const Index = () => {
                 setFilterOption(null);
                 setMenuVisible(false);
               }}
-              title="All"
+              title={<Text style={{color:'white'}}>All</Text>}
             />
             <Menu.Item
               onPress={() => {
                 setFilterOption("OPEN");
                 setMenuVisible(false);
               }}
-              title="Open"
+              title={<Text style={{color:'white'}}>Opened</Text>}
             />
             <Menu.Item
               onPress={() => {
                 setFilterOption("CLOSE");
                 setMenuVisible(false);
               }}
-              title="Close"
+              title={<Text style={{color:'white'}}>Closed</Text>}
             />
-            <Menu.Item
-              onPress={() => {
-                setFilterOption("Pending");
-                setMenuVisible(false);
-              }}
-              title="Pending"
-            />
+            
           </Menu>
           <TouchableOpacity
             style={styles.iconButtonContainer}
@@ -582,9 +576,7 @@ const styles = StyleSheet.create({
     // justifyContent: "end",
     justifyContent: "space-between",
   },
-  statusText:{
-
-  },
+  
   headerContainer: {
     height: "8%",
     backgroundColor: "#f2f2f2",

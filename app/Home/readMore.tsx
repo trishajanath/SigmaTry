@@ -138,7 +138,7 @@ export default function IssueDetails() {
           by: user.id, // replace with actual current user ID
           content: newComment,
         };
-        setComments([...comments, newCommentObj]);
+        setComments((prevComments) => [newCommentObj, ...prevComments]); // Add new comment at the top
         const body = {
           user_id: user.id,
           content: newComment,
@@ -194,6 +194,7 @@ export default function IssueDetails() {
         contentContainerStyle={styles.scrollView}
         enableOnAndroid={true}
         extraHeight={100}
+        
       >
         {/* <View style={styles.container}>
         <View style={styles.detailsContainer}>
@@ -346,7 +347,7 @@ export default function IssueDetails() {
           )}
 
 <Text style={styles.commentsHeading}>COMMENTS</Text>
-          {comments.map((comment, index) => (
+          {comments.filter((comment) => comment.content.trim()).map((comment, index) => (
             <View key={index} style={styles.commentBox}>
               <Text style={styles.commentUser}>{comment.by}</Text>
               <Text style={styles.commentContent}>{comment.content}</Text>
@@ -375,6 +376,9 @@ export default function IssueDetails() {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: "#FFFFFF",
+    flexGrow: 1,
+    padding: "2%",
+    marginBottom:'5%'
   },
   container: {
     flex: 1,
