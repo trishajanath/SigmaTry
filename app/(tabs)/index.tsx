@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 25,
     width: "40%",
-    marginRight: "-45%",
+    marginRight: "-55%",
     alignItems: "center",
     marginBottom: 15,
   },

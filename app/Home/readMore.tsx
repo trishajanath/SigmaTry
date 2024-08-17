@@ -272,7 +272,7 @@ export default function IssueDetails() {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <View>
-              <Text style={{ fontStyle: "italic", fontSize: "10" }}>
+              <Text style={styles.cat} >
                 Category
               </Text>
               <Text
@@ -374,6 +374,11 @@ export default function IssueDetails() {
 }
 
 const styles = StyleSheet.create({
+  cat:{
+    fontStyle:"italic",
+    fontSize: 10,
+
+  },
   scrollView: {
     backgroundColor: "#FFFFFF",
     flexGrow: 1,

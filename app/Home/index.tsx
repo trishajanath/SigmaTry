@@ -33,7 +33,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { black } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 const { width } = Dimensions.get("window");
-
+const menuTheme = {
+  colors: {
+    surface: '#000000', // Menu background color (black)
+    text: '#FFFFFF', // Menu text color (white)
+  },
+}
 interface Issue {
   category: string;
   code: string;
@@ -297,6 +302,7 @@ const Index = () => {
                 <AdjustmentsHorizontalIcon size={20} color="#555555" />
               </TouchableOpacity>
             }
+            theme={menuTheme}
           >
             <Menu.Item
               onPress={() => {
@@ -451,6 +457,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginHorizontal: "3%",
     marginTop: "0%",
+    
   },
   searchContainer: {
     flexDirection: "row",
