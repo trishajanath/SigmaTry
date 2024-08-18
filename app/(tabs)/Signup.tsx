@@ -9,7 +9,7 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons,AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { router } from "expo-router";
@@ -154,7 +154,7 @@ const SignUpScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-        <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
+        <AntDesign name="user" size={17} color="#999" />
         <TextInput
           style={styles.input}
           placeholder="Roll Number"

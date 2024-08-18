@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import { RouteProp } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign,MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { Image } from "react-native";
 import axios from "axios";
@@ -161,7 +161,7 @@ const LoginScreen = () => {
             isEmailFocused && styles.inputContainerFocused,
           ]}
         >
-          <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
+          <AntDesign name="user" size={20} color="#999" />
           <TextInput
             style={styles.input}
             placeholder="Roll Number"
