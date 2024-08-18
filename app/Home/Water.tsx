@@ -16,6 +16,7 @@ import { router } from "expo-router";
 import axios from "axios";
 import { useUser } from "@/Hooks/userContext";
 import { Appbar } from "react-native-paper";
+import Toast from "react-native-toast-message";
 const { width } = Dimensions.get("window");
 
 const initialState = {
@@ -61,6 +62,14 @@ const SinglePageForm = () => {
   };
 
   const handleSubmit = async () => {
+    if (!state.name.trim() || !state.number.trim() || !state.dispenserName.trim() || !state.content.trim() || state.selectedOptionType === "Select Type") {
+      Toast.show({
+        type: "error",
+        text1: "Please fill out of all the fields before submitting.",
+        visibilityTime: 2000,
+      });
+      return;
+    }
     try {
       const Submit = {
         name: user.name,
@@ -162,6 +171,7 @@ const SinglePageForm = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
+      <Toast/>
     </>
   );
 };

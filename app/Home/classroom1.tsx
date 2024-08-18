@@ -15,6 +15,7 @@ import { router, useNavigation } from "expo-router";
 import axios from "axios";
 import { useUser } from "@/Hooks/userContext";
 import { Appbar } from "react-native-paper";
+import Toast from "react-native-toast-message";
 const { width } = Dimensions.get("window");
 
 interface FormData {
@@ -64,6 +65,22 @@ const SinglePageForm: React.FC = () => {
   }, []);
 
   const handleSubmit = async () => {
+    if (
+      !state.name.trim() ||
+      !state.number.trim() ||
+      !state.classroom.trim() ||
+      !state.content.trim() ||
+      state.selectedOptionType === "Select Type" ||
+      state.selectedOptionDomain === "Select Domain"
+    ) {
+      Toast.show({
+        type: "error",
+        text1: "Some fields are missing",
+        text2: "Please fill all the fields",
+        visibilityTime: 2000,
+      });
+      return; 
+    }
     try {
       const Submit = {
         name: users.name,
@@ -196,6 +213,7 @@ const SinglePageForm: React.FC = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
+      <Toast />
     </>
   );
 };

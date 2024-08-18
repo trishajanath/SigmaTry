@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Stack } from "expo-router";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 const _layout = () => {
   return (

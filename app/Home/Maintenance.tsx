@@ -15,6 +15,7 @@ import { router, useNavigation } from "expo-router";
 import axios from "axios";
 import { useUser } from "@/Hooks/userContext";
 import { Appbar } from "react-native-paper";
+import Toast from "react-native-toast-message";
 
 const { width } = Dimensions.get("window");
 
@@ -52,6 +53,22 @@ const SinglePageForm = () => {
     });
   }, []);
   const handleSubmit = async () => {
+    if (state.type === "Select Type") {
+      Toast.show({
+        type: "error",
+        text1: "Please select a Type.",
+        visibilityTime: 2000,
+      });
+      return;
+    }
+    if (!state.content.trim()) {
+      Toast.show({
+        type: "error",
+        text1: "Content is required.",
+        visibilityTime: 2000,
+      });
+      return;
+    }
     try {
       const Submit = {
         name: users.name,
@@ -131,6 +148,7 @@ const SinglePageForm = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
+      <Toast/>
     </>
   );
 };

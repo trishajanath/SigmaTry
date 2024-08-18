@@ -89,11 +89,7 @@ const SignUpScreen = () => {
 
     setLoading(true);
     try {
-      Toast.show({
-        type: "info", 
-        text1: "Signed up successfully",
-        visibilityTime: 1000, 
-      });
+     
       console.log(state)
       const response = await axios.post(
         "https://api.gms.intellx.in/client/register",
@@ -105,10 +101,16 @@ const SignUpScreen = () => {
       );
 
       if (response.status === 201) {
-        Alert.alert(
-          "Success",
-          "Please Check your email to verify your account."
-        );
+        Toast.show({
+          type: "info", 
+          text1: "Success",
+          text2:"Please Check your email to verify your account.",
+          visibilityTime: 2000, 
+        });
+        // Alert.alert(
+        //   "Success",
+        //   "Please Check your email to verify your account."
+        // );
         router.back(); // Navigate back to the previous screen
       } else {
         Alert.alert("Error", "Failed to create user.");
@@ -155,7 +157,7 @@ const SignUpScreen = () => {
         <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
         <TextInput
           style={styles.input}
-          placeholder="Register Number"
+          placeholder="Roll Number"
           placeholderTextColor="#999"
           value={state.email}
           onChangeText={(text) =>
@@ -256,7 +258,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 25,
     width: "40%",
-    marginRight: "-45%",
+    marginRight: "-60%",
     alignItems: "center",
     marginBottom: 15,
   },

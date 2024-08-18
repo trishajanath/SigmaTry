@@ -164,7 +164,7 @@ const LoginScreen = () => {
           <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
           <TextInput
             style={styles.input}
-            placeholder="Register Number"
+            placeholder="Roll Number"
             placeholderTextColor="#999"
             value={state.email}
             onFocus={() => setEmailFocused(true)}
