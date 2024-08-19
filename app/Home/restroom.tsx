@@ -27,6 +27,13 @@ const initialState = {
   domain: "Select Domain",
   content: "",
   anonymous: false,
+  ratings: {
+    mirror: "",
+    urinals: "",
+    toilets: "",
+    floor: "",
+    lights: "",
+  },
 };
 
 function reducer(state: any, action: any) {
@@ -45,10 +52,38 @@ function reducer(state: any, action: any) {
       return { ...state, content: action.payload };
     case "SET_ANONYMOUS":
       return { ...state, anonymous: action.payload };
+    case "SET_RATING":
+      return {
+        ...state,
+        ratings: { ...state.ratings, [action.payload.field]: action.payload.value },
+      };
     default:
       return state;
   }
 }
+
+const RatingComponent = ({ label, field, dispatch, state }: any) => (
+  <View style={styles.ratingRow}>
+    <Text style={styles.labe}>{label}</Text>
+    <View style={styles.ratingOptionsContainer}>
+      {["Poor", "Satisfactory", "Average"].map((rating) => (
+        <TouchableOpacity
+          key={rating}
+          style={styles.ratingOption}
+          onPress={() => dispatch({ type: "SET_RATING", payload: { field, value: rating } })}
+        >
+          <View
+            style={[
+              styles.circle,
+              state.ratings[field] === rating && styles.selectedCircle,
+            ]}
+          />
+          <Text style={styles.ratingText}>{rating}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  </View>
+);
 
 const SinglePageForm = () => {
   const user = useUser();
@@ -83,6 +118,7 @@ const SinglePageForm = () => {
         block: state.name,
         floor: state.number,
         issueContent: `${state.restroom}\n${state.content}`,
+        ratings: state.ratings,
         comments: [
           {
             by: user.id,
@@ -95,7 +131,8 @@ const SinglePageForm = () => {
         Submit
       );
       console.log(response.data);
-      router.back();
+      router.push("/Home/submitPage");
+     
     } catch (error) {
       console.log(error);
     }
@@ -119,7 +156,7 @@ const SinglePageForm = () => {
           <Text style={styles.label}>Block Name</Text>
           <TextInput
             style={styles.input}
-            placeholder="Name"
+            placeholder="Block Designation"
             value={state.name}
             onChangeText={(text) =>
               dispatch({ type: "SET_NAME", payload: text })
@@ -129,7 +166,7 @@ const SinglePageForm = () => {
           <Text style={styles.label}>Floor Number</Text>
           <TextInput
             style={styles.input}
-            placeholder="Number"
+            placeholder="Floor Number"
             value={state.number}
             onChangeText={(text) =>
               dispatch({ type: "SET_NUMBER", payload: text })
@@ -155,7 +192,7 @@ const SinglePageForm = () => {
               setSelected={(value: any) =>
                 dispatch({ type: "SET_TYPE", payload: value })
               }
-              data={["Complaint", "Feedback", "Suggestion"]}
+              data={["Complaint", "Feedback"]}
               search={false}
               save="value"
               placeholder={state.type}
@@ -168,7 +205,7 @@ const SinglePageForm = () => {
               setSelected={(value: any) =>
                 dispatch({ type: "SET_DOMAIN", payload: value })
               }
-              data={["Hygiene", "Maintenance", "Amenities", "Accessibility"]}
+              data={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical", "Others"]}
               search={false}
               save="value"
               placeholder={state.domain}
@@ -178,12 +215,23 @@ const SinglePageForm = () => {
           <Text style={styles.label}>Content</Text>
           <TextInput
             style={styles.input}
-            placeholder="Content"
+            placeholder="Enter Content Here"
             value={state.content}
             onChangeText={(text) =>
               dispatch({ type: "SET_CONTENT", payload: text })
             }
           />
+
+          {state.type === "Feedback" && (
+            <View style={styles.ratingsContainer}>
+              <Text style={styles.lab}>Give your ratings</Text>
+              <RatingComponent label="Mirror & Washbasin" field="mirror" dispatch={dispatch} state={state} />
+              <RatingComponent label="Urinals" field="urinals" dispatch={dispatch} state={state} />
+              <RatingComponent label="Toilets" field="toilets" dispatch={dispatch} state={state} />
+              <RatingComponent label="Floor" field="floor" dispatch={dispatch} state={state} />
+              <RatingComponent label="Lights" field="lights" dispatch={dispatch} state={state} />
+            </View>
+          )}
 
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Anonymous Replies</Text>
@@ -199,6 +247,7 @@ const SinglePageForm = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
+      <Toast/>
     </>
   );
 };
@@ -222,6 +271,10 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 15,
+    marginBottom: "4%",
+  },
+  lab: {
+    fontSize: 20,
     marginBottom: "4%",
   },
   input: {
@@ -257,26 +310,68 @@ const styles = StyleSheet.create({
   },
   switchLabel: {
     fontSize: 16,
+    marginRight: 10,
   },
-  switch: {
-    alignItems: "flex-end",
-    marginLeft: "39%",
+  container: {
+    flex: 1,
+    padding: "5%",
+  },switch: {
+    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
   },
   submitBtn: {
     backgroundColor: "#8283e9",
     paddingVertical: "3%",
     paddingHorizontal: "3%",
     borderRadius: 5,
-    marginTop: "2%",
+    marginTop: "0%",
     alignItems: "center",
   },
   submitBtnText: {
     color: "#fff",
     fontSize: 16,
   },
-  container: {
-    flex: 1,
-    padding: "5%",
+  
+  labe: {
+    fontSize: 15,
+    marginBottom: "2%",
+    marginTop:"2%"
+  },
+  ratingsContainer: {
+    width: "100%",
+    marginTop: 20,
+  },
+
+  ratingRow: {
+    marginBottom: 20,
+  },
+  ratingLabel: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  ratingOptionsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop:'2%',
+    marginBottom:"-4%"
+  },
+  ratingOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 20,
+  },
+  circle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#000",
+    marginRight: 10,
+  },
+  selectedCircle: {
+    backgroundColor: "#8283e9",
+  },
+  ratingText: {
+    fontSize: 16,
   },
 });
 

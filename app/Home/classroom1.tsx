@@ -16,6 +16,7 @@ import axios from "axios";
 import { useUser } from "@/Hooks/userContext";
 import { Appbar } from "react-native-paper";
 import Toast from "react-native-toast-message";
+import { AirbnbRating } from "react-native-ratings"; // Import rating component
 const { width } = Dimensions.get("window");
 
 interface FormData {
@@ -26,7 +27,12 @@ interface FormData {
   anonymous: boolean;
   selectedOptionType: string;
   selectedOptionDomain: string;
+  ratingTable?: number;
+  ratingChair?: number;
+  ratingProjector?: number;
+  ratingCleanliness?: number;
 }
+
 
 const initialState: FormData = {
   name: "",
@@ -36,18 +42,30 @@ const initialState: FormData = {
   anonymous: false,
   selectedOptionType: "Select Type",
   selectedOptionDomain: "Select Domain",
+  ratingTable: undefined,
+  ratingChair: undefined,
+  ratingProjector: undefined,
+  ratingCleanliness: undefined,
 };
 
-type Action = { type: "SET_FORM_DATA"; payload: Partial<FormData> };
+type Action =
+  | { type: "SET_FORM_DATA"; payload: Partial<FormData> }
+  | { type: "SET_RATING"; category: string; rating: number };
 
 function reducer(state: FormData, action: Action): FormData {
   switch (action.type) {
     case "SET_FORM_DATA":
       return { ...state, ...action.payload };
+    case "SET_RATING":
+      return {
+        ...state,
+        [action.category]: action.rating,
+      };
     default:
       return state;
   }
 }
+
 
 const SinglePageForm: React.FC = () => {
   const users = useUser();
@@ -71,7 +89,12 @@ const SinglePageForm: React.FC = () => {
       !state.classroom.trim() ||
       !state.content.trim() ||
       state.selectedOptionType === "Select Type" ||
-      state.selectedOptionDomain === "Select Domain"
+      state.selectedOptionDomain === "Select Domain" ||
+      (state.selectedOptionType === "Feedback" &&
+        (state.ratingTable === undefined ||
+          state.ratingChair === undefined ||
+          state.ratingProjector === undefined ||
+          state.ratingCleanliness === undefined))
     ) {
       Toast.show({
         type: "error",
@@ -79,7 +102,7 @@ const SinglePageForm: React.FC = () => {
         text2: "Please fill all the fields",
         visibilityTime: 2000,
       });
-      return; 
+      return;
     }
     try {
       const Submit = {
@@ -91,6 +114,10 @@ const SinglePageForm: React.FC = () => {
         block: state.name,
         floor: state.number,
         issueContent: state.classroom,
+        ratingTable: state.ratingTable,
+        ratingChair: state.ratingChair,
+        ratingProjector: state.ratingProjector,
+        ratingCleanliness: state.ratingCleanliness,
         comments: [
           {
             by: users.id,
@@ -110,7 +137,11 @@ const SinglePageForm: React.FC = () => {
       console.log(error.response);
     }
   };
-
+  
+  const handleRatingSelect = (category: string, rating: number) => {
+    dispatch({ type: "SET_RATING", category, rating });
+  };
+  
   return (
     <>
       <Appbar.Header>
@@ -128,7 +159,7 @@ const SinglePageForm: React.FC = () => {
             <Text style={styles.label}>Block Name</Text>
             <TextInput
               style={styles.input}
-              placeholder="Block Name as - A"
+              placeholder="Block Designation"
               value={state.name}
               onChangeText={(text) =>
                 dispatch({ type: "SET_FORM_DATA", payload: { name: text } })
@@ -143,10 +174,10 @@ const SinglePageForm: React.FC = () => {
                 dispatch({ type: "SET_FORM_DATA", payload: { number: text } })
               }
             />
-            <Text style={styles.label}>Classroom</Text>
+            <Text style={styles.label}>Classroom Number</Text>
             <TextInput
               style={styles.input}
-              placeholder="Class Room Number as - A-101"
+              placeholder="Room Number"
               value={state.classroom}
               onChangeText={(text) =>
                 dispatch({
@@ -169,7 +200,7 @@ const SinglePageForm: React.FC = () => {
                 save="value"
               />
             </View>
-            <Text style={styles.label}>Category</Text>
+            <Text style={styles.label}>Domain</Text>
             <View style={styles.dropdownWrapper}>
               <SelectList
                 setSelected={(value: string) =>
@@ -190,15 +221,103 @@ const SinglePageForm: React.FC = () => {
                 save="value"
               />
             </View>
-            <Text style={styles.label}>Comment</Text>
+            <Text style={styles.label}>Content</Text>
             <TextInput
               style={styles.input}
-              placeholder="Comment Related to the issue"
+              placeholder="Enter Content Here"
               value={state.content}
               onChangeText={(text) =>
                 dispatch({ type: "SET_FORM_DATA", payload: { content: text } })
               }
             />
+            {/* Conditionally render rating section */}
+            {state.selectedOptionType === "Feedback" && (
+              
+              <View style={styles.ratingContainer}>
+                 <Text style={styles.lab}>Give your ratings</Text>
+              <Text style={styles.labe}>Table</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratingTable === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratingTable', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'poor' : rate === 2 ? 'satisfactory' : 'average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            
+              <Text style={styles.labe}>Chair</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratingChair === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratingChair', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'poor' : rate === 2 ? 'satisfactory' : 'average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            
+              <Text style={styles.labe}>Projector</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratingProjector === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratingProjector', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'poor' : rate === 2 ? 'satisfactory' : 'average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            
+              <Text style={styles.labe}>Cleanliness</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratingCleanliness === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratingCleanliness', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'poor' : rate === 2 ? 'satisfactory' : 'average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+)}
+            
+
             <View style={styles.switchContainer}>
               <Text style={styles.switchLabel}>Anonymous Replies</Text>
               <Switch
@@ -217,7 +336,6 @@ const SinglePageForm: React.FC = () => {
     </>
   );
 };
-
 const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
@@ -239,6 +357,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: "4%",
   },
+  labe: {
+    fontSize: 15,
+    marginBottom: "2%",
+    marginTop:"2%"
+  },
+  ratingItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 20, // Adjust spacing between items if needed
+  },
   input: {
     width: "100%",
     height: 40,
@@ -256,11 +384,53 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: "4%",
   },
+  ratingContainer: {
+    marginTop: 10,
+    marginBottom: "5%",
+    width: "100%",
+  },
+  ratingLabel: {
+    fontSize: 15,
+    marginBottom: "4%",
+  },
+  lab: {
+    fontSize: 20,
+    marginBottom: "3%",
+  },
+  customRatingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 5,
+  },
+  circle: {
+    width: 25,
+    height: 25,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "#4B5563",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedCircle: {
+    backgroundColor: "#bbbef3",
+  },
+  circleText: {
+    fontSize: 15,
+    color: "#4B5563",
+  },
+  ratingText: {
+    fontSize: 14,
+    color: "#4B5563",
+    marginLeft: 5,
+    marginRight: 20,
+  },
   pickerLabel: {
     fontSize: 16,
     marginTop: Platform.OS === "ios" ? "2%" : 0,
     marginBottom: "3%",
   },
+ 
   switchContainer: {
     marginTop: 20,
     flexDirection: "row",

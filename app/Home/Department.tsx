@@ -28,6 +28,7 @@ interface State {
   domain: string;
   content: string;
   anonymous: boolean;
+  ratingCleanliness?: number;
 }
 
 const initialState: State = {
@@ -39,18 +40,25 @@ const initialState: State = {
   domain: "Select Domain",
   content: "",
   anonymous: false,
+  ratingCleanliness: undefined,
 };
 
 type Action = {
   type: "SET_FIELD";
   field: keyof State;
   value: string | boolean;
-};
+}
+| { type: "SET_RATING"; category: string; rating: number };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "SET_FIELD":
       return { ...state, [action.field]: action.value };
+      case "SET_RATING":
+      return {
+        ...state,
+        [action.category]: action.rating,
+      };
     default:
       return state;
   }
@@ -97,14 +105,17 @@ const SinglePageForm: React.FC = () => {
 
   const handleSubmit = async () => {
     if (
-      !state.name ||
       !state.number ||
       !state.department ||
       state.cabin === "Select Option" ||
       state.type === "Select Type" ||
       state.domain === "Select Domain" ||
-      !state.content
-    ) {
+      !state.content ||
+      (state.type === "Feedback" &&
+        
+          (state.ratingCleanliness === undefined))
+    )
+     {
       Toast.show({
         type: "error",
         text1: "Some fields are missing",
@@ -126,7 +137,7 @@ const SinglePageForm: React.FC = () => {
         block: state.name,
         floor: state.number,
         issueContent: `${state.department}\n${state.content}`,
-
+        ratingCleanliness: state.ratingCleanliness,
         comments: [
           {
             by: user.name,
@@ -140,10 +151,13 @@ const SinglePageForm: React.FC = () => {
         Submit
       );
       console.log(response.data);
-      router.back();
+      router.push("/Home/submitPage");
     } catch (error) {
       console.log(error);
     }
+  };
+  const handleRatingSelect = (category: string, rating: number) => {
+    dispatch({ type: "SET_RATING", category, rating });
   };
 
   return (
@@ -160,19 +174,11 @@ const SinglePageForm: React.FC = () => {
         <View style={styles.container}>
           <Text style={styles.main}>Department Complaint</Text>
           <View style={styles.formContainer}>
-            <Text style={styles.label}>Block Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Name"
-              value={state.name}
-              onChangeText={(text) =>
-                dispatch({ type: "SET_FIELD", field: "name", value: text })
-              }
-            />
+            
             <Text style={styles.label}>Floor Number</Text>
             <TextInput
               style={styles.input}
-              placeholder="Number"
+              placeholder="Floor Number"
               value={state.number}
               onChangeText={(text) =>
                 dispatch({ type: "SET_FIELD", field: "number", value: text })
@@ -181,7 +187,7 @@ const SinglePageForm: React.FC = () => {
             <Text style={styles.label}>Department Name</Text>
             <TextInput
               style={styles.input}
-              placeholder="Department"
+              placeholder="Department Name"
               value={state.department}
               onChangeText={(text) =>
                 dispatch({
@@ -214,7 +220,7 @@ const SinglePageForm: React.FC = () => {
                 setSelected={(value: string) =>
                   dispatch({ type: "SET_FIELD", field: "type", value })
                 }
-                data={["Complaint", "Feedback", "Suggestion"]}
+                data={["Complaint", "Feedback"]}
                 search={false}
                 save="value"
               />
@@ -226,7 +232,7 @@ const SinglePageForm: React.FC = () => {
                 setSelected={(value: string) =>
                   dispatch({ type: "SET_FIELD", field: "domain", value })
                 }
-                data={["Hygiene", "Maintenance", "Amenities", "Accessibility"]}
+                data={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical","Others"]}
                 search={false}
                 save="value"
               />
@@ -241,6 +247,31 @@ const SinglePageForm: React.FC = () => {
                 dispatch({ type: "SET_FIELD", field: "content", value: text })
               }
             />
+             {state.type === "Feedback" && (
+              
+              <View style={styles.ratingContainer}>
+                 <Text style={styles.lab}>Give your ratings</Text>
+                 <Text style={styles.labe}>Cleanliness</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratingCleanliness === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratingCleanliness', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+)}
             <View style={styles.switchContainer}>
               <Text style={styles.switchLabel}>Anonymous Replies</Text>
               <Switch
@@ -271,16 +302,68 @@ const styles = StyleSheet.create({
     marginBottom: "7%",
     fontWeight: "bold",
   },
+  label: {
+    fontSize: 15,
+    marginBottom: "4%",
+  },
+  labe: {
+    fontSize: 15,
+    marginBottom: "2%",
+    marginTop:"2%"
+  },
+  ratingContainer: {
+    marginTop: 10,
+    marginBottom: "5%",
+    width: "100%",
+  },
+  ratingLabel: {
+    fontSize: 15,
+    marginBottom: "4%",
+  },
+  lab: {
+    fontSize: 20,
+    marginBottom: "3%",
+  },
+  customRatingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 5,
+  },
+  circle: {
+    width: 25,
+    height: 25,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "#4B5563",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedCircle: {
+    backgroundColor: "#bbbef3",
+  },
+  circleText: {
+    fontSize: 15,
+    color: "#4B5563",
+  },
+  ratingText: {
+    fontSize: 14,
+    color: "#4B5563",
+    marginLeft: 5,
+    marginRight: 20,
+  },
+  ratingItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 20, // Adjust spacing between items if needed
+  },
   formContainer: {
     alignItems: "flex-start",
     justifyContent: "center",
     marginBottom: "10%",
     width: "100%",
   },
-  label: {
-    fontSize: 15,
-    marginBottom: "4%",
-  },
+ 
   input: {
     width: "100%",
     height: 40,

@@ -14,7 +14,7 @@ const NavigationPage = () => {
       headerShown: false,
     });
   }, [navigation]);
-
+  const isRouteDisabled = true;
   return (
     <View style={styles.container}>
       <Appbar.Header>
@@ -60,7 +60,7 @@ const NavigationPage = () => {
           style={styles.menuItem}
           onPress={() => router.push('/Home/Elevator')}
         >
-          <Text style={styles.menuItemText}>Elevator</Text>
+          <Text style={styles.menuItemText}>Lift</Text>
           <Icon name="chevron-forward" size={20} color="#333" />
         </TouchableOpacity>
 
@@ -71,6 +71,23 @@ const NavigationPage = () => {
           <Text style={styles.menuItemText}>Miscellaneous</Text>
           <Icon name="chevron-forward" size={20} color="#333" />
         </TouchableOpacity>
+         
+
+<TouchableOpacity
+  style={[styles.menuItem, isRouteDisabled && styles.disabledMenuItem]}
+  onPress={() => {
+    if (!isRouteDisabled) {
+      router.push('');
+    }
+  }}
+  disabled={isRouteDisabled}
+>
+  <Text style={[styles.menuItemText, isRouteDisabled && styles.disabledText]}>
+    Hostel
+  </Text>
+  <Icon name="chevron-forward" size={20} color={isRouteDisabled ? "#ccc" : "#333"} />
+</TouchableOpacity>
+
       </ScrollView>
     </View>
   );
@@ -84,6 +101,12 @@ const styles = StyleSheet.create({
   menuContainer: {
     padding: 16,
     alignItems: 'flex-start',
+  },
+  disabledMenuItem: {
+    opacity: 0.5, 
+  },
+  disabledText: {
+    color: '#ccc', 
   },
   heading: {
     fontSize: 25,
@@ -100,7 +123,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 12,
     borderWidth : 1, 
-    borderRadius: 10, // Added a bottom border
+    borderRadius: 10, 
     borderColor : "#D3D3D3",
     width: '100%',
   },
