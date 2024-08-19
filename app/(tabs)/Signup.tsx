@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { Suspense, useReducer, useState } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,28 @@ import {
   StyleSheet,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons,AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { router } from "expo-router";
+import Toast from "react-native-toast-message";
+const LazyHomeScreen = React.lazy(() => import("./index"));
 
+const HomeScreenLoader = () => {
+  return (
+    <Suspense
+      fallback={
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="small" color="#a3c3e7" />
+        </View>
+      }
+    >
+      <LazyHomeScreen />
+    </Suspense>
+  );
+};
 type State = {
   fullName: string;
   email: string;
@@ -73,6 +89,7 @@ const SignUpScreen = () => {
 
     setLoading(true);
     try {
+     
       console.log(state)
       const response = await axios.post(
         "https://api.gms.intellx.in/client/register",
@@ -84,17 +101,31 @@ const SignUpScreen = () => {
       );
 
       if (response.status === 201) {
-        Alert.alert(
-          "Success",
-          "Please Check your email to verify your account."
-        );
+        Toast.show({
+          type: "info", 
+          text1: "Success",
+          text2:"Please Check your email to verify your account.",
+          visibilityTime: 2000, 
+        });
+        // Alert.alert(
+        //   "Success",
+        //   "Please Check your email to verify your account."
+        // );
         router.back(); // Navigate back to the previous screen
       } else {
         Alert.alert("Error", "Failed to create user.");
       }
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
-      console.error("Error creating user:", error.response);
+    } 
+
+    catch (error: any) {
+      // Alert.alert("Error", error.message);
+      // console.error("Error creating user:", error.response);
+      Toast.show({
+        type:"error",
+        text1:"Invalid information or user already registered",
+        visibilityTime:2000,
+        
+      })
     } finally {
       setLoading(false);
     }
@@ -123,10 +154,10 @@ const SignUpScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-        <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
+        <AntDesign name="user" size={17} color="#999" />
         <TextInput
           style={styles.input}
-          placeholder="Register Number"
+          placeholder="Roll Number"
           placeholderTextColor="#999"
           value={state.email}
           onChangeText={(text) =>
@@ -227,7 +258,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 25,
     width: "40%",
-    marginRight: "-45%",
+    marginRight: "-60%",
     alignItems: "center",
     marginBottom: 15,
   },

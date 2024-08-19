@@ -20,6 +20,7 @@ import {
   Ionicons,
   MaterialIcons,
   MaterialCommunityIcons,
+  SimpleLineIcons,
 } from "@expo/vector-icons";
 import {
   UserCircleIcon,
@@ -29,14 +30,21 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useUser } from "@/Hooks/userContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { black } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 const { width } = Dimensions.get("window");
-
+const menuTheme = {
+  colors: {
+    surface: '#000000', // Menu background color (black)
+    text: '#FFFFFF', // Menu text color (white)
+  },
+}
 interface Issue {
   category: string;
   code: string;
   desc: string;
   status: string;
+  date : string;
 }
 
 const constantContainer = {
@@ -151,7 +159,7 @@ const Index = () => {
     // Search issues
     if (searchQuery) {
       updatedIssues = updatedIssues.filter((issue) =>
-        issue.desc.toLowerCase().includes(searchQuery.toLowerCase())
+        issue.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -174,14 +182,29 @@ const Index = () => {
     } catch (error) {}
   };
 
+  const statusCounts = {
+    OPEN: 0,
+    CLOSE: 0,
+  };
+
+  const finalCount = (action: string): number => {
+    let count = 0;
+    issues.forEach((item) => {
+      if (item.status === action) {
+        count++;
+      }
+    });
+    return count;
+  };
+
   const getCardColor = (action: string) => {
     switch (action) {
       case "OPEN":
-        return "#e7bcec";
+        return "#a3c3e7";
       case "CLOSE":
         return "#bbbef3";
       case "Pending":
-        return "#a3c3e7";
+        return "#e7bcec";
       default:
         return "#ffffff";
     }
@@ -194,7 +217,7 @@ const Index = () => {
         backgroundColor: getCardColor(item.status),
         borderRadius: 12,
         width: width * 0.89,
-        padding: "3%", // Adjusted padding inside container
+        padding: "3%",
         marginLeft: "3%",
         marginTop: "4%",
         marginRight: "5%",
@@ -205,39 +228,46 @@ const Index = () => {
     >
       <View style={styles.complaintContainer}>
         <View style={styles.complaintHeader}>
-          <RNText style={styles.issueTypeText}>{item.category}</RNText>
-          <RNText style={styles.dateText}>{item.code}</RNText>
+          <RNText style={styles.issueTypeText}>
+            {item.category == "" ? "MISCELLANEOUS" : item.category}
+          </RNText>
+          {(item.status == "CLOSE") ? <Feather name="check-circle" size={20} color="green" />  :<SimpleLineIcons name="close" size={20} color="red" /> }
         </View>
         <View style={styles.complaintBody}>
-          <RNText style={styles.categoryText}> {item.desc}</RNText>
-          <RNText style={styles.statusText}> {item.status}</RNText>
+          <RNText style={styles.categoryText}>
+            TYPE : {item.desc.toLocaleUpperCase()}
+          </RNText>
+          <RNText style={styles.categoryText}> | ID : {item.code}</RNText>
         </View>
-        <TouchableOpacity
-          style={styles.readMoreButton}
-          onPress={() => {
-            router.push({
-              pathname: "/Home/readMore",
-              params: {
-                id: item.code,
-              },
-            });
-          }}
-        >
-          <Text style={styles.readMoreButtonText}>Read More</Text>
-        </TouchableOpacity>
+        <View style={styles.readMoreContainer}>
+        <RNText style={styles.dateText}> {(item.status == "OPEN") ? "Hang Tight Our Personnel are working on it !" : (item.status == "PENDING") ? "Final Stages of the Work !" : "Issue Solved Thank you !"} </RNText>
+       
+          <TouchableOpacity
+            style={styles.readMoreButton}
+            onPress={() => {
+              router.push({
+                pathname: "/Home/readMore",
+                params: {
+                  id: item.code,
+                },
+              });
+            }}
+          >
+            <Text style={styles.readMoreButtonText}>View More</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 
   return (
     <Provider>
-      
       <View style={styles.headerContainer}>
         <Text variant="headlineSmall" style={styles.headerText}>
-          sigma
+          Sigma
         </Text>
         <Text style={styles.headerSubText}>
-          {truncateText(`${user.id}-${user.name}`, 18)}
+          {truncateText(`${user.id}-${user.name}`, 35)}
         </Text>
         <TouchableOpacity style={styles.headerIconContainer}></TouchableOpacity>
       </View>
@@ -269,23 +299,24 @@ const Index = () => {
                 onPress={() => setMenuVisible(true)}
                 style={styles.iconButtonContainer1}
               >
-                <AdjustmentsHorizontalIcon size={20} color="#555555"  />
+                <AdjustmentsHorizontalIcon size={20} color="#555555" />
               </TouchableOpacity>
             }
+            theme={menuTheme}
           >
             <Menu.Item
               onPress={() => {
                 setSortOption("status");
                 setMenuVisible(false);
               }}
-              title="Sort by Status"
+              title={<Text style={{color:'white'}}>Sort by Status</Text>}
             />
             <Menu.Item
               onPress={() => {
                 setSortOption("date");
                 setMenuVisible(false);
               }}
-              title="Sort by Date"
+              title={<Text style={{color:'white'}}>Sort by Date</Text>}
             />
             <Divider />
             <Menu.Item
@@ -293,29 +324,23 @@ const Index = () => {
                 setFilterOption(null);
                 setMenuVisible(false);
               }}
-              title="All"
+              title={<Text style={{color:'white'}}>All</Text>}
             />
             <Menu.Item
               onPress={() => {
                 setFilterOption("OPEN");
                 setMenuVisible(false);
               }}
-              title="Open"
+              title={<Text style={{color:'white'}}>Opened</Text>}
             />
             <Menu.Item
               onPress={() => {
                 setFilterOption("CLOSE");
                 setMenuVisible(false);
               }}
-              title="Close"
+              title={<Text style={{color:'white'}}>Closed</Text>}
             />
-            <Menu.Item
-              onPress={() => {
-                setFilterOption("Pending");
-                setMenuVisible(false);
-              }}
-              title="Pending"
-            />
+            
           </Menu>
           <TouchableOpacity
             style={styles.iconButtonContainer}
@@ -330,11 +355,21 @@ const Index = () => {
               ]);
             }}
           >
-            <Feather name="power" size={16} color="#555555" />
+            <MaterialIcons name="logout" size={18} color="#555555" />
           </TouchableOpacity>
         </View>
 
         <RNText style={styles.boldText}>Write a Complaint</RNText>
+        <TouchableOpacity
+          onPress={() => {
+            router.push({
+              pathname: "/Home/viewMore",
+            });
+          }}
+        >
+          <RNText style={styles.headerSubTex}>View all</RNText>
+        </TouchableOpacity>
+
         <View style={styles.iconWrapper}>
           <TouchableOpacity
             style={styles.iconContainer}
@@ -362,18 +397,33 @@ const Index = () => {
               >
                 {item.icon}
                 <RNText style={styles.iconText}>
-                  {truncateText(item.title, 5)}
+                  {truncateText(item.title, 8)}
                 </RNText>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
+
         <RNText style={styles.boldText}>My Complaints</RNText>
-        <FlatList
+        <Text style={styles.headerSubTex}>
+          {truncateText(
+            `Pending:${finalCount("OPEN")} Closed:${finalCount("CLOSE")}`,
+            30
+          )}
+        </Text>
+          { (!issues) ? <RNText style={styles.boldText}>No Complaints</RNText> :  
+          <FlatList
           data={filteredIssues}
           renderItem={renderComplaintItem}
           keyExtractor={(item) => item.code}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.verticalScrollView}
         />
+          }
+
+        <View style={styles.footer}>
+          <RNText style={styles.footerText}>Powered by SIGMA</RNText>
+        </View>
       </ScrollView>
     </Provider>
   );
@@ -382,6 +432,18 @@ const Index = () => {
 export default Index;
 
 const styles = StyleSheet.create({
+  footer: {
+    padding: 16,
+
+    alignItems: "center",
+    position: "relative",
+    bottom: 0,
+    marginTop: "1%",
+    width: "100%",
+  },
+  footerText: {
+    color: "#555",
+  },
   scrollView: {
     marginTop: "1%",
     paddingHorizontal: 10,
@@ -395,6 +457,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginHorizontal: "3%",
     marginTop: "0%",
+    
   },
   searchContainer: {
     flexDirection: "row",
@@ -437,8 +500,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "11%",
     height: 43,
-    marginLeft: "2%",
-    marginRight:"2%"
+    marginLeft: "3%",
+    marginRight: "2%",
   },
   iconButtonContainer1: {
     backgroundColor: "#e6e6e4",
@@ -447,9 +510,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "110%",
     height: 43,
-    marginLeft:"2%",
-    marginRight:"2%"
-    
+    marginLeft: "3%",
+    marginRight: "2%",
   },
   iconWrapper: {
     flexDirection: "row",
@@ -460,6 +522,7 @@ const styles = StyleSheet.create({
   horizontalScrollContainer: {
     paddingRight: width * 0.12,
   },
+  verticalScrollView: {},
   boldText: {
     marginTop: "5%",
     marginLeft: "5%",
@@ -503,15 +566,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#8283e9",
     paddingVertical: 10, // Increase vertical padding
     paddingHorizontal: 10, // Increase horizontal padding
-    borderRadius: 25,
+    borderRadius: 10,
     alignSelf: "flex-start",
     marginTop: "-1%", // Adjust margin if needed
   },
   readMoreButtonText: {
     color: "#fff",
-    fontSize: 10, // Increase font size
+    fontSize: 9, // Increase font size
     textAlign: "center",
   },
+  readMoreContainer: {
+    flexDirection: "row",
+    // justifyContent: "end",
+    justifyContent: "space-between",
+  },
+  
   headerContainer: {
     height: "8%",
     backgroundColor: "#f2f2f2",
@@ -533,6 +602,15 @@ const styles = StyleSheet.create({
     flex: 2,
     textAlign: "right",
   },
+  headerSubTex: {
+    color: "#555555",
+    marginLeft: 10,
+    fontSize: 12,
+    flex: 2,
+    textAlign: "right",
+    marginTop: "-5%",
+    marginRight: "4%",
+  },
   headerIconContainer: {
     position: "absolute",
     right: "5%",
@@ -544,23 +622,25 @@ const styles = StyleSheet.create({
   },
   complaintBody: {
     flexDirection: "row", // Set to row to place items horizontally
-    justifyContent: "space-between", // Distribute space between items
+
     marginBottom: 10,
   },
   categoryText: {
-    fontSize: 14,
+    fontSize: 10,
     color: "#0d0907",
     marginBottom: 5,
   },
   statusText: {
-    fontSize: 14,
+    fontSize: 10,
     color: "#0d0907",
     marginBottom: 0,
+    paddingRight: 2,
     textAlign: "right",
     flex: 1,
+    fontWeight: "bold",
   },
   issueTypeText: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "bold",
     color: "#333",
   },

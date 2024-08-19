@@ -12,10 +12,11 @@ import {
   Alert,
 } from "react-native";
 import { router, useGlobalSearchParams, useNavigation } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Feather, SimpleLineIcons } from "@expo/vector-icons";
 import { useUser } from "@/Hooks/userContext";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { Appbar } from "react-native-paper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -137,7 +138,7 @@ export default function IssueDetails() {
           by: user.id, // replace with actual current user ID
           content: newComment,
         };
-        setComments([...comments, newCommentObj]);
+        setComments((prevComments) => [newCommentObj, ...prevComments]); // Add new comment at the top
         const body = {
           user_id: user.id,
           content: newComment,
@@ -171,7 +172,6 @@ export default function IssueDetails() {
 
   if (loading) {
     return (
-      
       <View
         style={{
           flex: 1,
@@ -186,23 +186,17 @@ export default function IssueDetails() {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => router.back()} />
+        <Appbar.Content title="Sigma - GMS" />
+      </Appbar.Header>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
         enableOnAndroid={true}
         extraHeight={100}
+        
       >
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.iconContainer}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          >
-            <AntDesign name="left" size={20} color="#555555" />
-          </TouchableOpacity>
-          <Text style={styles.headingText}>Issue Details</Text>
-        </View>
+        {/* <View style={styles.container}>
         <View style={styles.detailsContainer}>
           <View style={styles.row}>
             <View style={styles.box}>
@@ -272,15 +266,124 @@ export default function IssueDetails() {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </View> */}
+        <View style={styles.container}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <View>
+              <Text style={styles.cat} >
+                Category
+              </Text>
+              <Text
+                style={{ fontWeight: "bold", fontSize: 20, color: "black" }}
+              >
+                {issue?.issue.issueCat}
+              </Text>
+            </View>
+            <View>
+              {issue?.status == "CLOSE" ? (
+                <Feather name="check-circle" size={27} color="green" />
+              ) : (
+                <SimpleLineIcons name="close" size={27} color="red" />
+              )}
+            </View>
+          </View>
+          <View
+            style={{
+              width: "100%",
+              height: "0.1%",
+              backgroundColor: "black",
+              marginTop: 17,
+            }}
+          ></View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 10,
+            }}
+          >
+            <View>
+              <Text>
+                Lastly Updated Date : {issue?.issue.issueLastUpdateDate}{" "}
+              </Text>
+            </View>
+            <View>
+              <Text>Time : {issue?.issue.issueLastUpdateTime}</Text>
+            </View>
+          </View>
+          <View style={{ marginTop: 20, gap : 10 }}>
+            <Text style={styles.detailsText}>Floor : {issue?.issue.floor} </Text>
+            <Text style={styles.detailsText}>Block : {issue?.issue.block} block </Text>
+            <Text style={styles.detailsText}>
+              Type : {issue?.issue.issueType}
+            </Text>
+            <Text style={styles.detailsText}>
+              Content : {issue?.issue.issueContent}
+            </Text>
+            <Text style={styles.detailsText}>
+              Action Item : {issue?.issue.actionItem}
+            </Text>
+          </View>
+          {issue?.status === "OPEN" ? (
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                CloseISsue();
+              }}
+            >
+              <Text style={styles.closeButtonText}>REVERT THIS ISSUE</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                reopenIssue();
+              }}
+            >
+              <Text style={styles.closeButtonText}>REOPEN THIS ISSUE</Text>
+            </TouchableOpacity>
+          )}
+
+<Text style={styles.commentsHeading}>COMMENTS</Text>
+          {comments.filter((comment) => comment.content.trim()).map((comment, index) => (
+            <View key={index} style={styles.commentBox}>
+              <Text style={styles.commentUser}>{comment.by}</Text>
+              <Text style={styles.commentContent}>{comment.content}</Text>
+            </View>
+          ))}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.textInput}
+              value={newComment}
+              onChangeText={setNewComment}
+              placeholder="Add a comment"
+            />
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={handleAddComment}
+            >
+              <AntDesign name="plus" size={15} color="#555555" />
+            </TouchableOpacity>
+        </View>
+        </View>
       </KeyboardAwareScrollView>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  cat:{
+    fontStyle:"italic",
+    fontSize: 10,
+
+  },
   scrollView: {
     backgroundColor: "#FFFFFF",
+    flexGrow: 1,
+    padding: "2%",
+    marginBottom:'5%'
   },
   container: {
     flex: 1,
@@ -306,28 +409,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     elevation: 5,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
+    // shadowColor: "#000000",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.23,
+    // shadowRadius: 2.62,
   },
   headingText: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "bold",
     color: "#003366",
     textAlign: "center",
   },
   detailsContainer: {
-    borderWidth: 1,
-    borderColor: "#DDE6F0",
-    borderRadius: 10,
+    // borderWidth: 1,
+    // borderColor: "#DDE6F0",
+    // borderRadius: 10,
     padding: 20,
     backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
+    // shadowColor: "#000",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.23,
+    // shadowRadius: 2.62,
+    // elevation: 4,
   },
   row: {
     flexDirection: "row",
@@ -362,8 +465,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   detailsText: {
-    fontSize: 16,
-    color: "#003366",
+    fontSize: 14,
     marginBottom: 5,
   },
   closeButton: {
@@ -374,16 +476,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#E6F0FF",
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 20,
   },
   closeButtonText: {
     fontSize: 16,
     color: "#003366",
   },
   commentsHeading: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "700",
-    color: "#003366",
-    marginBottom: 10,
+    marginVertical: 10,
   },
   commentBox: {
     borderWidth: 1,
@@ -391,16 +493,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     backgroundColor: "#FFFFFF",
-    marginBottom: 10,
+    marginVertical: 10,
   },
   commentUser: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#003366",
   },
   commentContent: {
-    fontSize: 14,
-    color: "#666666",
+    fontSize: 12,
+    marginTop :1 ,
   },
   inputContainer: {
     flexDirection: "row",
@@ -415,12 +516,12 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     marginRight: 10,
-    fontSize: 16,
+    fontSize: 12,
     color: "#333333",
   },
   addButton: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     borderRadius: 20,
     backgroundColor: "#E6F0FF",
     alignItems: "center",

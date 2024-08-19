@@ -1,5 +1,6 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState,Suspense } from "react";
 import {
+  ActivityIndicator,
   View,
   Text,
   TextInput,
@@ -8,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import { RouteProp } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign,MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { Image } from "react-native";
 import axios from "axios";
@@ -16,6 +17,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from "@/Hooks/userContext";
 import * as jwt from "jwt-decode";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Toast from 'react-native-toast-message';
+
+
 
 type RootStackParamList = {
   Login: undefined;
@@ -41,17 +45,37 @@ const reducer = (state: State, action: Action): State => {
       return state;
   }
 };
+const LazyHomeScreen = React.lazy(() => import("../Home/index"));
 
+const HomeScreenLoader = () => {
+  return (
+    <Suspense
+      fallback={
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="small" color="#a3c3e7" />
+        </View>
+      }
+    >
+      <LazyHomeScreen />
+    </Suspense>
+  );
+};
 const LoginScreen = () => {
   const [state, dispatch] = useReducer(reducer, { email: "", password: "" });
   const [isEmailFocused, setEmailFocused] = useState(false);
   const [isPasswordFocused, setPasswordFocused] = useState(false);
   const [secureText, setSecureText] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigation = useNavigation();
   const { updateUser } = useUser();
 
   const Login = async () => {
     try {
+    Toast.show({
+      type: "info", 
+      text1: "Logging in...",
+      visibilityTime: 1000, 
+    });
       const body = {
         id: state.email,
         password: state.password,
@@ -67,10 +91,17 @@ const LoginScreen = () => {
         id: response.data.user.id,
         confirmed: true,
       });
-      router.replace("/Home/index");
+      setIsLoggedIn(true);
     } catch (error: any) {
-      Alert.alert("Error", error.response.data.message);
-      console.error(error.response);
+      // Alert.alert("Error", error.response.data.message);
+      // console.error(error.response);
+      Toast.show({
+        type:"error",
+        text1:"Invalid Credentials",
+        text2:"Please enter valid register number and password",
+        visibilityTime:2000,
+        
+      })
     }
   };
 
@@ -107,7 +138,9 @@ const LoginScreen = () => {
   }, []);
 
   return (
-    <KeyboardAwareScrollView
+    <>
+    {!isLoggedIn ? ( 
+      <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollView}
       enableOnAndroid={true}
       extraHeight={100}
@@ -128,10 +161,10 @@ const LoginScreen = () => {
             isEmailFocused && styles.inputContainerFocused,
           ]}
         >
-          <MaterialCommunityIcons name="email-outline" size={20} color="#999" />
+          <AntDesign name="user" size={20} color="#999" />
           <TextInput
             style={styles.input}
-            placeholder="Register Number"
+            placeholder="Roll Number"
             placeholderTextColor="#999"
             value={state.email}
             onFocus={() => setEmailFocused(true)}
@@ -195,6 +228,12 @@ const LoginScreen = () => {
         </TouchableOpacity>
       </View>
     </KeyboardAwareScrollView>
+    ) : (
+      <HomeScreenLoader />
+
+    )}
+    </>
+    
   );
 };
 
@@ -266,7 +305,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 25,
     width: "40%",
-    marginRight: "-45%",
+    marginRight: "-55%",
     alignItems: "center",
     marginBottom: 15,
   },

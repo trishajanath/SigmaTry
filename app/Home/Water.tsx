@@ -16,6 +16,7 @@ import { router } from "expo-router";
 import axios from "axios";
 import { useUser } from "@/Hooks/userContext";
 import { Appbar } from "react-native-paper";
+import Toast from "react-native-toast-message";
 const { width } = Dimensions.get("window");
 
 const initialState = {
@@ -61,6 +62,14 @@ const SinglePageForm = () => {
   };
 
   const handleSubmit = async () => {
+    if (!state.name.trim() || !state.number.trim() || !state.dispenserName.trim() || !state.content.trim() || state.selectedOptionType === "Select Type") {
+      Toast.show({
+        type: "error",
+        text1: "Please fill out of all the fields before submitting.",
+        visibilityTime: 2000,
+      });
+      return;
+    }
     try {
       const Submit = {
         name: user.name,
@@ -93,6 +102,7 @@ const SinglePageForm = () => {
     <>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
+        <Appbar.Content title="Sigma - GMS " />
       </Appbar.Header>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
@@ -100,7 +110,7 @@ const SinglePageForm = () => {
         extraHeight={100}
       >
         <View style={styles.container}>
-          <Text style={styles.main}>Water Dispenser Report Form</Text>
+          <Text style={styles.main}>Water Dispenser Complaint</Text>
 
           <Text style={styles.label}>Block Name</Text>
           <TextInput
@@ -161,6 +171,7 @@ const SinglePageForm = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
+      <Toast/>
     </>
   );
 };
@@ -173,13 +184,18 @@ const styles = StyleSheet.create({
   main: {
     fontSize: 20,
     marginTop: Platform.OS === "ios" ? "1%" : "1%",
-    textAlign: "center",
+    marginBottom: "7%",
+    fontWeight: "bold",
+  },
+  formContainer: {
+    alignItems: "flex-start",
+    justifyContent: "center",
     marginBottom: "10%",
+    width: "100%",
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: "4%",
-    marginTop: "5%",
   },
   input: {
     width: "100%",
@@ -196,7 +212,7 @@ const styles = StyleSheet.create({
   },
   dropdownWrapper: {
     width: "100%",
-    marginBottom: "5%",
+    marginBottom: "4%",
   },
   pickerLabel: {
     fontSize: 16,
@@ -224,7 +240,7 @@ const styles = StyleSheet.create({
     paddingVertical: "3%",
     paddingHorizontal: "3%",
     borderRadius: 5,
-    marginTop: "0%",
+    marginTop: "3%",
     alignItems: "center",
   },
   submitBtnText: {

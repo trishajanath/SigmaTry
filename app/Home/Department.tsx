@@ -15,6 +15,7 @@ import { router, useNavigation } from "expo-router";
 import axios from "axios";
 import { useUser } from "@/Hooks/userContext";
 import { Appbar } from "react-native-paper";
+import Toast from "react-native-toast-message";
 
 const { width } = Dimensions.get("window");
 
@@ -95,6 +96,24 @@ const SinglePageForm: React.FC = () => {
   }, [openCabin]);
 
   const handleSubmit = async () => {
+    if (
+      !state.name ||
+      !state.number ||
+      !state.department ||
+      state.cabin === "Select Option" ||
+      state.type === "Select Type" ||
+      state.domain === "Select Domain" ||
+      !state.content
+    ) {
+      Toast.show({
+        type: "error",
+        text1: "Some fields are missing",
+        text2: "Please fill all the fields",
+        visibilityTime: 2000,
+      });
+      return; 
+    }
+    
     try {
       const Submit = {
         name: user.name,
@@ -131,6 +150,7 @@ const SinglePageForm: React.FC = () => {
     <>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
+        <Appbar.Content title="Sigma - GMS " />
       </Appbar.Header>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
@@ -138,7 +158,7 @@ const SinglePageForm: React.FC = () => {
         extraHeight={100}
       >
         <View style={styles.container}>
-          <Text style={styles.main}>Department Report Form</Text>
+          <Text style={styles.main}>Department Complaint</Text>
           <View style={styles.formContainer}>
             <Text style={styles.label}>Block Name</Text>
             <TextInput
@@ -235,6 +255,7 @@ const SinglePageForm: React.FC = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
+      <Toast/>
     </>
   );
 };
@@ -247,8 +268,8 @@ const styles = StyleSheet.create({
   main: {
     fontSize: 20,
     marginTop: Platform.OS === "ios" ? "1%" : "1%",
-    textAlign: "center",
-    marginBottom: "10%",
+    marginBottom: "7%",
+    fontWeight: "bold",
   },
   formContainer: {
     alignItems: "flex-start",
@@ -257,7 +278,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: "4%",
   },
   input: {
@@ -303,7 +324,7 @@ const styles = StyleSheet.create({
     paddingVertical: "3%",
     paddingHorizontal: "3%",
     borderRadius: 5,
-    marginTop: "-9%",
+    marginTop: "-10%",
     alignItems: "center",
   },
   submitBtnText: {
