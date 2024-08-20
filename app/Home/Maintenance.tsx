@@ -75,7 +75,7 @@ const SinglePageForm = () => {
         id: users.id,
         issueType: state.selectedOptionType,
         issueCat: "",
-        actionType: "",
+        actionType: "Miscellaneous",
         block: "",
         floor: "",
         issueContent: state.content,
@@ -118,7 +118,7 @@ const SinglePageForm = () => {
               setSelected={(value: any) =>
                 dispatch({ type: "SET_TYPE", payload: value })
               }
-              data={["Complaint", "Feedback", "Suggestion"]}
+              data={["Complaint", "Feedback"]}
               search={false}
               save="value"
             />
@@ -127,7 +127,7 @@ const SinglePageForm = () => {
           <Text style={styles.label}>Content</Text>
           <TextInput
             style={styles.input}
-            placeholder="Content"
+            placeholder="Enter Content Here"
             value={state.content}
             onChangeText={(text) =>
               dispatch({ type: "SET_CONTENT", payload: text })

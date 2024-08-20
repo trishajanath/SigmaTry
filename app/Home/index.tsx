@@ -65,7 +65,7 @@ const ovalContainers = [
     id: 3,
     icon: <FontAwesome5 name="restroom" size={23} color="#555555" />,
     onPress: "/Home/restroom",
-    title: "Toilet",
+    title: "Restroom",
   },
   {
     id: 4,
@@ -89,7 +89,7 @@ const ovalContainers = [
     id: 6,
     icon: <Foundation name="elevator" size={23} color="#555555" />,
     onPress: "/Home/Elevator",
-    title: "Elevator",
+    title: "Lift",
   },
   {
     id: 7,
@@ -240,8 +240,7 @@ const Index = () => {
           <RNText style={styles.categoryText}> | ID : {item.code}</RNText>
         </View>
         <View style={styles.readMoreContainer}>
-        <RNText style={styles.dateText}> {(item.status == "OPEN") ? "Hang Tight Our Personnel are working on it !" : (item.status == "PENDING") ? "Final Stages of the Work !" : "Issue Solved Thank you !"} </RNText>
-       
+          <RNText style={styles.dateText}> {(item.status == "OPEN") ? "Hang Tight Our Personnel are working on it !" : (item.status == "PENDING") ? "Final Stages of the Work !" : "Issue Solved Thank you !"} </RNText>
           <TouchableOpacity
             style={styles.readMoreButton}
             onPress={() => {
@@ -259,6 +258,7 @@ const Index = () => {
       </View>
     </View>
   );
+  
 
   return (
     <Provider>
@@ -412,13 +412,14 @@ const Index = () => {
           )}
         </Text>
           { (!issues) ? <RNText style={styles.boldText}>No Complaints</RNText> :  
-          <FlatList
-          data={filteredIssues}
-          renderItem={renderComplaintItem}
-          keyExtractor={(item) => item.code}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.verticalScrollView}
-        />
+         <FlatList
+         data={filteredIssues.slice().reverse()} // Reverse the array for stack display
+         renderItem={renderComplaintItem}
+         keyExtractor={(item) => item.code}
+         showsVerticalScrollIndicator={false}
+         contentContainerStyle={styles.verticalScrollView}
+       />
+       
           }
 
         <View style={styles.footer}>

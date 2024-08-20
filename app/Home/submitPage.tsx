@@ -1,20 +1,53 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import { router, useNavigation } from "expo-router";
+import Entypo from '@expo/vector-icons/Entypo';
 
 const { width } = Dimensions.get("window");
 
 const SubmitPage: React.FC = () => {
+  const [issueId, setIssueId] = useState<string>("");
+
+  useEffect(() => {
+    const fetchIssueId = async () => {
+      try {
+        const response = await fetch("https://api.gms.intellx.in/tasks");
+        const data = await response.json();
+        
+        // Log the response to verify the structure
+        console.log("API Response:", data);
+  
+        // Check if issue_id exists in the response
+        if (data.issue_id) {
+          setIssueId(data.issue_id);
+        } else {
+          console.error("Issue ID not found in the response:", data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch issue number:", error);
+      }
+    };
+  
+    fetchIssueId();
+  }, []);
+  
+
   const handleRedirect = () => {
     router.push("/Home");
   };
+
+  const handleTrackIssue = () => {
+    router.push("/Status"); // Adjust the route to your status tracking page
+  };
+
   const navigation = useNavigation();
+  
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -23,27 +56,41 @@ const SubmitPage: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Thank You!</Text>
-      <Text style={styles.message}>
-        Your form has been successfully submitted.
-      </Text>
-      <TouchableOpacity style={styles.homeButton} onPress={handleRedirect}>
-        <Text style={styles.homeButtonText}>Go to Home</Text>
-      </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <Entypo name="check" size={33} color="#bbbef3" style={styles.checkIcon} />  
+        <Text style={styles.message}>
+          Your Issue/Suggestion was reported with ID{" "}
+          <Text style={styles.issueId}>{issueId}</Text>. You can track it in the Status menu.
+        </Text>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleTrackIssue}>
+            <Text style={styles.buttonText}>View Issue</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleRedirect}>
+            <Text style={styles.buttonText}>Go to Dashboard</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f2f2f2",
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
   },
-  acknowledgmentContainer: {
-    width: width * 0.9,
-    padding: 20,
+  contentContainer: {
+    alignItems: "center",
+    paddingHorizontal: 20,
+    width: "90%",
+    alignContent: "center",
+    paddingVertical: 20,
     borderRadius: 10,
     backgroundColor: "#fff",
     shadowColor: "#888",
@@ -51,35 +98,39 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    alignItems: "center",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
+  checkIcon: {
+    marginBottom: 20,
   },
   message: {
     fontSize: 16,
-    color: "#666",
+    color: "#000",
     textAlign: "center",
     marginBottom: 20,
   },
-  homeButton: {
+  issueId: {
+    fontWeight: "bold",
+    color: "black",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  button: {
+    flex: 1,
     backgroundColor: "#bbbef3",
     paddingVertical: 12,
-    paddingHorizontal: 25,
+    paddingHorizontal: 15,
     borderRadius: 5,
-    shadowColor: "#888",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
+    marginHorizontal: 5,
+    justifyContent: "center", // Aligns content vertically in the center
   },
-  homeButtonText: {
-    fontSize: 16,
+  buttonText: {
     color: "#fff",
-    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 
