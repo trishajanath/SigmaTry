@@ -7,36 +7,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { router, useNavigation } from "expo-router";
-import Entypo from '@expo/vector-icons/Entypo';
-
+import Entypo from "@expo/vector-icons/Entypo";
+import { useGlobalSearchParams } from "expo-router";
 const { width } = Dimensions.get("window");
 
 const SubmitPage: React.FC = () => {
   const [issueId, setIssueId] = useState<string>("");
-
-  useEffect(() => {
-    const fetchIssueId = async () => {
-      try {
-        const response = await fetch("https://api.gms.intellx.in/tasks");
-        const data = await response.json();
-        
-        // Log the response to verify the structure
-        console.log("API Response:", data);
-  
-        // Check if issue_id exists in the response
-        if (data.issue_id) {
-          setIssueId(data.issue_id);
-        } else {
-          console.error("Issue ID not found in the response:", data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch issue number:", error);
-      }
-    };
-  
-    fetchIssueId();
-  }, []);
-  
+  const params = [useGlobalSearchParams()];
+  console.log("Search Params:", params);
 
   const handleRedirect = () => {
     router.push("/Home");
@@ -47,7 +25,7 @@ const SubmitPage: React.FC = () => {
   };
 
   const navigation = useNavigation();
-  
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -57,10 +35,16 @@ const SubmitPage: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
-        <Entypo name="check" size={33} color="#bbbef3" style={styles.checkIcon} />  
+        <Entypo
+          name="check"
+          size={33}
+          color="#bbbef3"
+          style={styles.checkIcon}
+        />
         <Text style={styles.message}>
-          Your Issue/Suggestion was reported with ID{" "}
-          <Text style={styles.issueId}>{issueId}</Text>. You can track it in the Status menu.
+          Your Issue/Suggestion was reported with ID {params[0].issue_id}
+          <Text style={styles.issueId}>{issueId}</Text>. You can track it in the
+          Status menu.
         </Text>
 
         <View style={styles.buttonContainer}>
@@ -75,7 +59,6 @@ const SubmitPage: React.FC = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

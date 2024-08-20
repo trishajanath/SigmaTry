@@ -33,7 +33,6 @@ interface FormData {
   ratingCleanliness?: number;
 }
 
-
 const initialState: FormData = {
   name: "",
   number: "",
@@ -65,7 +64,6 @@ function reducer(state: FormData, action: Action): FormData {
       return state;
   }
 }
-
 
 const SinglePageForm: React.FC = () => {
   const users = useUser();
@@ -114,7 +112,7 @@ const SinglePageForm: React.FC = () => {
         issueContent: state.classroom,
         block: state.name,
         floor: state.number,
-        actionItem:"Classroom" ,
+        actionItem: "Classroom",
         comments: [
           {
             by: users.id,
@@ -122,18 +120,19 @@ const SinglePageForm: React.FC = () => {
           },
         ],
         "survey-table": state.ratingTable,
-        "survey-chair":  state.ratingChair,
-        "survey-projector":  state.ratingChair,
-        "survey-cleanliness":  state.ratingChair,
+        "survey-chair": state.ratingChair,
+        "survey-projector": state.ratingChair,
+        "survey-cleanliness": state.ratingChair,
       };
-  
-      console.log("Submitting data:", Submit);
       const response = await axios.post(
         "https://api.gms.intellx.in/client/issue/report",
         Submit
       );
       console.log("Response data:", response.data);
-      router.push("/Home/submitPage");
+      router.push({
+        pathname: "/Home/submitPage",
+        params: response.data,
+      });
     } catch (error: any) {
       console.error("Error occurred during submission:", error);
       if (error.response) {
@@ -147,11 +146,11 @@ const SinglePageForm: React.FC = () => {
       });
     }
   };
-  
+
   const handleRatingSelect = (category: string, rating: number) => {
     dispatch({ type: "SET_RATING", category, rating });
   };
-  
+
   return (
     <>
       <Appbar.Header>
@@ -242,91 +241,111 @@ const SinglePageForm: React.FC = () => {
             />
             {/* Conditionally render rating section */}
             {state.selectedOptionType === "Feedback" && (
-              
               <View style={styles.ratingContainer}>
-                 <Text style={styles.lab}>Give your ratings</Text>
-              <Text style={styles.labe}>Table</Text>
-              <View style={styles.customRatingContainer}>
-                {[1, 2, 3].map((rate) => (
-                  <View key={rate} style={styles.ratingItem}>
-                    <TouchableOpacity
-                      style={[
-                        styles.circle,
-                        state.ratingTable === rate && styles.selectedCircle,
-                      ]}
-                      onPress={() => handleRatingSelect('ratingTable', rate)}
-                    >
-                      <Text style={styles.circleText}></Text>
-                    </TouchableOpacity>
-                    <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
-                    </Text>
-                  </View>
-                ))}
+                <Text style={styles.lab}>Give your ratings</Text>
+                <Text style={styles.labe}>Table</Text>
+                <View style={styles.customRatingContainer}>
+                  {[1, 2, 3].map((rate) => (
+                    <View key={rate} style={styles.ratingItem}>
+                      <TouchableOpacity
+                        style={[
+                          styles.circle,
+                          state.ratingTable === rate && styles.selectedCircle,
+                        ]}
+                        onPress={() => handleRatingSelect("ratingTable", rate)}
+                      >
+                        <Text style={styles.circleText}></Text>
+                      </TouchableOpacity>
+                      <Text style={styles.ratingText}>
+                        {rate === 1
+                          ? "Poor"
+                          : rate === 2
+                          ? "Satisfactory"
+                          : "Average"}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+
+                <Text style={styles.labe}>Chair</Text>
+                <View style={styles.customRatingContainer}>
+                  {[1, 2, 3].map((rate) => (
+                    <View key={rate} style={styles.ratingItem}>
+                      <TouchableOpacity
+                        style={[
+                          styles.circle,
+                          state.ratingChair === rate && styles.selectedCircle,
+                        ]}
+                        onPress={() => handleRatingSelect("ratingChair", rate)}
+                      >
+                        <Text style={styles.circleText}></Text>
+                      </TouchableOpacity>
+                      <Text style={styles.ratingText}>
+                        {rate === 1
+                          ? "Poor"
+                          : rate === 2
+                          ? "Satisfactory"
+                          : "Average"}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+
+                <Text style={styles.labe}>Projector</Text>
+                <View style={styles.customRatingContainer}>
+                  {[1, 2, 3].map((rate) => (
+                    <View key={rate} style={styles.ratingItem}>
+                      <TouchableOpacity
+                        style={[
+                          styles.circle,
+                          state.ratingProjector === rate &&
+                            styles.selectedCircle,
+                        ]}
+                        onPress={() =>
+                          handleRatingSelect("ratingProjector", rate)
+                        }
+                      >
+                        <Text style={styles.circleText}></Text>
+                      </TouchableOpacity>
+                      <Text style={styles.ratingText}>
+                        {rate === 1
+                          ? "Poor"
+                          : rate === 2
+                          ? "Satisfactory"
+                          : "Average"}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+
+                <Text style={styles.labe}>Cleanliness</Text>
+                <View style={styles.customRatingContainer}>
+                  {[1, 2, 3].map((rate) => (
+                    <View key={rate} style={styles.ratingItem}>
+                      <TouchableOpacity
+                        style={[
+                          styles.circle,
+                          state.ratingCleanliness === rate &&
+                            styles.selectedCircle,
+                        ]}
+                        onPress={() =>
+                          handleRatingSelect("ratingCleanliness", rate)
+                        }
+                      >
+                        <Text style={styles.circleText}></Text>
+                      </TouchableOpacity>
+                      <Text style={styles.ratingText}>
+                        {rate === 1
+                          ? "Poor"
+                          : rate === 2
+                          ? "Satisfactory"
+                          : "Average"}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
               </View>
-            
-              <Text style={styles.labe}>Chair</Text>
-              <View style={styles.customRatingContainer}>
-                {[1, 2, 3].map((rate) => (
-                  <View key={rate} style={styles.ratingItem}>
-                    <TouchableOpacity
-                      style={[
-                        styles.circle,
-                        state.ratingChair === rate && styles.selectedCircle,
-                      ]}
-                      onPress={() => handleRatingSelect('ratingChair', rate)}
-                    >
-                      <Text style={styles.circleText}></Text>
-                    </TouchableOpacity>
-                    <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            
-              <Text style={styles.labe}>Projector</Text>
-              <View style={styles.customRatingContainer}>
-                {[1, 2, 3].map((rate) => (
-                  <View key={rate} style={styles.ratingItem}>
-                    <TouchableOpacity
-                      style={[
-                        styles.circle,
-                        state.ratingProjector === rate && styles.selectedCircle,
-                      ]}
-                      onPress={() => handleRatingSelect('ratingProjector', rate)}
-                    >
-                      <Text style={styles.circleText}></Text>
-                    </TouchableOpacity>
-                    <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            
-              <Text style={styles.labe}>Cleanliness</Text>
-              <View style={styles.customRatingContainer}>
-                {[1, 2, 3].map((rate) => (
-                  <View key={rate} style={styles.ratingItem}>
-                    <TouchableOpacity
-                      style={[
-                        styles.circle,
-                        state.ratingCleanliness === rate && styles.selectedCircle,
-                      ]}
-                      onPress={() => handleRatingSelect('ratingCleanliness', rate)}
-                    >
-                      <Text style={styles.circleText}></Text>
-                    </TouchableOpacity>
-                    <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-)}
-            
+            )}
 
             <View style={styles.switchContainer}>
               <Text style={styles.switchLabel}>Anonymous Replies</Text>
@@ -370,7 +389,7 @@ const styles = StyleSheet.create({
   labe: {
     fontSize: 15,
     marginBottom: "2%",
-    marginTop:"2%"
+    marginTop: "2%",
   },
   ratingItem: {
     flexDirection: "row",
@@ -440,7 +459,7 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === "ios" ? "2%" : 0,
     marginBottom: "3%",
   },
- 
+
   switchContainer: {
     marginTop: 20,
     flexDirection: "row",

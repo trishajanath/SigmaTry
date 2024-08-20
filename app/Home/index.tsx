@@ -35,16 +35,16 @@ import { black } from "react-native-paper/lib/typescript/styles/themes/v2/colors
 const { width } = Dimensions.get("window");
 const menuTheme = {
   colors: {
-    surface: '#000000', // Menu background color (black)
-    text: '#FFFFFF', // Menu text color (white)
+    surface: "#000000", // Menu background color (black)
+    text: "#FFFFFF", // Menu text color (white)
   },
-}
+};
 interface Issue {
   category: string;
   code: string;
   desc: string;
   status: string;
-  date : string;
+  date: string;
 }
 
 const constantContainer = {
@@ -141,8 +141,10 @@ const Index = () => {
         body
       );
       setIssues(response.data.data);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      console.log("Error in FetchAllIssues");
+      console.log(error.response);
     }
   };
 
@@ -231,7 +233,11 @@ const Index = () => {
           <RNText style={styles.issueTypeText}>
             {item.category == "" ? "MISCELLANEOUS" : item.category}
           </RNText>
-          {(item.status == "CLOSE") ? <Feather name="check-circle" size={20} color="green" />  :<SimpleLineIcons name="close" size={20} color="red" /> }
+          {item.status == "CLOSE" ? (
+            <Feather name="check-circle" size={20} color="green" />
+          ) : (
+            <SimpleLineIcons name="close" size={20} color="red" />
+          )}
         </View>
         <View style={styles.complaintBody}>
           <RNText style={styles.categoryText}>
@@ -240,7 +246,14 @@ const Index = () => {
           <RNText style={styles.categoryText}> | ID : {item.code}</RNText>
         </View>
         <View style={styles.readMoreContainer}>
-          <RNText style={styles.dateText}> {(item.status == "OPEN") ? "Hang Tight Our Personnel are working on it !" : (item.status == "PENDING") ? "Final Stages of the Work !" : "Issue Solved Thank you !"} </RNText>
+          <RNText style={styles.dateText}>
+            {" "}
+            {item.status == "OPEN"
+              ? "Hang Tight Our Personnel are working on it !"
+              : item.status == "PENDING"
+              ? "Final Stages of the Work !"
+              : "Issue Solved Thank you !"}{" "}
+          </RNText>
           <TouchableOpacity
             style={styles.readMoreButton}
             onPress={() => {
@@ -258,7 +271,6 @@ const Index = () => {
       </View>
     </View>
   );
-  
 
   return (
     <Provider>
@@ -309,14 +321,14 @@ const Index = () => {
                 setSortOption("status");
                 setMenuVisible(false);
               }}
-              title={<Text style={{color:'white'}}>Sort by Status</Text>}
+              title={<Text style={{ color: "white" }}>Sort by Status</Text>}
             />
             <Menu.Item
               onPress={() => {
                 setSortOption("date");
                 setMenuVisible(false);
               }}
-              title={<Text style={{color:'white'}}>Sort by Date</Text>}
+              title={<Text style={{ color: "white" }}>Sort by Date</Text>}
             />
             <Divider />
             <Menu.Item
@@ -324,23 +336,22 @@ const Index = () => {
                 setFilterOption(null);
                 setMenuVisible(false);
               }}
-              title={<Text style={{color:'white'}}>All</Text>}
+              title={<Text style={{ color: "white" }}>All</Text>}
             />
             <Menu.Item
               onPress={() => {
                 setFilterOption("OPEN");
                 setMenuVisible(false);
               }}
-              title={<Text style={{color:'white'}}>Opened</Text>}
+              title={<Text style={{ color: "white" }}>Opened</Text>}
             />
             <Menu.Item
               onPress={() => {
                 setFilterOption("CLOSE");
                 setMenuVisible(false);
               }}
-              title={<Text style={{color:'white'}}>Closed</Text>}
+              title={<Text style={{ color: "white" }}>Closed</Text>}
             />
-            
           </Menu>
           <TouchableOpacity
             style={styles.iconButtonContainer}
@@ -411,16 +422,17 @@ const Index = () => {
             30
           )}
         </Text>
-          { (!issues) ? <RNText style={styles.boldText}>No Complaints</RNText> :  
-         <FlatList
-         data={filteredIssues.slice().reverse()} // Reverse the array for stack display
-         renderItem={renderComplaintItem}
-         keyExtractor={(item) => item.code}
-         showsVerticalScrollIndicator={false}
-         contentContainerStyle={styles.verticalScrollView}
-       />
-       
-          }
+        {!issues ? (
+          <RNText style={styles.boldText}>No Complaints</RNText>
+        ) : (
+          <FlatList
+            data={filteredIssues.slice().reverse()} // Reverse the array for stack display
+            renderItem={renderComplaintItem}
+            keyExtractor={(item) => item.code}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.verticalScrollView}
+          />
+        )}
 
         <View style={styles.footer}>
           <RNText style={styles.footerText}>Powered by SIGMA</RNText>
@@ -458,7 +470,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginHorizontal: "3%",
     marginTop: "0%",
-    
   },
   searchContainer: {
     flexDirection: "row",
@@ -581,7 +592,7 @@ const styles = StyleSheet.create({
     // justifyContent: "end",
     justifyContent: "space-between",
   },
-  
+
   headerContainer: {
     height: "8%",
     backgroundColor: "#f2f2f2",
