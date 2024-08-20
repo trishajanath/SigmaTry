@@ -83,7 +83,6 @@ const SinglePageForm = () => {
         text1: "Please select a Type.",
         visibilityTime: 2000,
       });
-      
       return;
     }
     if (state.selectedOptionDomain === "Select Domain") {
@@ -113,36 +112,49 @@ const SinglePageForm = () => {
       });
       return;
     }
-    
   
     try {
       const Submit = {
-        name: users.name,
+        name: state.name, // Ensure this is correctly passed
         id: users.id,
         issueType: state.selectedOptionType,
         issueCat: state.selectedOptionDomain,
         actionType: "",
-        block: "",
+        block: state.name,
         floor: "",
         issueContent: state.content,
-        ratingCleanliness: state.ratingCleanliness,
+        actionItem: "Lift", // Set actionItem to "Lift"
         comments: [
           {
             by: users.id,
             content: "",
           },
         ],
+        "survey-cleanliness": state.ratingCleanliness,
       };
+  
+      console.log("Submitting data:", Submit);
       const response = await axios.post(
         "https://api.gms.intellx.in/client/issue/report",
         Submit
       );
+  
       console.log(response.data);
       router.push("/Home/submitPage");
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.error("Error occurred during submission:", error);
+      if (error.response) {
+        console.error("Server responded with:", error.response.data);
+      }
+      Toast.show({
+        type: "error",
+        text1: "Submission failed",
+        text2: "Please try again later.",
+        visibilityTime: 2000,
+      });
     }
   };
+  
   const handleRatingSelect = (category: string, rating: number) => {
     dispatch({ type: "SET_RATING", category, rating });
   };

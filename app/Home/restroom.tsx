@@ -18,8 +18,24 @@ import { Appbar } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 const { width } = Dimensions.get("window");
+interface FormData {
+  name: string;
+  number: string;
+  restroom: string;
+  type: string;
+  domain: string;
+  content: string;
+  anonymous: boolean;
+  ratingmirror?: number;
+  ratingurinals?: number;
+  ratingtoilets?: number;
+  ratingfloor?: number;
+  ratinglights?: number;
+}
 
-const initialState = {
+
+
+const initialState: FormData = {
   name: "",
   number: "",
   restroom: "Select Option",
@@ -27,80 +43,55 @@ const initialState = {
   domain: "Select Domain",
   content: "",
   anonymous: false,
-  ratings: {
-    mirror: "",
-    urinals: "",
-    toilets: "",
-    floor: "",
-    lights: "",
-  },
+  ratingmirror: undefined,
+  ratingurinals: undefined,
+  ratingtoilets: undefined,
+  ratingfloor: undefined,
+  ratinglights: undefined,
 };
 
-function reducer(state: any, action: any) {
+type Action =
+  
+
+| { type: "SET_FORM_DATA"; payload: Partial<FormData> }
+| { type: "SET_RATING"; category: string; rating: number };
+function reducer(state: FormData, action: Action): FormData {
   switch (action.type) {
-    case "SET_NAME":
-      return { ...state, name: action.payload };
-    case "SET_NUMBER":
-      return { ...state, number: action.payload };
-    case "SET_RESTROOM":
-      return { ...state, restroom: action.payload };
-    case "SET_TYPE":
-      return { ...state, type: action.payload };
-    case "SET_DOMAIN":
-      return { ...state, domain: action.payload };
-    case "SET_CONTENT":
-      return { ...state, content: action.payload };
-    case "SET_ANONYMOUS":
-      return { ...state, anonymous: action.payload };
+    case "SET_FORM_DATA":
+      return { ...state, ...action.payload };
     case "SET_RATING":
       return {
         ...state,
-        ratings: { ...state.ratings, [action.payload.field]: action.payload.value },
+        [action.category]: action.rating,
       };
     default:
       return state;
   }
 }
-
-const RatingComponent = ({ label, field, dispatch, state }: any) => (
-  <View style={styles.ratingRow}>
-    <Text style={styles.labe}>{label}</Text>
-    <View style={styles.ratingOptionsContainer}>
-      {["Poor", "Satisfactory", "Average"].map((rating) => (
-        <TouchableOpacity
-          key={rating}
-          style={styles.ratingOption}
-          onPress={() => dispatch({ type: "SET_RATING", payload: { field, value: rating } })}
-        >
-          <View
-            style={[
-              styles.circle,
-              state.ratings[field] === rating && styles.selectedCircle,
-            ]}
-          />
-          <Text style={styles.ratingText}>{rating}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  </View>
-);
-
-const SinglePageForm = () => {
-  const user = useUser();
+const SinglePageForm: React.FC = () => {
+  const users = useUser();
+  const navigation = useNavigation();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleSwitchChange = (value: boolean) => {
-    dispatch({ type: "SET_ANONYMOUS", payload: value });
+    dispatch({ type: "SET_FORM_DATA", payload: { anonymous: value } });
   };
 
-  const navigation = useNavigation();
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
+
+
+
   const handleSubmit = async () => {
-    if (!state.name || !state.number || state.restroom === "Select Option" || state.type === "Select Type" || state.domain === "Select Domain" || !state.content) {
+    if (!state.name || !state.number || state.restroom === "Select Option" || state.type === "Select Type" || state.domain === "Select Domain" || !state.content ||(state.type === "Feedback" &&
+      (state.ratingmirror === undefined ||
+        state.ratingurinals === undefined ||
+        state.ratingtoilets === undefined ||
+        state.ratingfloor === undefined ||
+      state.ratinglights === undefined))) {
       Toast.show({
         type: "error",
         text1: "Please fill out of all the fields before submitting.",
@@ -110,22 +101,28 @@ const SinglePageForm = () => {
     }
     try {
       const Submit = {
-        name: user.name,
-        id: user.id,
+        name: users.name,
+        id: users.id,
         issueType: state.type,
         issueCat: state.domain,
-        actionType: state.department,
+        actionType: "Restroom",
         block: state.name,
         floor: state.number,
-        issueContent: `${state.restroom}\n${state.content}`,
-        ratings: state.ratings,
+        issueContent: state.restroom,
+       
         comments: [
           {
-            by: user.id,
-            content: "",
+            by: users.id,
+            content: state.content,
           },
         ],
+        "survey-mirror": state.ratingmirror,
+        "survey-urinals":  state.ratingurinals,
+        "survey-toilets":  state.ratingtoilets,
+        "survey-floor":  state.ratingfloor,
+        "survey-lights":state.ratinglights,
       };
+      console.log("Submitting data:", Submit);
       const response = await axios.post(
         "https://api.gms.intellx.in/client/issue/report",
         Submit
@@ -133,11 +130,23 @@ const SinglePageForm = () => {
       console.log(response.data);
       router.push("/Home/submitPage");
      
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+
+       console.error("Error occurred during submission:", error);
+      if (error.response) {
+        console.error("Server responded with:", error.response.data);
+      }
+      Toast.show({
+        type: "error",
+        text1: "Submission failed",
+        text2: "Please try again later.",
+        visibilityTime: 2000,
+      });
     }
   };
-
+  const handleRatingSelect = (category: string, rating: number) => {
+    dispatch({ type: "SET_RATING", category, rating });
+  };
   return (
     <>
       <Appbar.Header>
@@ -159,7 +168,7 @@ const SinglePageForm = () => {
             placeholder="Block Designation"
             value={state.name}
             onChangeText={(text) =>
-              dispatch({ type: "SET_NAME", payload: text })
+              dispatch({ type: "SET_FORM_DATA", payload: { name: text } })
             }
           />
 
@@ -169,7 +178,7 @@ const SinglePageForm = () => {
             placeholder="Floor Number"
             value={state.number}
             onChangeText={(text) =>
-              dispatch({ type: "SET_NUMBER", payload: text })
+              dispatch({ type: "SET_FORM_DATA", payload: { number: text } })
             }
           />
 
@@ -178,7 +187,7 @@ const SinglePageForm = () => {
             <SelectList
               data={["Gents", "Ladies", "Differently Abled"]}
               setSelected={(value: any) =>
-                dispatch({ type: "SET_RESTROOM", payload: value })
+                dispatch({ type: "SET_FORM_DATA", payload:{restroom: value} })
               }
               search={false}
               save="value"
@@ -190,7 +199,7 @@ const SinglePageForm = () => {
           <View style={styles.dropdownWrapper}>
             <SelectList
               setSelected={(value: any) =>
-                dispatch({ type: "SET_TYPE", payload: value })
+                dispatch({ type: "SET_FORM_DATA", payload:{type: value} })
               }
               data={["Complaint", "Feedback"]}
               search={false}
@@ -203,7 +212,7 @@ const SinglePageForm = () => {
           <View style={styles.dropdownWrapper}>
             <SelectList
               setSelected={(value: any) =>
-                dispatch({ type: "SET_DOMAIN", payload: value })
+                dispatch({ type: "SET_FORM_DATA", payload:{ domain: value} })
               }
               data={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical", "Others"]}
               search={false}
@@ -218,20 +227,114 @@ const SinglePageForm = () => {
             placeholder="Enter Content Here"
             value={state.content}
             onChangeText={(text) =>
-              dispatch({ type: "SET_CONTENT", payload: text })
+              dispatch({ type: "SET_FORM_DATA", payload:{content: text} })
             }
           />
-
-          {state.type === "Feedback" && (
-            <View style={styles.ratingsContainer}>
-              <Text style={styles.lab}>Give your ratings</Text>
-              <RatingComponent label="Mirror & Washbasin" field="mirror" dispatch={dispatch} state={state} />
-              <RatingComponent label="Urinals" field="urinals" dispatch={dispatch} state={state} />
-              <RatingComponent label="Toilets" field="toilets" dispatch={dispatch} state={state} />
-              <RatingComponent label="Floor" field="floor" dispatch={dispatch} state={state} />
-              <RatingComponent label="Lights" field="lights" dispatch={dispatch} state={state} />
+{state.type === "Feedback" && (
+              
+              <View style={styles.ratingContainer}>
+                 <Text style={styles.lab}>Give your ratings</Text>
+              <Text style={styles.labe}>Mirror & Washbasin</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratingmirror === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratingmirror', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            
+              <Text style={styles.labe}>Urinals</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratingurinals === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratingurinals', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            
+              <Text style={styles.labe}>Toilets</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratingtoilets === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratingtoilets', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            
+              <Text style={styles.labe}>Floor</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratingfloor === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratingfloor', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+              <Text style={styles.labe}>Lights</Text>
+              <View style={styles.customRatingContainer}>
+                {[1, 2, 3].map((rate) => (
+                  <View key={rate} style={styles.ratingItem}>
+                    <TouchableOpacity
+                      style={[
+                        styles.circle,
+                        state.ratinglights === rate && styles.selectedCircle,
+                      ]}
+                      onPress={() => handleRatingSelect('ratinglights', rate)}
+                    >
+                      <Text style={styles.circleText}></Text>
+                    </TouchableOpacity>
+                    <Text style={styles.ratingText}>
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </View>
-          )}
+)}
+           
 
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Anonymous Replies</Text>
@@ -273,9 +376,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: "4%",
   },
-  lab: {
-    fontSize: 20,
-    marginBottom: "4%",
+  labe: {
+    fontSize: 15,
+    marginBottom: "2%",
+    marginTop:"2%"
+  },
+  ratingItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 20, // Adjust spacing between items if needed
   },
   input: {
     width: "100%",
@@ -294,11 +403,53 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: "4%",
   },
+  ratingContainer: {
+    marginTop: 10,
+    marginBottom: "5%",
+    width: "100%",
+  },
+  ratingLabel: {
+    fontSize: 15,
+    marginBottom: "4%",
+  },
+  lab: {
+    fontSize: 20,
+    marginBottom: "3%",
+  },
+  customRatingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 5,
+  },
+  circle: {
+    width: 25,
+    height: 25,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "#4B5563",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedCircle: {
+    backgroundColor: "#bbbef3",
+  },
+  circleText: {
+    fontSize: 15,
+    color: "#4B5563",
+  },
+  ratingText: {
+    fontSize: 14,
+    color: "#4B5563",
+    marginLeft: 5,
+    marginRight: 20,
+  },
   pickerLabel: {
     fontSize: 16,
     marginTop: Platform.OS === "ios" ? "2%" : 0,
     marginBottom: "3%",
   },
+ 
   switchContainer: {
     marginTop: 20,
     flexDirection: "row",
@@ -310,13 +461,10 @@ const styles = StyleSheet.create({
   },
   switchLabel: {
     fontSize: 16,
-    marginRight: 10,
   },
-  container: {
-    flex: 1,
-    padding: "5%",
-  },switch: {
-    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
+  switch: {
+    alignItems: "flex-end",
+    marginLeft: "39%",
   },
   submitBtn: {
     backgroundColor: "#8283e9",
@@ -330,48 +478,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
-  
-  labe: {
-    fontSize: 15,
-    marginBottom: "2%",
-    marginTop:"2%"
-  },
-  ratingsContainer: {
-    width: "100%",
-    marginTop: 20,
-  },
-
-  ratingRow: {
-    marginBottom: 20,
-  },
-  ratingLabel: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  ratingOptionsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop:'2%',
-    marginBottom:"-4%"
-  },
-  ratingOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 20,
-  },
-  circle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#000",
-    marginRight: 10,
-  },
-  selectedCircle: {
-    backgroundColor: "#8283e9",
-  },
-  ratingText: {
-    fontSize: 16,
+  container: {
+    flex: 1,
+    padding: "5%",
   },
 });
 

@@ -15,15 +15,28 @@ const SubmitPage: React.FC = () => {
   const [issueId, setIssueId] = useState<string>("");
 
   useEffect(() => {
-    // Simulating a fetch from the backend to get the issue ID.
     const fetchIssueId = async () => {
-      // Replace this with your actual API call.
-      const idFromBackend = "ABC123"; // Example ID
-      setIssueId(idFromBackend);
+      try {
+        const response = await fetch("https://api.gms.intellx.in/tasks");
+        const data = await response.json();
+        
+        // Log the response to verify the structure
+        console.log("API Response:", data);
+  
+        // Check if issue_id exists in the response
+        if (data.issue_id) {
+          setIssueId(data.issue_id);
+        } else {
+          console.error("Issue ID not found in the response:", data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch issue number:", error);
+      }
     };
-
+  
     fetchIssueId();
   }, []);
+  
 
   const handleRedirect = () => {
     router.push("/Home");
@@ -62,6 +75,7 @@ const SubmitPage: React.FC = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

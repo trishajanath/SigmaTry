@@ -75,7 +75,7 @@ const SinglePageForm = () => {
         id: users.id,
         issueType: state.selectedOptionType,
         issueCat: "",
-        actionType: "",
+        actionType: "Miscellaneous",
         block: "",
         floor: "",
         issueContent: state.content,

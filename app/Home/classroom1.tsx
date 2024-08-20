@@ -16,7 +16,7 @@ import axios from "axios";
 import { useUser } from "@/Hooks/userContext";
 import { Appbar } from "react-native-paper";
 import Toast from "react-native-toast-message";
-import { AirbnbRating } from "react-native-ratings"; // Import rating component
+
 const { width } = Dimensions.get("window");
 
 interface FormData {
@@ -105,36 +105,46 @@ const SinglePageForm: React.FC = () => {
       return;
     }
     try {
+      // Constructing the survey data dynamically with "survey-" prefix
       const Submit = {
         name: users.name,
         id: users.id,
         issueType: state.selectedOptionType,
         issueCat: state.selectedOptionDomain,
-        actionItem: state.content,
+        issueContent: state.classroom,
         block: state.name,
         floor: state.number,
-        issueContent: state.classroom,
-        ratingTable: state.ratingTable,
-        ratingChair: state.ratingChair,
-        ratingProjector: state.ratingProjector,
-        ratingCleanliness: state.ratingCleanliness,
+        actionItem:"Classroom" ,
         comments: [
           {
             by: users.id,
-            content: "",
+            content: state.content,
           },
         ],
+        "survey-table": state.ratingTable,
+        "survey-chair":  state.ratingChair,
+        "survey-projector":  state.ratingChair,
+        "survey-cleanliness":  state.ratingChair,
       };
-      console.log(Submit);
+  
+      console.log("Submitting data:", Submit);
       const response = await axios.post(
         "https://api.gms.intellx.in/client/issue/report",
         Submit
       );
-      console.log(response.data);
+      console.log("Response data:", response.data);
       router.push("/Home/submitPage");
     } catch (error: any) {
-      console.log(error);
-      console.log(error.response);
+      console.error("Error occurred during submission:", error);
+      if (error.response) {
+        console.error("Server responded with:", error.response.data);
+      }
+      Toast.show({
+        type: "error",
+        text1: "Submission failed",
+        text2: "Please try again later.",
+        visibilityTime: 2000,
+      });
     }
   };
   
@@ -249,7 +259,7 @@ const SinglePageForm: React.FC = () => {
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'poor' : rate === 2 ? 'satisfactory' : 'average'}
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
                     </Text>
                   </View>
                 ))}
@@ -269,7 +279,7 @@ const SinglePageForm: React.FC = () => {
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'poor' : rate === 2 ? 'satisfactory' : 'average'}
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
                     </Text>
                   </View>
                 ))}
@@ -289,7 +299,7 @@ const SinglePageForm: React.FC = () => {
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'poor' : rate === 2 ? 'satisfactory' : 'average'}
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
                     </Text>
                   </View>
                 ))}
@@ -309,7 +319,7 @@ const SinglePageForm: React.FC = () => {
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'poor' : rate === 2 ? 'satisfactory' : 'average'}
+                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
                     </Text>
                   </View>
                 ))}

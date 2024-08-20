@@ -65,7 +65,7 @@ const ovalContainers = [
     id: 3,
     icon: <FontAwesome5 name="restroom" size={23} color="#555555" />,
     onPress: "/Home/restroom",
-    title: "Toilet",
+    title: "Restroom",
   },
   {
     id: 4,
