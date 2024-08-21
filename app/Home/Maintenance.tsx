@@ -75,14 +75,14 @@ const SinglePageForm = () => {
         id: users.id,
         issueType: state.selectedOptionType,
         issueCat: "",
-        actionType: "Miscellaneous",
+        actionItem:"Miscellaneous",
         block: "",
         floor: "",
         issueContent: state.content,
         comments: [
           {
             by: users.id,
-            content: "",
+            content: state.content,
           },
         ],
       };
@@ -91,7 +91,10 @@ const SinglePageForm = () => {
         Submit
       );
       console.log(response.data);
-      router.back();
+      router.push({
+        pathname: "/Home/submitPage",
+        params: response.data,
+      });
     } catch (error) {
       console.log(error);
     }

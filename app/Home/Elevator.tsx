@@ -122,12 +122,12 @@ const SinglePageForm = () => {
         actionType: "",
         block: state.name,
         floor: "",
-        issueContent: state.content,
-        actionItem: "Lift", // Set actionItem to "Lift"
+        issueContent: "",
+        actionItem:"Lift", // Set actionItem to "Lift"
         comments: [
           {
             by: users.id,
-            content: "",
+            content: state.content,
           },
         ],
         "survey-cleanliness": state.ratingCleanliness,
@@ -140,7 +140,10 @@ const SinglePageForm = () => {
       );
   
       console.log(response.data);
-      router.push("/Home/submitPage");
+      router.push({
+        pathname: "/Home/submitPage",
+        params: response.data,
+      });
     } catch (error: any) {
       console.error("Error occurred during submission:", error);
       if (error.response) {

@@ -101,14 +101,14 @@ const SinglePageForm: React.FC = () => {
     }
     try {
       const Submit = {
-        name: users.name,
-        id: users.id,
-        issueType: state.type,
+        name:users.name,
+        id:users.id,
+        issueType:state.type,
         issueCat: state.domain,
-        actionType: "Restroom",
-        block: state.name,
-        floor: state.number,
-        issueContent: state.restroom,
+        actionItem:"Restroom",
+        block:state.name,
+        floor:state.number,
+        issueContent:state.restroom,
        
         comments: [
           {
@@ -116,10 +116,10 @@ const SinglePageForm: React.FC = () => {
             content: state.content,
           },
         ],
-        "survey-mirror": state.ratingmirror,
-        "survey-urinals":  state.ratingurinals,
-        "survey-toilets":  state.ratingtoilets,
-        "survey-floor":  state.ratingfloor,
+        "survey-mirror":state.ratingmirror,
+        "survey-urinals":state.ratingurinals,
+        "survey-toilets":state.ratingtoilets,
+        "survey-floor":state.ratingfloor,
         "survey-lights":state.ratinglights,
       };
       console.log("Submitting data:", Submit);
@@ -128,7 +128,10 @@ const SinglePageForm: React.FC = () => {
         Submit
       );
       console.log(response.data);
-      router.push("/Home/submitPage");
+      router.push({
+        pathname: "/Home/submitPage",
+        params: response.data,
+      });
      
     } catch (error:any) {
 

@@ -87,16 +87,16 @@ const SinglePageForm = () => {
         id: user.id,
         issueType: state.selectedOptionType,
         issueCat: state.dispenserName,
-        actionType:"Water Dispenser" ,
+        actionItem:"Water Dispenser",
         block: state.name,
         floor: state.number,
-        issueContent: state.content,
+        issueContent:"" ,
         ratingCleanliness: state.ratingCleanliness,
         ratingFunctionality: state.ratingFunctionality,
         comments: [
           {
             by: user.id,
-            content: "",
+            content: state.content,
           },
         ],
         "survey-cleanliness":state.ratingCleanliness,
@@ -108,7 +108,10 @@ const SinglePageForm = () => {
         Submit
       );
       console.log(response.data);
-      router.push("/Home/submitPage");
+      router.push({
+        pathname: "/Home/submitPage",
+        params: response.data,
+      });
     } catch (error:any) {
       console.error("Error occurred during submission:", error);
       if (error.response) {

@@ -9,20 +9,33 @@ import {
 import { router, useNavigation } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useGlobalSearchParams } from "expo-router";
+
 const { width } = Dimensions.get("window");
 
 const SubmitPage: React.FC = () => {
   const [issueId, setIssueId] = useState<string>("");
-  const params = [useGlobalSearchParams()];
-  console.log("Search Params:", params);
+  const params = useGlobalSearchParams();
+  
+  console.log("Search Params:", params); // Debugging if issue_id is fetched
+
+  useEffect(() => {
+    if (params.issue_id) {
+      setIssueId(params.issue_id as string);
+    }
+  }, [params]);
 
   const handleRedirect = () => {
     router.push("/Home");
   };
 
   const handleTrackIssue = () => {
-    router.push("/Status"); // Adjust the route to your status tracking page
+    if (issueId) {
+      router.push(`/Home/readMore?id=${issueId}`);
+    } else {
+      console.warn("Issue ID is missing!"); // Adding a warning if issueId is empty
+    }
   };
+  
 
   const navigation = useNavigation();
 
@@ -42,9 +55,8 @@ const SubmitPage: React.FC = () => {
           style={styles.checkIcon}
         />
         <Text style={styles.message}>
-          Your Issue/Suggestion was reported with ID {params[0].issue_id}
-          <Text style={styles.issueId}>{issueId}</Text>. You can track it in the
-          Status menu.
+          Your Issue/Suggestion was reported with ID {issueId}.
+          You can track it in the Status menu.
         </Text>
 
         <View style={styles.buttonContainer}>

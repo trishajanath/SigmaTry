@@ -132,7 +132,7 @@ const SinglePageForm: React.FC = () => {
         issueType: state.type,
 
         issueCat: state.domain,
-        actionType:"Department",
+        actionItem:"Department",
 
       
         floor: state.number,
@@ -152,7 +152,10 @@ const SinglePageForm: React.FC = () => {
         Submit
       );
       console.log(response.data);
-      router.push("/Home/submitPage");
+      router.push({
+        pathname: "/Home/submitPage",
+        params: response.data,
+      });
     } catch (error:any) {
       console.error("Error occurred during submission:", error);
        if (error.response) {

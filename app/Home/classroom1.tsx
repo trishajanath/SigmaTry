@@ -121,8 +121,8 @@ const SinglePageForm: React.FC = () => {
         ],
         "survey-table": state.ratingTable,
         "survey-chair": state.ratingChair,
-        "survey-projector": state.ratingChair,
-        "survey-cleanliness": state.ratingChair,
+        "survey-projector": state.ratingProjector,
+        "survey-cleanliness": state.ratingCleanliness,
       };
       const response = await axios.post(
         "https://api.gms.intellx.in/client/issue/report",

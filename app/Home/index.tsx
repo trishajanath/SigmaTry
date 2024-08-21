@@ -18,6 +18,7 @@ import {
   Foundation,
   Feather,
   Ionicons,
+  Entypo,
   MaterialIcons,
   MaterialCommunityIcons,
   SimpleLineIcons,
@@ -97,6 +98,14 @@ const ovalContainers = [
     onPress: "/Home/Maintenance",
     title: "Miscellaneous",
   },
+  {
+    id: 8,
+    icon: <Entypo name="home" size={23} color="#555555" />,
+    title: "Hostel",
+    onPress: null, 
+    disabled: true, 
+  },
+
 ];
 
 const Index = () => {
@@ -403,8 +412,18 @@ const Index = () => {
             {ovalContainers.map((item) => (
               <TouchableOpacity
                 key={item.id}
-                style={styles.iconContainer}
-                onPress={() => router.push(item.onPress ? item.onPress : "/")}
+                style={[
+                  styles.iconContainer,
+                  item.disabled ? styles.disabledButton : null,
+                ]}
+                disabled={item.disabled}
+                onPress={() => {
+                  if (!item.disabled && item.onPress) {
+                    router.push(item.onPress);
+                  } else {
+                    Alert.alert("Info", "This section is currently unavailable.");
+                  }
+                }}
               >
                 {item.icon}
                 <RNText style={styles.iconText}>
@@ -471,6 +490,10 @@ const styles = StyleSheet.create({
     marginHorizontal: "3%",
     marginTop: "0%",
   },
+  disabledButton: {
+    backgroundColor: "#e0e0e0", // Greyed out background
+    color: "#e0e0e0", // Greyed out text
+  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -529,10 +552,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: "2%",
+    marginRight:'1%',
     paddingHorizontal: 7.5,
   },
   horizontalScrollContainer: {
-    paddingRight: width * 0.12,
+    paddingRight: width * 0.15,
   },
   verticalScrollView: {},
   boldText: {
