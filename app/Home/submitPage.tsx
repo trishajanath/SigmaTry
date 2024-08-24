@@ -95,13 +95,15 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   checkIcon: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   message: {
-    fontSize: 16,
+    fontSize: 15,
+    fontStyle:'italic',
     color: "#000",
     textAlign: "center",
     marginBottom: 20,
+    padding:'1%'
   },
   issueId: {
     fontWeight: "bold",
@@ -115,11 +117,11 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     backgroundColor: "#bbbef3",
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    marginHorizontal: 5,
-    justifyContent: "center", // Aligns content vertically in the center
+    paddingVertical: '2%',
+    paddingHorizontal: '6%',
+    borderRadius: 10,
+    marginHorizontal: '4%',
+    justifyContent: "center", 
   },
   buttonText: {
     color: "#fff",

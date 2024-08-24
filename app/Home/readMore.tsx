@@ -598,7 +598,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     flexGrow: 1,
     padding: "2%",
-    marginBottom:'5%'
+    marginBottom:'-5%'
   },
   container: {
     flex: 1,

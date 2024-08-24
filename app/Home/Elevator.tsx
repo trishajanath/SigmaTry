@@ -170,7 +170,7 @@ const SinglePageForm = () => {
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollView}
         enableOnAndroid={true}
-        extraHeight={100}
+        extraHeight={10}
       >
         <View style={styles.container}>
           <Text style={styles.main}>Lift Complaint</Text>
