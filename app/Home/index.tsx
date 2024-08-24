@@ -27,7 +27,7 @@ import {
   UserCircleIcon,
   AdjustmentsHorizontalIcon,
 } from "react-native-heroicons/outline";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation, useFocusEffect, CommonActions } from "@react-navigation/native";
 import { useUser } from "@/Hooks/userContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -186,11 +186,19 @@ const Index = () => {
     setFilteredIssues(updatedIssues);
   };
 
+  
   const logout = async () => {
     try {
       await AsyncStorage.removeItem("token");
-      router.replace("/(tabs)");
-    } catch (error) {}
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "(tabs)" }], 
+        })
+      );
+    } catch (error) {
+      console.log('Error during logout:', error);
+    }
   };
 
   const statusCounts = {
