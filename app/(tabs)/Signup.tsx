@@ -141,8 +141,11 @@ const SignUpScreen = () => {
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Create Account</Text>
       </View>
+      <Text style={styles.ti}>Enter your full-name as per college ID Card</Text>
       <View style={styles.inputContainer}>
+      
         <MaterialCommunityIcons name="account-outline" size={20} color="#999" />
+        
         <TextInput
           style={styles.input}
           placeholder="Full Name"
@@ -153,11 +156,14 @@ const SignUpScreen = () => {
           }
         />
       </View>
+      <Text style={styles.ti}>Enter your college ID, like "21Z202", or for staff, it is the e-mail prefix name - like "xyz.eee"</Text>
       <View style={styles.inputContainer}>
+        
         <AntDesign name="user" size={17} color="#999" />
+        <Text></Text>
         <TextInput
           style={styles.input}
-          placeholder="Roll Number"
+          placeholder="ID"
           placeholderTextColor="#999"
           value={state.email}
           onChangeText={(text) =>
@@ -165,6 +171,7 @@ const SignUpScreen = () => {
           }
         />
       </View>
+      <Text style={styles.ti}>Enter a strong password you will always remember. It is suggested to be a combination of capital letters, small letters, numbers.</Text>
       <View style={styles.inputContainer}>
         <MaterialCommunityIcons name="lock-outline" size={20} color="#999" />
         <TextInput
@@ -228,6 +235,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  ti:{
+    fontSize: 11,
+    width: "100%",
+    textAlign: "left",
+    color:'#333333',
+    marginLeft:'4%'
+  },
+  
+
   title: {
     fontSize: 28,
     fontWeight: "900",

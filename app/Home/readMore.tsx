@@ -477,7 +477,7 @@ export default function IssueDetails() {
           ></View>
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
             <View>
-              <Text>Lastly Updated Date: {issue?.issue.issueLastUpdateDate} </Text>
+              <Text>Lastly Updated Date: {issue?.issue.issueLastUpdateDate}{" "} </Text>
             </View>
             <View>
               <Text>Time: {issue?.issue.issueLastUpdateTime}</Text>
@@ -493,18 +493,46 @@ export default function IssueDetails() {
           </View>
           
           <View style={{ marginTop: 20, gap: 10 }}>
-            <Text style={styles.detailsText}>Raised By:{issue?.raised_by.name} </Text>
-            <Text style={styles.detailsText}>Floor: {issue?.issue.floor} </Text>
-            <Text style={styles.detailsText}>Block: {issue?.issue.block} block </Text>
-            <Text style={styles.detailsText}>Type: {issue?.issue.issueType}</Text>
-            <Text style={styles.detailsText}>Content: {issue?.comments[0]?.content}</Text>
-            <Text style={styles.detailsText}>Action Item: {issue?.issue.actionItem}</Text>
+            <Text style={styles.detailsText}>Raised By: {issue?.raised_by.name} </Text>
+            <Text style={styles.detailsText}>
+      Location:
+      {issue?.issue.actionItem === "Department" ? " Floor -" : issue?.issue.actionItem === "Miscellaneous" ? "" : " Block -"} {issue?.issue.block}  
+      {issue?.issue.actionItem === "Department" ? "  Department - " : issue?.issue.actionItem === "Lift -" ? "" :issue?.issue.actionItem === "Miscellaneous" ? "": issue?.issue.actionItem === "Lift" ? "" : "  Floor -"} {issue?.issue.floor}  
+      {issue?.issue.actionItem === "Restroom" ? "  Restroom:" : issue?.issue.actionItem === "Classroom" ? " Room No: " : issue?.issue.actionItem === "Department" ? "\nCabin: " : issue?.issue.actionItem === "Water Dispenser" ? " Dispenser No: " : ""}
+    
+  {issue?.issue.issueContent}
+</Text>
 
-            {/* Conditionally display issue status for complaints */}
+          
+            <Text style={styles.detailsText}>Type: {issue?.issue.issueType}</Text>
+            <Text style={styles.detailsText}>Action Item: {issue?.issue.actionItem}</Text>
             {issue?.issue.issueType === "Complaint" && (
               <Text style={styles.detailsText}>Status: {issue?.status}</Text>
             )}
           </View>
+            {issue?.status === "OPEN" ? (
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                CloseISsue();
+              }}
+            >
+              <Text style={styles.closeButtonText}>CLOSE THIS ISSUE</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                reopenIssue();
+              }}
+            >
+              <Text style={styles.closeButtonText}>REOPEN THIS ISSUE</Text>
+            </TouchableOpacity>
+          )}
+
+          
+            {/* Conditionally display issue status for complaints */}
+            
           <View
             style={{
               width: "100%",
@@ -555,7 +583,6 @@ export default function IssueDetails() {
               )}
             </>
           )}
-
           <View
             style={{
               width: "100%",
@@ -564,6 +591,16 @@ export default function IssueDetails() {
               marginTop: 17,
             }}
           ></View>
+<Text style={styles.commentsHeading}>COMMENTS</Text>
+          {comments
+            .filter((comment) => comment.content.trim())
+            .map((comment, index) => (
+              <View key={index} style={styles.commentBox}>
+                <Text style={styles.commentUser}>{comment.by}</Text>
+                <Text style={styles.commentContent}>{comment.content}</Text>
+              </View>
+            ))}
+          
 
           {/* Display Report Log */}
           <Text style={styles.commentsHeading}>Report Log</Text>
@@ -598,7 +635,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     flexGrow: 1,
     padding: "2%",
-    marginBottom:'-5%'
+   
   },
   container: {
     flex: 1,

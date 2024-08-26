@@ -78,7 +78,7 @@ const SinglePageForm = () => {
         actionItem:"Miscellaneous",
         block: "",
         floor: "",
-        issueContent: state.content,
+        issueContent:"",
         comments: [
           {
             by: users.id,

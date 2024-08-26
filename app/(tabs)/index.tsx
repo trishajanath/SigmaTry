@@ -155,6 +155,7 @@ const LoginScreen = () => {
           <Text style={styles.title}>Login</Text>
           <Text style={styles.subtitle}>Please sign in to continue.</Text>
         </View>
+        <Text style={styles.ti}>Enter your college ID, like "21z202", or for staff, it is the e-mail prefix name - like "xyz.eee"</Text>
         <View
           style={[
             styles.inputContainer,
@@ -164,7 +165,7 @@ const LoginScreen = () => {
           <AntDesign name="user" size={20} color="#999" />
           <TextInput
             style={styles.input}
-            placeholder="Roll Number"
+            placeholder="ID"
             placeholderTextColor="#999"
             value={state.email}
             onFocus={() => setEmailFocused(true)}
@@ -174,6 +175,7 @@ const LoginScreen = () => {
             }
           />
         </View>
+        <Text style={styles.ti}>If you forgot your password, click "Forgot Password".</Text>
         <View
           style={[
             styles.inputContainer,
@@ -222,7 +224,7 @@ const LoginScreen = () => {
           }}
         >
           <Text style={styles.signUpText}>
-            Don't have an account?{" "}
+          If you do not have an account with SIGMA GMS yet, click on "Sign Up" to create one.{" "}
             <Text style={styles.signUpLink}>Sign up</Text>
           </Text>
         </TouchableOpacity>
@@ -284,6 +286,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
   },
+  ti:{
+    fontSize: 11,
+    width: "100%",
+    textAlign: "left",
+    color:'#333333',
+    marginLeft:'6%'
+  },
   scrollView: {
     flexGrow: 1,
     padding: "2%",
@@ -314,11 +323,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   signUpText: {
-    fontSize: 14,
+    fontSize: 12,
     color: "#999",
   },
   signUpLink: {
     color: "#8283e9",
+    fontSize:14
   },
 });
 

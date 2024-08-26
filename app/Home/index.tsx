@@ -7,6 +7,7 @@ import {
   Text as RNText,
   Dimensions,
   TextInput,
+  Image,
   FlatList,
   Alert,
 } from "react-native";
@@ -43,7 +44,7 @@ const menuTheme = {
 interface Issue {
   category: string;
   code: string;
-  desc: string;
+  type:string,
   status: string;
   date: string;
 }
@@ -258,7 +259,7 @@ const Index = () => {
         </View>
         <View style={styles.complaintBody}>
           <RNText style={styles.categoryText}>
-            TYPE : {item.desc.toLocaleUpperCase()}
+            TYPE : {item.type}
           </RNText>
           <RNText style={styles.categoryText}> | ID : {item.code}</RNText>
         </View>
@@ -292,11 +293,14 @@ const Index = () => {
   return (
     <Provider>
       <View style={styles.headerContainer}>
-        <Text variant="headlineSmall" style={styles.headerText}>
-          Sigma
-        </Text>
+      <Image
+          source={require("../../assets/images/sigmalogo.png")}
+          style={styles.logo}
+        />
+
         <Text style={styles.headerSubText}>
-          {truncateText(`${user.id}-${user.name}`, 35)}
+        {truncateText(`${user.id.toUpperCase()}-${user.name}`, 35)}
+
         </Text>
         <TouchableOpacity style={styles.headerIconContainer}></TouchableOpacity>
       </View>
@@ -490,6 +494,11 @@ const styles = StyleSheet.create({
   },
   scrollViewContentContainer: {
     paddingBottom: 20,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
   },
   searchAndSortContainer: {
     flexDirection: "row",

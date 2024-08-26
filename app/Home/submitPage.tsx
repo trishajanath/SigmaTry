@@ -1,41 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { router, useNavigation } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useGlobalSearchParams } from "expo-router";
+import Toast from "react-native-toast-message";
 
 const { width } = Dimensions.get("window");
 
+// Lazy load the Home screen
+const LazyHomeScreen = React.lazy(() => import("./index"));
+
 const SubmitPage: React.FC = () => {
   const [issueId, setIssueId] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const params = useGlobalSearchParams();
-  
-  console.log("Search Params:", params); // Debugging if issue_id is fetched
 
+  console.log("Search Params:", params); // Debugging if issue_id is fetched
+  
   useEffect(() => {
     if (params.issue_id) {
       setIssueId(params.issue_id as string);
     }
   }, [params]);
-
-  const handleRedirect = () => {
-    router.push("/Home");
-  };
-
-  const handleTrackIssue = () => {
-    if (issueId) {
-      router.push(`/Home/readMore?id=${issueId}`);
-    } else {
-      console.warn("Issue ID is missing!"); // Adding a warning if issueId is empty
-    }
-  };
-  
 
   const navigation = useNavigation();
 
@@ -44,6 +37,24 @@ const SubmitPage: React.FC = () => {
       headerShown: false,
     });
   }, []);
+
+  const handleRedirect = async () => {
+    setLoading(true);
+    // await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate a delay
+    // setLoading(false);
+    router.push("/Home");
+  };
+
+  const handleTrackIssue = async () => {
+    if (issueId) {
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate a delay
+      setLoading(false);
+      router.push(`/Home/readMore?id=${issueId}`);
+    } else {
+      console.warn("Issue ID is missing!"); // Adding a warning if issueId is empty
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -67,6 +78,12 @@ const SubmitPage: React.FC = () => {
             <Text style={styles.buttonText}>Go to Dashboard</Text>
           </TouchableOpacity>
         </View>
+
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="small" color="#a3c3e7" />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -99,11 +116,11 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 15,
-    fontStyle:'italic',
+    fontStyle: 'italic',
     color: "#000",
     textAlign: "center",
     marginBottom: 20,
-    padding:'1%'
+    padding: '1%',
   },
   issueId: {
     fontWeight: "bold",
@@ -121,13 +138,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: '6%',
     borderRadius: 10,
     marginHorizontal: '4%',
-    justifyContent: "center", 
+    justifyContent: "center",
   },
   buttonText: {
     color: "#fff",
     textAlign: "center",
     fontSize: 16,
     fontWeight: "600",
+  },
+  loadingContainer: {
+    marginTop: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

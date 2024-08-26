@@ -426,16 +426,16 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   circle: {
-    width: 25,
-    height: 25,
+    width: 20,
+    height: 20,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "#4B5563",
+    borderColor: "#171717",
     justifyContent: "center",
     alignItems: "center",
   },
   selectedCircle: {
-    backgroundColor: "#bbbef3",
+    backgroundColor: "#171717",
   },
   circleText: {
     fontSize: 15,
