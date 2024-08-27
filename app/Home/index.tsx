@@ -10,6 +10,7 @@ import {
   Image,
   FlatList,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { router } from "expo-router";
 import { Text, Button, Menu, Divider, Provider } from "react-native-paper";
@@ -28,7 +29,11 @@ import {
   UserCircleIcon,
   AdjustmentsHorizontalIcon,
 } from "react-native-heroicons/outline";
-import { useNavigation, useFocusEffect, CommonActions } from "@react-navigation/native";
+import {
+  useNavigation,
+  useFocusEffect,
+  CommonActions,
+} from "@react-navigation/native";
 import { useUser } from "@/Hooks/userContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -44,7 +49,7 @@ const menuTheme = {
 interface Issue {
   category: string;
   code: string;
-  type:string,
+  type: string;
   status: string;
   date: string;
 }
@@ -103,10 +108,9 @@ const ovalContainers = [
     id: 8,
     icon: <Entypo name="home" size={23} color="#555555" />,
     title: "Hostel",
-    onPress: null, 
-    disabled: true, 
+    onPress: null,
+    disabled: true,
   },
-
 ];
 
 const Index = () => {
@@ -117,6 +121,7 @@ const Index = () => {
   const [sortOption, setSortOption] = useState<"status" | "date">("status");
   const [filterOption, setFilterOption] = useState<string | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const user = useUser();
 
   useEffect(() => {
@@ -143,6 +148,7 @@ const Index = () => {
 
   const FetchAllIssues = async () => {
     try {
+      setLoading(true);
       const body = {
         user_id: user.id,
       };
@@ -151,12 +157,12 @@ const Index = () => {
         body
       );
       setIssues(response.data.data);
-
-      console.log(response);
     } catch (error: any) {
       console.log(error);
       console.log("Error in FetchAllIssues");
       console.log(error.response);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -189,18 +195,17 @@ const Index = () => {
     setFilteredIssues(updatedIssues);
   };
 
-  
   const logout = async () => {
     try {
       await AsyncStorage.removeItem("token");
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: "(tabs)" }], 
+          routes: [{ name: "(tabs)" }],
         })
       );
     } catch (error) {
-      console.log('Error during logout:', error);
+      console.log("Error during logout:", error);
     }
   };
 
@@ -232,8 +237,6 @@ const Index = () => {
     }
   };
 
-  
-
   const renderComplaintItem = ({ item }: { item: (typeof issues)[0] }) => (
     <View
       key={item.code}
@@ -262,11 +265,9 @@ const Index = () => {
           )}
         </View>
         <View style={styles.complaintBody}>
-          <RNText style={styles.categoryText}>
-            TYPE : {item.type}
-          </RNText>
+          <RNText style={styles.categoryText}>TYPE : {item.type}</RNText>
           <RNText style={styles.categoryText}> | ID : {item.code}</RNText>
-          <RNText style={styles.categoryText}> | DATE : {item.code}</RNText> 
+          <RNText style={styles.categoryText}> | DATE : {item.code}</RNText>
         </View>
         <View style={styles.readMoreContainer}>
           <RNText style={styles.dateText}>
@@ -298,14 +299,13 @@ const Index = () => {
   return (
     <Provider>
       <View style={styles.headerContainer}>
-      <Image
+        <Image
           source={require("../../assets/images/sigmalogo.png")}
           style={styles.logo}
         />
 
         <Text style={styles.headerSubText}>
-        {truncateText(`${user.id.toUpperCase()}-${user.name}`, 35)}
-
+          {truncateText(`${user.id.toUpperCase()}-${user.name}`, 35)}
         </Text>
         <TouchableOpacity style={styles.headerIconContainer}></TouchableOpacity>
       </View>
@@ -438,7 +438,10 @@ const Index = () => {
                   if (!item.disabled && item.onPress) {
                     router.push(item.onPress);
                   } else {
-                    Alert.alert("Info", "This section is currently unavailable.");
+                    Alert.alert(
+                      "Info",
+                      "This section is currently unavailable."
+                    );
                   }
                 }}
               >
@@ -458,7 +461,18 @@ const Index = () => {
             30
           )}
         </Text>
-        {!issues ? (
+        {loading ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "10%",
+            }}
+          >
+            <ActivityIndicator size="large" color="#8283e9" />
+          </View>
+        ) : issues.length === 0 ? (
           <RNText style={styles.boldText}>No Complaints</RNText>
         ) : (
           <FlatList
@@ -503,7 +517,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 100,
     height: 100,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   searchAndSortContainer: {
     flexDirection: "row",
@@ -574,7 +588,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: "2%",
-    marginRight:'1%',
+    marginRight: "1%",
     paddingHorizontal: 7.5,
   },
   horizontalScrollContainer: {

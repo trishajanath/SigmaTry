@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState,Suspense } from "react";
+import React, { useEffect, useReducer, useState, Suspense } from "react";
 import {
   ActivityIndicator,
   View,
@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import { RouteProp } from "@react-navigation/native";
-import { AntDesign,MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { Image } from "react-native";
 import axios from "axios";
@@ -17,9 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from "@/Hooks/userContext";
 import * as jwt from "jwt-decode";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import Toast from 'react-native-toast-message';
-
-
+import Toast from "react-native-toast-message";
 
 type RootStackParamList = {
   Login: undefined;
@@ -51,7 +49,9 @@ const HomeScreenLoader = () => {
   return (
     <Suspense
       fallback={
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator size="small" color="#a3c3e7" />
         </View>
       }
@@ -66,16 +66,18 @@ const LoginScreen = () => {
   const [isPasswordFocused, setPasswordFocused] = useState(false);
   const [secureText, setSecureText] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const { updateUser } = useUser();
 
   const Login = async () => {
+    setIsLoading(true); // Set loading to true when login starts
     try {
-    Toast.show({
-      type: "info", 
-      text1: "Logging in...",
-      visibilityTime: 1000, 
-    });
+      Toast.show({
+        type: "info",
+        text1: "Logging in...",
+        visibilityTime: 1000,
+      });
       const body = {
         id: state.email,
         password: state.password,
@@ -84,7 +86,6 @@ const LoginScreen = () => {
         "https://api.gms.intellx.in/client/login",
         body
       );
-      // console.log(response.data);
       await AsyncStorage.setItem("token", response.data.token);
       updateUser({
         name: response.data.user.name,
@@ -92,16 +93,15 @@ const LoginScreen = () => {
         confirmed: true,
       });
       setIsLoggedIn(true);
-    } catch (error: any) {
-      // Alert.alert("Error", error.response.data.message);
-      // console.error(error.response);
+    } catch (error) {
       Toast.show({
-        type:"error",
-        text1:"Invalid Credentials",
-        text2:"Please enter valid register number and password",
-        visibilityTime:2000,
-        
-      })
+        type: "error",
+        text1: "Invalid Credentials",
+        text2: "Please enter valid register number and password",
+        visibilityTime: 2000,
+      });
+    } finally {
+      setIsLoading(false); // Set loading to false when login ends
     }
   };
 
@@ -113,169 +113,178 @@ const LoginScreen = () => {
 
   const checkToken = async () => {
     try {
+      setIsLoading(true); // Set loading to true when checking token
       const token = await AsyncStorage.getItem("token");
-      const decode = jwt.jwtDecode(token ? token : "");
-      const body = {
-        id: decode.sub,
-      };
-      const response = await axios.post(
-        "https://api.gms.intellx.in/client/account",
-        body
-      );
-      updateUser({
-        name: response.data.user.name,
-        id: response.data.user.id,
-        confirmed: true,
-      });
-      router.replace("/Home");
+      if (token) {
+        const decoded: any = jwt.jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (decoded.exp > currentTime) {
+          updateUser({
+            name: decoded.sub?.name,
+            id: decoded.sub?.id,
+            confirmed: true,
+          });
+          router.replace("/Home");
+        }
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error validating token", error);
+    } finally {
+      setIsLoading(false); // Set loading to false when token check ends
     }
   };
-
   useEffect(() => {
     checkToken();
   }, []);
-  console.log(state.email);
-    const resetPassword = async () => {
-        if(state.email === ""){
-          Toast.show({
-            type:"error",
-            text1:"Please Enter you Roll No",
-            visibilityTime:2000,
-            
-          })
-        }
-        else 
-        {
-          try{
-            const body = {
-              id: state.email,
-            };
-            const response = await axios.post(
-              "https://api.gms.intellx.in/client/forgot_password",
-              body
-            );
-            console.log(response.data);
-            Toast.show({
-              type:"success",
-              text1:"Reset link sent to your registered email",
-              visibilityTime:3000,
-              
-            })
-          }catch(error){  
-            console.log(error);
-        }
-        }
-      
-  }
+
+  const resetPassword = async () => {
+    if (state.email === "") {
+      Toast.show({
+        type: "error",
+        text1: "Please Enter your Roll No",
+        visibilityTime: 2000,
+      });
+    } else {
+      try {
+        const body = {
+          id: state.email,
+        };
+        const response = await axios.post(
+          "https://api.gms.intellx.in/client/forgot_password",
+          body
+        );
+        Toast.show({
+          type: "success",
+          text1: "Reset link sent to your registered email",
+          visibilityTime: 3000,
+        });
+      } catch (error) {
+        console.log("Error resetting password", error);
+      }
+    }
+  };
   return (
     <>
-    {!isLoggedIn ? ( 
-      <KeyboardAwareScrollView
-      contentContainerStyle={styles.scrollView}
-      enableOnAndroid={true}
-      extraHeight={100}
-    >
-      <View style={styles.container}>
-        <Image
-          source={require("../../assets/images/sigmalogo.png")}
-          style={styles.logo}
-        />
-
-        <View style={{ padding: 20 }}>
-          <Text style={styles.title}>Login</Text>
-          <Text style={styles.subtitle}>Please sign in to continue.</Text>
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#8283e9" />
         </View>
-        <Text style={styles.ti}>Enter your college ID, like "21z202", or for staff, it is the e-mail prefix name - like "xyz.eee"</Text>
-        <View
-          style={[
-            styles.inputContainer,
-            isEmailFocused && styles.inputContainerFocused,
-          ]}
+      ) : (
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.scrollView}
+          enableOnAndroid={true}
+          extraHeight={100}
         >
-          <AntDesign name="user" size={20} color="#999" />
-          <TextInput
-            style={styles.input}
-            placeholder="ID"
-            placeholderTextColor="#999"
-            value={state.email}
-            onFocus={() => setEmailFocused(true)}
-            onBlur={() => setEmailFocused(false)}
-            onChangeText={(text) =>
-              dispatch({ type: "SET_EMAIL", payload: text })
-            }
-          />
-        </View>
-        <Text style={styles.ti}>If you forgot your password, click "Forgot Password".</Text>
-        <View
-          style={[
-            styles.inputContainer,
-            isPasswordFocused && styles.inputContainerFocused,
-          ]}
-        >
-          <MaterialCommunityIcons name="lock-outline" size={20} color="#999" />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#999"
-            secureTextEntry={secureText}
-            value={state.password}
-            onFocus={() => setPasswordFocused(true)}
-            onBlur={() => setPasswordFocused(false)}
-            onChangeText={(text) =>
-              dispatch({ type: "SET_PASSWORD", payload: text })
-            }
-          />
-          <TouchableOpacity
-            onPress={() => {
-              setSecureText(!secureText);
-            }}
-          >
-            <MaterialCommunityIcons
-              name={secureText ? "eye" : "eye-off"}
-              size={20}
-              color="#999"
+          <View style={styles.container}>
+            <Image
+              source={require("../../assets/images/sigmalogo.png")}
+              style={styles.logo}
             />
-          </TouchableOpacity>
-        </View>
 
-        <TouchableOpacity style={{ alignItems: "flex-start", alignSelf: "flex-start" }} onPress={()=>
-          {
-            resetPassword();
-          }
-        }>
-  <Text style={{ textAlign: "left" , marginLeft : 15,color:'#121212'}}>Forgot Password?</Text>
-</TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            Login();
-            // router.replace("/Home");
-          }}
-        >
-          <Text style={styles.buttonText}>LOGIN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => router.push("/(tabs)/Signup")}
-          style={{
-            position: "absolute",
-            bottom: "4%",
-          }}
-        >
-          <Text style={styles.signUpText}>
-          If you do not have an account with SIGMA GMS yet, click on "Sign Up" to create one.{" "}
-            <Text style={styles.signUpLink}>Sign up</Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAwareScrollView>
-    ) : (
-      <HomeScreenLoader />
+            <View style={{ padding: 20 }}>
+              <Text style={styles.title}>Login</Text>
+              <Text style={styles.subtitle}>Please sign in to continue.</Text>
+            </View>
+            <Text style={styles.ti}>
+              Enter your college ID, like "21z202", or for staff, it is the
+              e-mail prefix name - like "xyz.eee"
+            </Text>
+            <View
+              style={[
+                styles.inputContainer,
+                isEmailFocused && styles.inputContainerFocused,
+              ]}
+            >
+              <AntDesign name="user" size={20} color="#999" />
+              <TextInput
+                style={styles.input}
+                placeholder="ID"
+                placeholderTextColor="#999"
+                value={state.email}
+                onFocus={() => setEmailFocused(true)}
+                onBlur={() => setEmailFocused(false)}
+                onChangeText={(text) =>
+                  dispatch({ type: "SET_EMAIL", payload: text })
+                }
+              />
+            </View>
+            <Text style={styles.ti}>
+              If you forgot your password, click "Forgot Password".
+            </Text>
+            <View
+              style={[
+                styles.inputContainer,
+                isPasswordFocused && styles.inputContainerFocused,
+              ]}
+            >
+              <MaterialCommunityIcons
+                name="lock-outline"
+                size={20}
+                color="#999"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#999"
+                secureTextEntry={secureText}
+                value={state.password}
+                onFocus={() => setPasswordFocused(true)}
+                onBlur={() => setPasswordFocused(false)}
+                onChangeText={(text) =>
+                  dispatch({ type: "SET_PASSWORD", payload: text })
+                }
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  setSecureText(!secureText);
+                }}
+              >
+                <MaterialCommunityIcons
+                  name={secureText ? "eye" : "eye-off"}
+                  size={20}
+                  color="#999"
+                />
+              </TouchableOpacity>
+            </View>
 
-    )}
+            <TouchableOpacity
+              style={{ alignItems: "flex-start", alignSelf: "flex-start" }}
+              onPress={() => {
+                resetPassword();
+              }}
+            >
+              <Text
+                style={{ textAlign: "left", marginLeft: 15, color: "#121212" }}
+              >
+                Forgot Password?
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                Login();
+                // router.replace("/Home");
+              }}
+            >
+              <Text style={styles.buttonText}>LOGIN</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push("/(tabs)/Signup")}
+              style={{
+                position: "absolute",
+                bottom: "4%",
+              }}
+            >
+              <Text style={styles.signUpText}>
+                If you do not have an account with SIGMA GMS yet, click on "Sign
+                Up" to create one.{" "}
+                <Text style={styles.signUpLink}>Sign up</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAwareScrollView>
+      )}
     </>
-    
   );
 };
 
@@ -287,6 +296,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#fff",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   logo: {
     width: 200, // Adjust the width as needed
@@ -326,12 +340,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
   },
-  ti:{
+  ti: {
     fontSize: 11,
     width: "100%",
     textAlign: "left",
-    color:'#333333',
-    marginLeft:'6%'
+    color: "#333333",
+    marginLeft: "6%",
   },
   scrollView: {
     flexGrow: 1,
@@ -368,7 +382,7 @@ const styles = StyleSheet.create({
   },
   signUpLink: {
     color: "#8283e9",
-    fontSize:14
+    fontSize: 14,
   },
 });
 

@@ -39,7 +39,8 @@ const QRCodeScanner = () => {
   const handleRedirect = (scannedData: string) => {
     // Assuming the scannedData contains information about the location
     const locationType = parseLocationType(scannedData);
-
+    console.log("Location Type:", locationType);
+    console.log("Scanned Data:", scannedData);
     switch (locationType) {
       case "classroom":
         router.push({
@@ -59,26 +60,29 @@ const QRCodeScanner = () => {
           params: { scannedData },
         });
         break;
-        case "water":
+      case "water":
         router.push({
           pathname: "/qrScanner/qrWater",
           params: { scannedData },
         });
         break;
-        case "lift":
+      case "lift":
         router.push({
           pathname: "/qrScanner/qrLift",
           params: { scannedData },
         });
         break;
-        case "miscellaneous":
-          router.push({
-            pathname: "/qrScanner/qrMiscellaneous",
-            params: { scannedData },
-          });
-          break;
+      case "miscellaneous":
+        router.push({
+          pathname: "/qrScanner/qrMiscellaneous",
+          params: { scannedData },
+        });
+        break;
       default:
-        Alert.alert("Unknown Location", "The scanned QR code is not recognized.");
+        Alert.alert(
+          "Unknown Location",
+          "The scanned QR code is not recognized."
+        );
         setScanned(false);
         break;
     }
@@ -91,14 +95,14 @@ const QRCodeScanner = () => {
       return "restroom";
     } else if (data.includes("department")) {
       return "department";
-    }else if (data.includes("lift")) {
+    } else if (data.includes("lift")) {
       return "lift";
-    }else if (data.includes("water")) {
+    } else if (data.includes("water")) {
       return "water";
-    }else if (data.includes("miscellaneous")) {
+    } else if (data.includes("misc")) {
       return "miscellaneous";
     }
-   
+
     return "unknown";
   };
 

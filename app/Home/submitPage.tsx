@@ -10,7 +10,6 @@ import {
 import { router, useNavigation } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useGlobalSearchParams } from "expo-router";
-import Toast from "react-native-toast-message";
 
 const { width } = Dimensions.get("window");
 
@@ -23,7 +22,7 @@ const SubmitPage: React.FC = () => {
   const params = useGlobalSearchParams();
 
   console.log("Search Params:", params); // Debugging if issue_id is fetched
-  
+
   useEffect(() => {
     if (params.issue_id) {
       setIssueId(params.issue_id as string);
@@ -66,8 +65,8 @@ const SubmitPage: React.FC = () => {
           style={styles.checkIcon}
         />
         <Text style={styles.message}>
-          Your Issue/Suggestion was reported with ID {issueId}.
-          You can track it in the Status menu.
+          Your Issue/Suggestion was reported with ID {issueId}. You can track it
+          in the Status menu.
         </Text>
 
         <View style={styles.buttonContainer}>
@@ -116,11 +115,11 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 15,
-    fontStyle: 'italic',
+    fontStyle: "italic",
     color: "#000",
     textAlign: "center",
     marginBottom: 20,
-    padding: '1%',
+    padding: "1%",
   },
   issueId: {
     fontWeight: "bold",
@@ -134,10 +133,10 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     backgroundColor: "#bbbef3",
-    paddingVertical: '2%',
-    paddingHorizontal: '6%',
+    paddingVertical: "2%",
+    paddingHorizontal: "6%",
     borderRadius: 10,
-    marginHorizontal: '4%',
+    marginHorizontal: "4%",
     justifyContent: "center",
   },
   buttonText: {
