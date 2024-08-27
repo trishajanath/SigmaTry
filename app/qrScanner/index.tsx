@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button, Alert } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { Camera, CameraView } from "expo-camera";
 import { router, useNavigation } from "expo-router";
 import { Appbar } from "react-native-paper";
@@ -23,23 +23,87 @@ const QRCodeScanner = () => {
   }, []);
 
   const handleBarCodeScanned = ({ type, data }: { type: any; data: any }) => {
-    setScanned(true);
-    Alert.alert("Process Completed", `The QR code has been processed`, [
-      {
-        text: "OK",
-        onPress: () => {
-          setScanned(false);
-          router.push({
-            pathname: "/qrScanner/qrForm",
-            params: { scannedData: data },
-          });
+    if (!scanned) {
+      setScanned(true);
+      Alert.alert("Process Completed", `The QR code has been processed`, [
+        {
+          text: "OK",
+          onPress: () => {
+            handleRedirect(data);
+          },
         },
-      },
-    ]);
+      ]);
+    }
+  };
+
+  const handleRedirect = (scannedData: string) => {
+    // Assuming the scannedData contains information about the location
+    const locationType = parseLocationType(scannedData);
+
+    switch (locationType) {
+      case "classroom":
+        router.push({
+          pathname: "/qrScanner/qrForm",
+          params: { scannedData },
+        });
+        break;
+      case "restroom":
+        router.push({
+          pathname: "/qrScanner/qrRestroom",
+          params: { scannedData },
+        });
+        break;
+      case "department":
+        router.push({
+          pathname: "/qrScanner/qrDepartment",
+          params: { scannedData },
+        });
+        break;
+        case "water":
+        router.push({
+          pathname: "/qrScanner/qrWater",
+          params: { scannedData },
+        });
+        break;
+        case "lift":
+        router.push({
+          pathname: "/qrScanner/qrLift",
+          params: { scannedData },
+        });
+        break;
+        case "miscellaneous":
+          router.push({
+            pathname: "/qrScanner/qrMiscellaneous",
+            params: { scannedData },
+          });
+          break;
+      default:
+        Alert.alert("Unknown Location", "The scanned QR code is not recognized.");
+        setScanned(false);
+        break;
+    }
+  };
+
+  const parseLocationType = (data: string): string => {
+    if (data.includes("classroom")) {
+      return "classroom";
+    } else if (data.includes("restroom")) {
+      return "restroom";
+    } else if (data.includes("department")) {
+      return "department";
+    }else if (data.includes("lift")) {
+      return "lift";
+    }else if (data.includes("water")) {
+      return "water";
+    }else if (data.includes("miscellaneous")) {
+      return "miscellaneous";
+    }
+   
+    return "unknown";
   };
 
   if (hasPermission === null) {
-    return <Text>Requesting for camera permission...</Text>;
+    return <Text>Requesting camera permission...</Text>;
   }
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
@@ -57,7 +121,7 @@ const QRCodeScanner = () => {
           barcodeScannerSettings={{
             barcodeTypes: ["qr"],
           }}
-        ></CameraView>
+        />
       </View>
     </>
   );
@@ -72,12 +136,6 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
     justifyContent: "flex-end",
-  },
-  cameraOverlay: {
-    flex: 1,
-    backgroundColor: "transparent",
-    flexDirection: "row",
-    justifyContent: "center",
   },
 });
 

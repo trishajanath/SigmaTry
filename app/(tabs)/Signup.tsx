@@ -9,11 +9,12 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { MaterialCommunityIcons,AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+
 const LazyHomeScreen = React.lazy(() => import("./index"));
 
 const HomeScreenLoader = () => {
@@ -29,6 +30,7 @@ const HomeScreenLoader = () => {
     </Suspense>
   );
 };
+
 type State = {
   fullName: string;
   email: string;
@@ -73,14 +75,25 @@ const SignUpScreen = () => {
 
   const validateInputs = () => {
     const { fullName, email, password, confirmPassword } = state;
+    
+    // Regex for at least one uppercase letter and minimum 5 characters
+    const passwordRegex = /^(?=.*[A-Z]).{5,}$/;
+
     if (!fullName || !email || !password || !confirmPassword) {
       Alert.alert("Error", "All fields are required.");
       return false;
     }
+
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match.");
       return false;
     }
+
+    if (!passwordRegex.test(password)) {
+      Alert.alert("Error", "Password must be at least 5 characters long and contain at least one uppercase letter.");
+      return false;
+    }
+
     return true;
   };
 
@@ -89,8 +102,6 @@ const SignUpScreen = () => {
 
     setLoading(true);
     try {
-     
-      console.log(state)
       const response = await axios.post(
         "https://api.gms.intellx.in/client/register",
         {
@@ -102,30 +113,21 @@ const SignUpScreen = () => {
 
       if (response.status === 201) {
         Toast.show({
-          type: "info", 
+          type: "info",
           text1: "Success",
-          text2:"Please Check your email to verify your account.",
-          visibilityTime: 2000, 
+          text2: "Please check your email to verify your account.",
+          visibilityTime: 2000,
         });
-        // Alert.alert(
-        //   "Success",
-        //   "Please Check your email to verify your account."
-        // );
         router.back(); // Navigate back to the previous screen
       } else {
         Alert.alert("Error", "Failed to create user.");
       }
-    } 
-
-    catch (error: any) {
-      // Alert.alert("Error", error.message);
-      // console.error("Error creating user:", error.response);
+    } catch (error: any) {
       Toast.show({
-        type:"error",
-        text1:"Invalid information or user already registered",
-        visibilityTime:2000,
-        
-      })
+        type: "error",
+        text1: "Invalid information or user already registered",
+        visibilityTime: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -141,11 +143,11 @@ const SignUpScreen = () => {
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Create Account</Text>
       </View>
-      <Text style={styles.ti}>Enter your full-name as per college ID Card</Text>
+      <Text style={styles.ti}>
+        Enter your full name as per college ID Card
+      </Text>
       <View style={styles.inputContainer}>
-      
         <MaterialCommunityIcons name="account-outline" size={20} color="#999" />
-        
         <TextInput
           style={styles.input}
           placeholder="Full Name"
@@ -156,11 +158,12 @@ const SignUpScreen = () => {
           }
         />
       </View>
-      <Text style={styles.ti}>Enter your college ID, like "21Z202", or for staff, it is the e-mail prefix name - like "xyz.eee"</Text>
+      <Text style={styles.ti}>
+        Enter your college ID, like "21Z202", or for staff, it is the email
+        prefix name - like "xyz.eee"
+      </Text>
       <View style={styles.inputContainer}>
-        
         <AntDesign name="user" size={17} color="#999" />
-        <Text></Text>
         <TextInput
           style={styles.input}
           placeholder="ID"
@@ -171,7 +174,10 @@ const SignUpScreen = () => {
           }
         />
       </View>
-      <Text style={styles.ti}>Enter a strong password you will always remember. It is suggested to be a combination of capital letters, small letters, numbers.</Text>
+      <Text style={styles.ti}>
+        Enter a strong password you will always remember. It is suggested to be
+        a combination of capital letters, small letters, and numbers.
+      </Text>
       <View style={styles.inputContainer}>
         <MaterialCommunityIcons name="lock-outline" size={20} color="#999" />
         <TextInput
@@ -212,8 +218,7 @@ const SignUpScreen = () => {
         style={styles.signInContainer}
       >
         <Text style={styles.signUpText}>
-          Already have an account?{" "}
-          <Text style={styles.signUpLink}>Sign in</Text>
+          Already have an account? <Text style={styles.signUpLink}>Sign in</Text>
         </Text>
       </TouchableOpacity>
     </View>
@@ -251,6 +256,7 @@ const styles = StyleSheet.create({
     marginLeft: "-30%",
     marginBottom: 20,
   },
+  
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",

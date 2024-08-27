@@ -245,7 +245,7 @@ const LoginScreen = () => {
             resetPassword();
           }
         }>
-  <Text style={{ textAlign: "left" , marginLeft : 15}}>Forgot Password</Text>
+  <Text style={{ textAlign: "left" , marginLeft : 15,color:'#121212'}}>Forgot Password?</Text>
 </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
