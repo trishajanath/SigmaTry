@@ -84,7 +84,7 @@ const LoginScreen = () => {
         "https://api.gms.intellx.in/client/login",
         body
       );
-      console.log(response.data);
+      // console.log(response.data);
       await AsyncStorage.setItem("token", response.data.token);
       updateUser({
         name: response.data.user.name,
@@ -136,7 +136,39 @@ const LoginScreen = () => {
   useEffect(() => {
     checkToken();
   }, []);
-
+  console.log(state.email);
+    const resetPassword = async () => {
+        if(state.email === ""){
+          Toast.show({
+            type:"error",
+            text1:"Please Enter you Roll No",
+            visibilityTime:2000,
+            
+          })
+        }
+        else 
+        {
+          try{
+            const body = {
+              id: state.email,
+            };
+            const response = await axios.post(
+              "https://api.gms.intellx.in/client/forgot_password",
+              body
+            );
+            console.log(response.data);
+            Toast.show({
+              type:"success",
+              text1:"Reset link sent to your registered email",
+              visibilityTime:3000,
+              
+            })
+          }catch(error){  
+            console.log(error);
+        }
+        }
+      
+  }
   return (
     <>
     {!isLoggedIn ? ( 
@@ -207,6 +239,14 @@ const LoginScreen = () => {
             />
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity style={{ alignItems: "flex-start", alignSelf: "flex-start" }} onPress={()=>
+          {
+            resetPassword();
+          }
+        }>
+  <Text style={{ textAlign: "left" , marginLeft : 15}}>Forgot Password</Text>
+</TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
           onPress={() => {

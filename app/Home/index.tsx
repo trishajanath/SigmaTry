@@ -151,6 +151,8 @@ const Index = () => {
         body
       );
       setIssues(response.data.data);
+
+      console.log(response);
     } catch (error: any) {
       console.log(error);
       console.log("Error in FetchAllIssues");
@@ -230,6 +232,8 @@ const Index = () => {
     }
   };
 
+  
+
   const renderComplaintItem = ({ item }: { item: (typeof issues)[0] }) => (
     <View
       key={item.code}
@@ -262,12 +266,13 @@ const Index = () => {
             TYPE : {item.type}
           </RNText>
           <RNText style={styles.categoryText}> | ID : {item.code}</RNText>
+          <RNText style={styles.categoryText}> | DATE : {item.code}</RNText> 
         </View>
         <View style={styles.readMoreContainer}>
           <RNText style={styles.dateText}>
             {" "}
             {item.status == "OPEN"
-              ? "Hang Tight Our Personnel are working on it !"
+              ? "Yet to be fixed !"
               : item.status == "PENDING"
               ? "Final Stages of the Work !"
               : "Issue Solved Thank you !"}{" "}
