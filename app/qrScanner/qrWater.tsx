@@ -59,7 +59,7 @@ const parseScannedData = (url: string) => {
   return {
     name: params.get("block") || "",
     number: params.get("floor") || "",
-    dispenserName: params.get("issueContent") || "",
+    dispenserName: params.get("disp") || "",
   };
 };
 const SinglePageForm = () => {
