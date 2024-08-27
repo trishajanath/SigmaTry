@@ -75,10 +75,10 @@ const SinglePageForm = () => {
         id: users.id,
         issueType: state.selectedOptionType,
         issueCat: "",
-        actionItem:"Miscellaneous",
+        actionItem: "Miscellaneous",
         block: "",
         floor: "",
-        issueContent:"",
+        issueContent: "",
         comments: [
           {
             by: users.id,
@@ -91,7 +91,7 @@ const SinglePageForm = () => {
         Submit
       );
       console.log(response.data);
-      router.push({
+      router.replace({
         pathname: "/Home/submitPage",
         params: response.data,
       });
@@ -151,7 +151,7 @@ const SinglePageForm = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
-      <Toast/>
+      <Toast />
     </>
   );
 };

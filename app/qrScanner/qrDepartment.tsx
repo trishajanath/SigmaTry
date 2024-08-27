@@ -43,18 +43,19 @@ const initialState: State = {
   ratingCleanliness: undefined,
 };
 
-type Action = {
-  type: "SET_FIELD";
-  field: keyof State;
-  value: string | boolean;
-}
-| { type: "SET_RATING"; category: string; rating: number };
+type Action =
+  | {
+      type: "SET_FIELD";
+      field: keyof State;
+      value: string | boolean;
+    }
+  | { type: "SET_RATING"; category: string; rating: number };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "SET_FIELD":
       return { ...state, [action.field]: action.value };
-      case "SET_RATING":
+    case "SET_RATING":
       return {
         ...state,
         [action.category]: action.rating,
@@ -73,7 +74,6 @@ const parseScannedData = (url: string) => {
   };
 };
 
-
 const SinglePageForm: React.FC = () => {
   const navigation = useNavigation();
   useEffect(() => {
@@ -91,7 +91,7 @@ const SinglePageForm: React.FC = () => {
   const handleSwitchChange = (value: boolean) => {
     dispatch({ type: "SET_FIELD", field: "anonymous", value });
   };
-  
+
   const [state, dispatch] = useReducer(reducer, {
     ...initialState,
     ...parseScannedData(scannedData ? scannedData.toString() : ""),
@@ -126,20 +126,17 @@ const SinglePageForm: React.FC = () => {
       state.type === "Select Type" ||
       state.domain === "Select Domain" ||
       !state.content ||
-      (state.type === "Feedback" &&
-        
-          (state.ratingCleanliness === undefined))
-    )
-     {
+      (state.type === "Feedback" && state.ratingCleanliness === undefined)
+    ) {
       Toast.show({
         type: "error",
         text1: "Some fields are missing",
         text2: "Please fill all the fields",
         visibilityTime: 2000,
       });
-      return; 
+      return;
     }
-    
+
     try {
       const Submit = {
         name: user.name,
@@ -147,19 +144,19 @@ const SinglePageForm: React.FC = () => {
         issueType: state.type,
 
         issueCat: state.domain,
-        actionItem:"Department",
-        block:state.number,
-      
+        actionItem: "Department",
+        block: state.number,
+
         floor: state.department,
-        issueContent:state.cabin,
-        
+        issueContent: state.cabin,
+
         comments: [
           {
             by: user.name,
             content: state.content,
           },
         ],
-        "survey-cleanliness":state.ratingCleanliness
+        "survey-cleanliness": state.ratingCleanliness,
       };
       console.log("Submitting data:", Submit);
       const response = await axios.post(
@@ -167,24 +164,23 @@ const SinglePageForm: React.FC = () => {
         Submit
       );
       console.log(response.data);
-      router.push({
+      router.replace({
         pathname: "/Home/submitPage",
         params: response.data,
       });
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Error occurred during submission:", error);
-       if (error.response) {
+      if (error.response) {
         console.error("Server responded with:", error.response.data);
-     
+      }
+      Toast.show({
+        type: "error",
+        text1: "Submission failed",
+        text2: "Please try again later.",
+        visibilityTime: 2000,
+      });
     }
-    Toast.show({
-      type: "error",
-      text1: "Submission failed",
-      text2: "Please try again later.",
-      visibilityTime: 2000,
-    });
   };
-}
   const handleRatingSelect = (category: string, rating: number) => {
     dispatch({ type: "SET_RATING", category, rating });
   };
@@ -203,7 +199,6 @@ const SinglePageForm: React.FC = () => {
         <View style={styles.container}>
           <Text style={styles.main}>Department Complaint</Text>
           <View style={styles.formContainer}>
-            
             <Text style={styles.label}>Floor Number</Text>
             <TextInput
               style={styles.input}
@@ -261,7 +256,13 @@ const SinglePageForm: React.FC = () => {
                 setSelected={(value: string) =>
                   dispatch({ type: "SET_FIELD", field: "domain", value })
                 }
-                data={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical","Others"]}
+                data={[
+                  "Cleaning",
+                  "Plumbing",
+                  "Civil & Carpentry",
+                  "Electrical",
+                  "Others",
+                ]}
                 search={false}
                 save="value"
               />
@@ -276,31 +277,37 @@ const SinglePageForm: React.FC = () => {
                 dispatch({ type: "SET_FIELD", field: "content", value: text })
               }
             />
-             {state.type === "Feedback" && (
-              
+            {state.type === "Feedback" && (
               <View style={styles.ratingContainer}>
-                 <Text style={styles.lab}>Give your ratings</Text>
-                 <Text style={styles.labe}>Cleanliness</Text>
-              <View style={styles.customRatingContainer}>
-                {[1, 2, 3].map((rate) => (
-                  <View key={rate} style={styles.ratingItem}>
-                    <TouchableOpacity
-                      style={[
-                        styles.circle,
-                        state.ratingCleanliness === rate && styles.selectedCircle,
-                      ]}
-                      onPress={() => handleRatingSelect('ratingCleanliness', rate)}
-                    >
-                      <Text style={styles.circleText}></Text>
-                    </TouchableOpacity>
-                    <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
-                    </Text>
-                  </View>
-                ))}
+                <Text style={styles.lab}>Give your ratings</Text>
+                <Text style={styles.labe}>Cleanliness</Text>
+                <View style={styles.customRatingContainer}>
+                  {[1, 2, 3].map((rate) => (
+                    <View key={rate} style={styles.ratingItem}>
+                      <TouchableOpacity
+                        style={[
+                          styles.circle,
+                          state.ratingCleanliness === rate &&
+                            styles.selectedCircle,
+                        ]}
+                        onPress={() =>
+                          handleRatingSelect("ratingCleanliness", rate)
+                        }
+                      >
+                        <Text style={styles.circleText}></Text>
+                      </TouchableOpacity>
+                      <Text style={styles.ratingText}>
+                        {rate === 1
+                          ? "Poor"
+                          : rate === 2
+                          ? "Satisfactory"
+                          : "Average"}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
               </View>
-            </View>
-)}
+            )}
             <View style={styles.switchContainer}>
               <Text style={styles.switchLabel}>Anonymous Replies</Text>
               <Switch
@@ -315,7 +322,7 @@ const SinglePageForm: React.FC = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
-      <Toast/>
+      <Toast />
     </>
   );
 };
@@ -338,7 +345,7 @@ const styles = StyleSheet.create({
   labe: {
     fontSize: 15,
     marginBottom: "2%",
-    marginTop:"2%"
+    marginTop: "2%",
   },
   ratingContainer: {
     marginTop: 10,
@@ -392,7 +399,7 @@ const styles = StyleSheet.create({
     marginBottom: "10%",
     width: "100%",
   },
- 
+
   input: {
     width: "100%",
     height: 40,

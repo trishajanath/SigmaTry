@@ -33,8 +33,6 @@ interface FormData {
   ratinglights?: number;
 }
 
-
-
 const initialState: FormData = {
   name: "",
   number: "",
@@ -51,10 +49,8 @@ const initialState: FormData = {
 };
 
 type Action =
-  
-
-| { type: "SET_FORM_DATA"; payload: Partial<FormData> }
-| { type: "SET_RATING"; category: string; rating: number };
+  | { type: "SET_FORM_DATA"; payload: Partial<FormData> }
+  | { type: "SET_RATING"; category: string; rating: number };
 function reducer(state: FormData, action: Action): FormData {
   switch (action.type) {
     case "SET_FORM_DATA":
@@ -83,15 +79,21 @@ const SinglePageForm: React.FC = () => {
     });
   }, []);
 
-
-
   const handleSubmit = async () => {
-    if (!state.name || !state.number || state.restroom === "Select Option" || state.type === "Select Type" || state.domain === "Select Domain" || !state.content ||(state.type === "Feedback" &&
-      (state.ratingmirror === undefined ||
-        state.ratingurinals === undefined ||
-        state.ratingtoilets === undefined ||
-        state.ratingfloor === undefined ||
-      state.ratinglights === undefined))) {
+    if (
+      !state.name ||
+      !state.number ||
+      state.restroom === "Select Option" ||
+      state.type === "Select Type" ||
+      state.domain === "Select Domain" ||
+      !state.content ||
+      (state.type === "Feedback" &&
+        (state.ratingmirror === undefined ||
+          state.ratingurinals === undefined ||
+          state.ratingtoilets === undefined ||
+          state.ratingfloor === undefined ||
+          state.ratinglights === undefined))
+    ) {
       Toast.show({
         type: "error",
         text1: "Please fill out of all the fields before submitting.",
@@ -101,26 +103,26 @@ const SinglePageForm: React.FC = () => {
     }
     try {
       const Submit = {
-        name:users.name,
-        id:users.id,
-        issueType:state.type,
+        name: users.name,
+        id: users.id,
+        issueType: state.type,
         issueCat: state.domain,
-        actionItem:"Restroom",
-        block:state.name,
-        floor:state.number,
-        issueContent:state.restroom,
-       
+        actionItem: "Restroom",
+        block: state.name,
+        floor: state.number,
+        issueContent: state.restroom,
+
         comments: [
           {
             by: users.id,
             content: state.content,
           },
         ],
-        "survey-mirror":state.ratingmirror,
-        "survey-urinals":state.ratingurinals,
-        "survey-toilets":state.ratingtoilets,
-        "survey-floor":state.ratingfloor,
-        "survey-lights":state.ratinglights,
+        "survey-mirror": state.ratingmirror,
+        "survey-urinals": state.ratingurinals,
+        "survey-toilets": state.ratingtoilets,
+        "survey-floor": state.ratingfloor,
+        "survey-lights": state.ratinglights,
       };
       console.log("Submitting data:", Submit);
       const response = await axios.post(
@@ -128,14 +130,12 @@ const SinglePageForm: React.FC = () => {
         Submit
       );
       console.log(response.data);
-      router.push({
+      router.replace({
         pathname: "/Home/submitPage",
         params: response.data,
       });
-     
-    } catch (error:any) {
-
-       console.error("Error occurred during submission:", error);
+    } catch (error: any) {
+      console.error("Error occurred during submission:", error);
       if (error.response) {
         console.error("Server responded with:", error.response.data);
       }
@@ -190,7 +190,10 @@ const SinglePageForm: React.FC = () => {
             <SelectList
               data={["Gents", "Ladies", "Differently Abled"]}
               setSelected={(value: any) =>
-                dispatch({ type: "SET_FORM_DATA", payload:{restroom: value} })
+                dispatch({
+                  type: "SET_FORM_DATA",
+                  payload: { restroom: value },
+                })
               }
               search={false}
               save="value"
@@ -202,7 +205,7 @@ const SinglePageForm: React.FC = () => {
           <View style={styles.dropdownWrapper}>
             <SelectList
               setSelected={(value: any) =>
-                dispatch({ type: "SET_FORM_DATA", payload:{type: value} })
+                dispatch({ type: "SET_FORM_DATA", payload: { type: value } })
               }
               data={["Complaint", "Feedback"]}
               search={false}
@@ -215,9 +218,15 @@ const SinglePageForm: React.FC = () => {
           <View style={styles.dropdownWrapper}>
             <SelectList
               setSelected={(value: any) =>
-                dispatch({ type: "SET_FORM_DATA", payload:{ domain: value} })
+                dispatch({ type: "SET_FORM_DATA", payload: { domain: value } })
               }
-              data={["Cleaning", "Plumbing", "Civil & Carpentry", "Electrical", "Others"]}
+              data={[
+                "Cleaning",
+                "Plumbing",
+                "Civil & Carpentry",
+                "Electrical",
+                "Others",
+              ]}
               search={false}
               save="value"
               placeholder={state.domain}
@@ -230,13 +239,12 @@ const SinglePageForm: React.FC = () => {
             placeholder="Enter Content Here"
             value={state.content}
             onChangeText={(text) =>
-              dispatch({ type: "SET_FORM_DATA", payload:{content: text} })
+              dispatch({ type: "SET_FORM_DATA", payload: { content: text } })
             }
           />
-{state.type === "Feedback" && (
-              
-              <View style={styles.ratingContainer}>
-                 <Text style={styles.lab}>Give your ratings</Text>
+          {state.type === "Feedback" && (
+            <View style={styles.ratingContainer}>
+              <Text style={styles.lab}>Give your ratings</Text>
               <Text style={styles.labe}>Mirror & Washbasin</Text>
               <View style={styles.customRatingContainer}>
                 {[1, 2, 3].map((rate) => (
@@ -246,17 +254,21 @@ const SinglePageForm: React.FC = () => {
                         styles.circle,
                         state.ratingmirror === rate && styles.selectedCircle,
                       ]}
-                      onPress={() => handleRatingSelect('ratingmirror', rate)}
+                      onPress={() => handleRatingSelect("ratingmirror", rate)}
                     >
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                      {rate === 1
+                        ? "Poor"
+                        : rate === 2
+                        ? "Satisfactory"
+                        : "Average"}
                     </Text>
                   </View>
                 ))}
               </View>
-            
+
               <Text style={styles.labe}>Urinals</Text>
               <View style={styles.customRatingContainer}>
                 {[1, 2, 3].map((rate) => (
@@ -266,17 +278,21 @@ const SinglePageForm: React.FC = () => {
                         styles.circle,
                         state.ratingurinals === rate && styles.selectedCircle,
                       ]}
-                      onPress={() => handleRatingSelect('ratingurinals', rate)}
+                      onPress={() => handleRatingSelect("ratingurinals", rate)}
                     >
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                      {rate === 1
+                        ? "Poor"
+                        : rate === 2
+                        ? "Satisfactory"
+                        : "Average"}
                     </Text>
                   </View>
                 ))}
               </View>
-            
+
               <Text style={styles.labe}>Toilets</Text>
               <View style={styles.customRatingContainer}>
                 {[1, 2, 3].map((rate) => (
@@ -286,17 +302,21 @@ const SinglePageForm: React.FC = () => {
                         styles.circle,
                         state.ratingtoilets === rate && styles.selectedCircle,
                       ]}
-                      onPress={() => handleRatingSelect('ratingtoilets', rate)}
+                      onPress={() => handleRatingSelect("ratingtoilets", rate)}
                     >
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                      {rate === 1
+                        ? "Poor"
+                        : rate === 2
+                        ? "Satisfactory"
+                        : "Average"}
                     </Text>
                   </View>
                 ))}
               </View>
-            
+
               <Text style={styles.labe}>Floor</Text>
               <View style={styles.customRatingContainer}>
                 {[1, 2, 3].map((rate) => (
@@ -306,12 +326,16 @@ const SinglePageForm: React.FC = () => {
                         styles.circle,
                         state.ratingfloor === rate && styles.selectedCircle,
                       ]}
-                      onPress={() => handleRatingSelect('ratingfloor', rate)}
+                      onPress={() => handleRatingSelect("ratingfloor", rate)}
                     >
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                      {rate === 1
+                        ? "Poor"
+                        : rate === 2
+                        ? "Satisfactory"
+                        : "Average"}
                     </Text>
                   </View>
                 ))}
@@ -325,19 +349,22 @@ const SinglePageForm: React.FC = () => {
                         styles.circle,
                         state.ratinglights === rate && styles.selectedCircle,
                       ]}
-                      onPress={() => handleRatingSelect('ratinglights', rate)}
+                      onPress={() => handleRatingSelect("ratinglights", rate)}
                     >
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                      {rate === 1
+                        ? "Poor"
+                        : rate === 2
+                        ? "Satisfactory"
+                        : "Average"}
                     </Text>
                   </View>
                 ))}
               </View>
             </View>
-)}
-           
+          )}
 
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Anonymous Replies</Text>
@@ -353,7 +380,7 @@ const SinglePageForm: React.FC = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
-      <Toast/>
+      <Toast />
     </>
   );
 };
@@ -382,7 +409,7 @@ const styles = StyleSheet.create({
   labe: {
     fontSize: 15,
     marginBottom: "2%",
-    marginTop:"2%"
+    marginTop: "2%",
   },
   ratingItem: {
     flexDirection: "row",
@@ -452,7 +479,7 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === "ios" ? "2%" : 0,
     marginBottom: "3%",
   },
- 
+
   switchContainer: {
     marginTop: 20,
     flexDirection: "row",

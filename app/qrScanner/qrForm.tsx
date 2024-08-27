@@ -143,7 +143,7 @@ const SinglePageForm: React.FC = () => {
         Submit
       );
       console.log("Response data:", response.data);
-      router.push({
+      router.replace({
         pathname: "/Home/submitPage",
         params: response.data,
       });
@@ -360,7 +360,7 @@ const SinglePageForm: React.FC = () => {
             <View style={styles.switchContainer}>
               <Text style={styles.switchLabel}>Anonymous Replies</Text>
               <Switch
-               style={styles.switch}
+                style={styles.switch}
                 value={state.anonymous}
                 onValueChange={handleSwitchChange}
               />

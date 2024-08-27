@@ -28,7 +28,6 @@ const initialState = {
   selectedOptionType: "Select Type",
   ratingCleanliness: undefined,
   ratingFunctionality: undefined,
-  
 };
 
 function reducer(state: any, action: any) {
@@ -45,11 +44,11 @@ function reducer(state: any, action: any) {
       return { ...state, anonymous: action.payload };
     case "SET_SELECTED_OPTION_TYPE":
       return { ...state, selectedOptionType: action.payload };
-      case "SET_RATING":
-        return {
-          ...state,
-          [action.category]: action.rating,
-        };
+    case "SET_RATING":
+      return {
+        ...state,
+        [action.category]: action.rating,
+      };
     default:
       return state;
   }
@@ -60,12 +59,12 @@ const parseScannedData = (url: string) => {
   return {
     name: params.get("block") || "",
     number: params.get("floor") || "",
-    dispenserName:params.get("issueContent") || "",
+    dispenserName: params.get("issueContent") || "",
   };
 };
 const SinglePageForm = () => {
   const user = useUser();
-  
+
   const navigation = useNavigation();
   useEffect(() => {
     navigation.setOptions({
@@ -77,17 +76,23 @@ const SinglePageForm = () => {
   const handleSwitchChange = (value: boolean) => {
     dispatch({ type: "SET_FIELD", field: "anonymous", value });
   };
-  
+
   const [state, dispatch] = useReducer(reducer, {
     ...initialState,
     ...parseScannedData(scannedData ? scannedData.toString() : ""),
   });
 
   const handleSubmit = async () => {
-    if (!state.name.trim() || !state.number.trim() || !state.dispenserName.trim() || !state.content.trim() || state.selectedOptionType === "Select Type" || (state.selectedOptionType === "Feedback" &&
-      (state.ratingFunctionality === undefined ||
-        state.ratingCleanliness === undefined))
-  ) {
+    if (
+      !state.name.trim() ||
+      !state.number.trim() ||
+      !state.dispenserName.trim() ||
+      !state.content.trim() ||
+      state.selectedOptionType === "Select Type" ||
+      (state.selectedOptionType === "Feedback" &&
+        (state.ratingFunctionality === undefined ||
+          state.ratingCleanliness === undefined))
+    ) {
       Toast.show({
         type: "error",
         text1: "Please fill out of all the fields before submitting.",
@@ -101,10 +106,10 @@ const SinglePageForm = () => {
         id: user.id,
         issueType: state.selectedOptionType,
         issueCat: "",
-        actionItem:"Water Dispenser",
+        actionItem: "Water Dispenser",
         block: state.name,
         floor: state.number,
-        issueContent:state.dispenserName ,
+        issueContent: state.dispenserName,
         ratingCleanliness: state.ratingCleanliness,
         ratingFunctionality: state.ratingFunctionality,
         comments: [
@@ -113,8 +118,8 @@ const SinglePageForm = () => {
             content: state.content,
           },
         ],
-        "survey-cleanliness":state.ratingCleanliness,
-        "survey-functionality":state.ratingFunctionality,
+        "survey-cleanliness": state.ratingCleanliness,
+        "survey-functionality": state.ratingFunctionality,
       };
       console.log("Submitting data:", Submit);
       const response = await axios.post(
@@ -122,11 +127,11 @@ const SinglePageForm = () => {
         Submit
       );
       console.log(response.data);
-      router.push({
+      router.replace({
         pathname: "/Home/submitPage",
         params: response.data,
       });
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Error occurred during submission:", error);
       if (error.response) {
         console.error("Server responded with:", error.response.data);
@@ -142,7 +147,7 @@ const SinglePageForm = () => {
   const handleRatingSelect = (category: string, rating: number) => {
     dispatch({ type: "SET_RATING", category, rating });
   };
-  
+
   return (
     <>
       <Appbar.Header>
@@ -204,30 +209,36 @@ const SinglePageForm = () => {
               dispatch({ type: "SET_CONTENT", payload: text })
             }
           />
-           {state.selectedOptionType === "Feedback" && (
-              
-              <View style={styles.ratingContainer}>
-                 <Text style={styles.lab}>General Survey</Text>
-                 <Text style={styles.labe}>Cleanliness</Text>
+          {state.selectedOptionType === "Feedback" && (
+            <View style={styles.ratingContainer}>
+              <Text style={styles.lab}>General Survey</Text>
+              <Text style={styles.labe}>Cleanliness</Text>
               <View style={styles.customRatingContainer}>
                 {[1, 2, 3].map((rate) => (
                   <View key={rate} style={styles.ratingItem}>
                     <TouchableOpacity
                       style={[
                         styles.circle,
-                        state.ratingCleanliness === rate && styles.selectedCircle,
+                        state.ratingCleanliness === rate &&
+                          styles.selectedCircle,
                       ]}
-                      onPress={() => handleRatingSelect('ratingCleanliness', rate)}
+                      onPress={() =>
+                        handleRatingSelect("ratingCleanliness", rate)
+                      }
                     >
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                      {rate === 1
+                        ? "Poor"
+                        : rate === 2
+                        ? "Satisfactory"
+                        : "Average"}
                     </Text>
                   </View>
                 ))}
               </View>
-            
+
               <Text style={styles.labe}>Functionality</Text>
               <View style={styles.customRatingContainer}>
                 {[1, 2, 3].map((rate) => (
@@ -235,24 +246,27 @@ const SinglePageForm = () => {
                     <TouchableOpacity
                       style={[
                         styles.circle,
-                        state.ratingFunctionality === rate && styles.selectedCircle,
+                        state.ratingFunctionality === rate &&
+                          styles.selectedCircle,
                       ]}
-                      onPress={() => handleRatingSelect('ratingFunctionality', rate)}
+                      onPress={() =>
+                        handleRatingSelect("ratingFunctionality", rate)
+                      }
                     >
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                      {rate === 1
+                        ? "Poor"
+                        : rate === 2
+                        ? "Satisfactory"
+                        : "Average"}
                     </Text>
                   </View>
                 ))}
               </View>
             </View>
-)}
-         
-                
-              
-
+          )}
 
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Anonymous Replies</Text>
@@ -266,7 +280,7 @@ const SinglePageForm = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
-      <Toast/>
+      <Toast />
     </>
   );
 };
@@ -309,11 +323,11 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: "4%",
   },
-  
+
   labe: {
     fontSize: 15,
     marginBottom: "2%",
-    marginTop:"2%"
+    marginTop: "2%",
   },
   ratingItem: {
     flexDirection: "row",

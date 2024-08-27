@@ -41,7 +41,7 @@ const SubmitPage: React.FC = () => {
     setLoading(true);
     // await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate a delay
     // setLoading(false);
-    router.push("/Home");
+    router.replace("/Home");
   };
 
   const handleTrackIssue = async () => {

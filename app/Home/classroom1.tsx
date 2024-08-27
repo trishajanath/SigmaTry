@@ -129,7 +129,7 @@ const SinglePageForm: React.FC = () => {
         Submit
       );
       console.log("Response data:", response.data);
-      router.push({
+      router.replace({
         pathname: "/Home/submitPage",
         params: response.data,
       });

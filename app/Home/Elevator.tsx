@@ -26,7 +26,7 @@ const initialState = {
   anonymous: false,
   selectedOptionType: "Select Type",
   selectedOptionDomain: "Select Domain",
-  ratingCleanliness:undefined
+  ratingCleanliness: undefined,
 };
 
 // Reducer function
@@ -43,12 +43,12 @@ function reducer(state: any, action: any) {
       return { ...state, selectedOptionType: action.payload };
     case "SET_SELECTED_OPTION_DOMAIN":
       return { ...state, selectedOptionDomain: action.payload };
-      case "SET_RATING":
-        return {
-          ...state,
-          [action.category]: action.rating,
-        };
-        
+    case "SET_RATING":
+      return {
+        ...state,
+        [action.category]: action.rating,
+      };
+
     default:
       return state;
   }
@@ -112,7 +112,7 @@ const SinglePageForm = () => {
       });
       return;
     }
-  
+
     try {
       const Submit = {
         name: state.name, // Ensure this is correctly passed
@@ -123,7 +123,7 @@ const SinglePageForm = () => {
         block: state.name,
         floor: "",
         issueContent: "",
-        actionItem:"Lift", // Set actionItem to "Lift"
+        actionItem: "Lift", // Set actionItem to "Lift"
         comments: [
           {
             by: users.id,
@@ -132,15 +132,15 @@ const SinglePageForm = () => {
         ],
         "survey-cleanliness": state.ratingCleanliness,
       };
-  
+
       console.log("Submitting data:", Submit);
       const response = await axios.post(
         "https://api.gms.intellx.in/client/issue/report",
         Submit
       );
-  
+
       console.log(response.data);
-      router.push({
+      router.replace({
         pathname: "/Home/submitPage",
         params: response.data,
       });
@@ -157,7 +157,7 @@ const SinglePageForm = () => {
       });
     }
   };
-  
+
   const handleRatingSelect = (category: string, rating: number) => {
     dispatch({ type: "SET_RATING", category, rating });
   };
@@ -217,31 +217,37 @@ const SinglePageForm = () => {
               dispatch({ type: "SET_CONTENT", payload: text })
             }
           />
-           {state.selectedOptionType === "Feedback" && (
-              
-              <View style={styles.ratingContainer}>
-                 <Text style={styles.lab}>Give your ratings</Text>
-                 <Text style={styles.labe}>Cleanliness</Text>
+          {state.selectedOptionType === "Feedback" && (
+            <View style={styles.ratingContainer}>
+              <Text style={styles.lab}>Give your ratings</Text>
+              <Text style={styles.labe}>Cleanliness</Text>
               <View style={styles.customRatingContainer}>
                 {[1, 2, 3].map((rate) => (
                   <View key={rate} style={styles.ratingItem}>
                     <TouchableOpacity
                       style={[
                         styles.circle,
-                        state.ratingCleanliness === rate && styles.selectedCircle,
+                        state.ratingCleanliness === rate &&
+                          styles.selectedCircle,
                       ]}
-                      onPress={() => handleRatingSelect('ratingCleanliness', rate)}
+                      onPress={() =>
+                        handleRatingSelect("ratingCleanliness", rate)
+                      }
                     >
                       <Text style={styles.circleText}></Text>
                     </TouchableOpacity>
                     <Text style={styles.ratingText}>
-                      {rate === 1 ? 'Poor' : rate === 2 ? 'Satisfactory' : 'Average'}
+                      {rate === 1
+                        ? "Poor"
+                        : rate === 2
+                        ? "Satisfactory"
+                        : "Average"}
                     </Text>
                   </View>
                 ))}
               </View>
             </View>
-)}
+          )}
 
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Anonymous Replies</Text>
@@ -257,8 +263,8 @@ const SinglePageForm = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
-      <View/>
-      <Toast/>
+      <View />
+      <Toast />
     </>
   );
 };
@@ -284,11 +290,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: "4%",
   },
- 
+
   labe: {
     fontSize: 15,
     marginBottom: "2%",
-    marginTop:"2%"
+    marginTop: "2%",
   },
   ratingContainer: {
     marginTop: 10,
