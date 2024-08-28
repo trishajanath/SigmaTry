@@ -92,14 +92,18 @@ const LoginScreen = () => {
         id: response.data.user.id,
         confirmed: true,
       });
+      console.log("Logged in successfully");
+      router.replace("/Home");
       setIsLoggedIn(true);
-    } catch (error) {
+    } catch (error: any) {
       Toast.show({
         type: "error",
         text1: "Invalid Credentials",
         text2: "Please enter valid register number and password",
         visibilityTime: 2000,
       });
+      console.log("Error logging in", error);
+      console.log(error.response);
     } finally {
       setIsLoading(false); // Set loading to false when login ends
     }
