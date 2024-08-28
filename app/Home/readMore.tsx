@@ -270,7 +270,7 @@ export default function IssueDetails() {
 </Text>
 
           
-            <Text style={styles.detailsText}>Type: {issue?.issue.actionItem  === "Miscellaneous" ? "Not Available" : issue?.issue.issueType}</Text>
+            <Text style={styles.detailsText}>Type: { issue?.issue.issueType}</Text>
             <Text style={styles.detailsText}>Action Item: {issue?.issue.actionItem}</Text>
             {issue?.issue.issueType === "Complaint" && (
               <Text style={styles.detailsText}>Status: {issue?.status}</Text>

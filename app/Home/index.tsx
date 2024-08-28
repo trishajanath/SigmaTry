@@ -49,7 +49,7 @@ const menuTheme = {
 interface Issue {
   category: string;
   code: string;
-  type: string;
+  issueType: string;
   status: string;
   date: string;
 }
@@ -265,9 +265,9 @@ const Index = () => {
           )}
         </View>
         <View style={styles.complaintBody}>
-          <RNText style={styles.categoryText}>TYPE : {item.type}</RNText>
+          <RNText style={styles.categoryText}>TYPE : {item.issueType}</RNText>
           <RNText style={styles.categoryText}> | ID : {item.code}</RNText>
-          <RNText style={styles.categoryText}> | DATE : {item.code}</RNText>
+          <RNText style={styles.categoryText}> | DATE : {item.date}</RNText>
         </View>
         <View style={styles.readMoreContainer}>
           <RNText style={styles.dateText}>

@@ -73,7 +73,7 @@ const SinglePageForm = () => {
       const Submit = {
         name: users.name,
         id: users.id,
-        issueType: state.selectedOptionType,
+        issueType: state.type,
         issueCat: "",
         actionItem: "Miscellaneous",
         block: "",
