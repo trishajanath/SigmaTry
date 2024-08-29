@@ -76,8 +76,7 @@ const SignUpScreen = () => {
   const validateInputs = () => {
     const { fullName, email, password, confirmPassword } = state;
     
-    // Regex for at least one uppercase letter and minimum 5 characters
-    const passwordRegex = /^(?=.*[A-Z]).{5,}$/;
+   
 
     if (!fullName || !email || !password || !confirmPassword) {
       Alert.alert("Error", "All fields are required.");
@@ -89,11 +88,7 @@ const SignUpScreen = () => {
       return false;
     }
 
-    if (!passwordRegex.test(password)) {
-      Alert.alert("Error", "Password must be at least 5 characters long and contain at least one uppercase letter.");
-      return false;
-    }
-
+  
     return true;
   };
 

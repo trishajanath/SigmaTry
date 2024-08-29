@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  BackHandler,
   Alert,
 } from "react-native";
 import { RouteProp } from "@react-navigation/native";
@@ -137,9 +138,41 @@ const LoginScreen = () => {
       setIsLoading(false); // Set loading to false when token check ends
     }
   };
+  const checkServerStatus = async () => {
+    try {
+      const response = await axios.get("https://api.gms.intellx.in");
+      if (response.status === 200) {
+        console.log("Server is up and running");
+        return true;
+      }
+    } catch (error) {
+      console.log("Server is down");
+      return false;
+    }
+  };
+
+  const loadApplication = async () => {
+    const serverStatus = await checkServerStatus();
+    if (serverStatus) {
+      await checkToken();
+    } else {
+      Alert.alert("Server is down", "Please try again later", [
+        {
+          text: "Retry",
+          onPress: () => loadApplication(),
+        },
+        {
+          text: "Exit",
+          onPress: () => BackHandler.exitApp(),
+        },
+      ]);
+    }
+  };
   useEffect(() => {
-    checkToken();
-  }, []);
+    loadApplication();
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
+
 
   const resetPassword = async () => {
     if (state.email === "") {

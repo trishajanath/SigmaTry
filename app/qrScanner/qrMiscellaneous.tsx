@@ -113,7 +113,7 @@ const SinglePageForm = () => {
         extraHeight={10}
       >
         <View style={styles.container}>
-          <Text style={styles.main}>Maintenance Form</Text>
+          <Text style={styles.main}>Miscellaneous Form</Text>
 
           <Text style={styles.pickerLabel}>Type</Text>
           <View style={styles.dropdownWrapper}>

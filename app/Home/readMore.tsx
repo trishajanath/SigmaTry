@@ -10,6 +10,7 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
+  Button,
 } from "react-native";
 import { router, useGlobalSearchParams, useNavigation } from "expo-router";
 import { AntDesign, Feather, SimpleLineIcons } from "@expo/vector-icons";
@@ -193,6 +194,7 @@ export default function IssueDetails() {
     });
   }, [navigation]);
 
+
   if (loading) {
     return (
       <View
@@ -351,42 +353,27 @@ export default function IssueDetails() {
             </>
           )}
          
-<Text style={styles.commentsHeading}>COMMENTS</Text>
-<View
-            style={{
-              width: "100%",
-              height: "0.1%",
-              backgroundColor: "black",
-              marginBottom: 10,
-            }}
-          ></View>
-          
-          
-          {issue?.comments && issue.comments.length > 0 ? (
-  issue.comments.map((comment, index) => (
-    <View key={index} style={styles.commentBox}>
-      <Text style={styles.commentUser}>{comment.by}</Text>
-      <Text style={styles.commentContent}>{comment.date}</Text>
-      
-      {Array.isArray(comment.content) && comment.content.length > 0 ? (
-        comment.content.map((nestedComment, nestedIndex) => (
-          <View key={nestedIndex}>
-            <Text style={styles.commentContent}>Comment : {nestedComment.content}</Text>
-          </View>
-        ))
-      ) : null}
-    </View>
-  ))
-) : (
-  <Text style={{ alignSelf: "center", margin: 10 }}>No comments available</Text>
-)}
-
-
-
-
-
-
-
+         <Text style={styles.commentsHeading}>COMMENTS</Text>
+{comments.filter((comment) => typeof comment.content === 'string' && comment.content.trim()).map((comment, index) => (
+  <View key={index} style={styles.commentBox}>
+    <Text style={styles.commentUser}>{comment.by}</Text>
+    <Text style={styles.commentContent}>{comment.content}</Text>
+  </View>
+))}
+<View style={styles.inputContainer}>
+  <TextInput
+    style={styles.textInput}
+    value={newComment}
+    onChangeText={setNewComment}
+    placeholder="Add a comment"
+  />
+  <TouchableOpacity
+    style={styles.addButton}
+    onPress={handleAddComment}
+  >
+    <AntDesign name="plus" size={15} color="#555555" />
+  </TouchableOpacity>
+</View>
           {/* Display Report Log */}
           <Text style={styles.commentsHeading}>Report Log</Text>
           <View
@@ -429,6 +416,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: "2%",
    
+  },
+  
+  divider: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'black',
+    marginBottom: 10,
   },
   container: {
     flex: 1,
@@ -501,6 +495,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#003366",
   },
+  textInput: {
+    flex: 1,
+    marginRight: 10,
+    fontSize: 12,
+    color: "#333333",
+  },
   detailsBox: {
     borderWidth: 1,
     borderColor: "#DDE6F0",
@@ -559,12 +559,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: "center",
   },
-  textInput: {
-    flex: 1,
-    marginRight: 10,
-    fontSize: 12,
-    color: "#333333",
-  },
+ 
   addButton: {
     width: 30,
     height: 30,
