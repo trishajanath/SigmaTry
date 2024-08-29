@@ -209,7 +209,7 @@ export default function IssueDetails() {
     );
   }
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+   <>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content title="Sigma - GMS" />
@@ -398,7 +398,7 @@ export default function IssueDetails() {
         
         </View>
       </KeyboardAwareScrollView>
-    </ScrollView>
+      </>
   );
 }
 
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: "#FFFFFF",
     flexGrow: 1,
-    padding: "2%",
+    padding: "10%",
    
   },
   
