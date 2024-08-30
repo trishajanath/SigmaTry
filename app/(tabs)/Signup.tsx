@@ -8,12 +8,14 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const LazyHomeScreen = React.lazy(() => import("./index"));
 
@@ -129,6 +131,12 @@ const SignUpScreen = () => {
   };
 
   return (
+    <KeyboardAwareScrollView
+          contentContainerStyle={styles.scrollView}
+          enableOnAndroid={true}
+          enableAutomaticScroll={Platform.OS === "ios"} // Adjust scroll behavior for iOS
+      extraScrollHeight={Platform.OS === "ios" ? 20 : 0}
+        >
     <View style={styles.container}>
       <Image
         source={require("../../assets/images/sigmalogo.png")}
@@ -217,6 +225,7 @@ const SignUpScreen = () => {
         </Text>
       </TouchableOpacity>
     </View>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -240,10 +249,14 @@ const styles = StyleSheet.create({
     width: "100%",
     textAlign: "left",
     color:'#333333',
+    marginTop:'-4%',
     marginLeft:'4%'
   },
   
-
+  scrollView: {
+    flexGrow: 1,
+    padding: "2%",
+  },
   title: {
     fontSize: 28,
     fontWeight: "900",
@@ -286,9 +299,10 @@ const styles = StyleSheet.create({
   signInContainer: {
     position: "absolute",
     bottom: 0,
-    marginBottom: "4%",
+    marginBottom: "2%",
   },
   signUpText: {
+    marginTop:'-1%',
     fontSize: 14,
     color: "#999",
   },
@@ -299,7 +313,7 @@ const styles = StyleSheet.create({
     width: 200, // Adjust the width as needed
     height: 200, // Adjust the height as needed
     marginBottom: "-20%",
-    marginTop: "-50%", // Add some margin if needed
+    marginTop: Platform.OS === "ios" ? "-50%" : "-25%"
   },
 });
 

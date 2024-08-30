@@ -8,6 +8,7 @@ import {
   StyleSheet,
   BackHandler,
   Alert,
+  Platform,
 } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -210,8 +211,10 @@ const LoginScreen = () => {
         <KeyboardAwareScrollView
           contentContainerStyle={styles.scrollView}
           enableOnAndroid={true}
-          extraHeight={100}
+          enableAutomaticScroll={Platform.OS === "ios"} // Adjust scroll behavior for iOS
+      extraScrollHeight={Platform.OS === "ios" ? 20 : 0}
         >
+         
           <View style={styles.container}>
             <Image
               source={require("../../assets/images/sigmalogo.png")}
@@ -226,11 +229,9 @@ const LoginScreen = () => {
               Enter your college ID, like "21z202", or for staff, it is the
               e-mail prefix name - like "xyz.eee"
             </Text>
+
             <View
-              style={[
-                styles.inputContainer,
-                isEmailFocused && styles.inputContainerFocused,
-              ]}
+              style={styles.inputContainer} // Removed inputContainerFocused
             >
               <AntDesign name="user" size={20} color="#999" />
               <TextInput
@@ -245,15 +246,8 @@ const LoginScreen = () => {
                 }
               />
             </View>
-            <Text style={styles.ti}>
-              If you forgot your password, click "Forgot Password".
-            </Text>
-            <View
-              style={[
-                styles.inputContainer,
-                isPasswordFocused && styles.inputContainerFocused,
-              ]}
-            >
+            
+            <View style={styles.inputContainer}> 
               <MaterialCommunityIcons
                 name="lock-outline"
                 size={20}
@@ -283,7 +277,6 @@ const LoginScreen = () => {
                 />
               </TouchableOpacity>
             </View>
-
             <TouchableOpacity
               style={{ alignItems: "flex-start", alignSelf: "flex-start" }}
               onPress={() => {
@@ -317,14 +310,13 @@ const LoginScreen = () => {
                 Up" to create one.{" "}
                 <Text style={styles.signUpLink}>Sign up</Text>
               </Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
           </View>
         </KeyboardAwareScrollView>
       )}
     </>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
