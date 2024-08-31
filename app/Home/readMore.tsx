@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: "#FFFFFF",
     flexGrow: 1,
-    padding: "10%",
+    padding: "2%",
    
   },
   
