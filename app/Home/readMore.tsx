@@ -18,6 +18,7 @@ import { useUser } from "@/Hooks/userContext";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Appbar } from "react-native-paper";
+import { BACKEND_URL } from "@/production.config";
 
 const { width, height } = Dimensions.get("window");
 
@@ -76,7 +77,7 @@ export default function IssueDetails() {
         user_id: user.id,
       };
       const response = await axios.post(
-        `https://api.gms.intellx.in/client/issue/status/${issueID}`,
+        `${BACKEND_URL}/client/issue/status/${issueID}`,
         body
       );
       setIssue(response.data.issue);
@@ -106,7 +107,7 @@ export default function IssueDetails() {
         user_id: user.id,
       };
       const response = await axios.post(
-        `https://api.gms.intellx.in/task/open/${issue?.issueNo}`,
+        `${BACKEND_URL}/task/open/${issue?.issueNo}`,
         body
       );
       if (response.status === 200) {
@@ -135,7 +136,7 @@ export default function IssueDetails() {
         user_id: user.id,
       };
       const response = await axios.post(
-        `https://api.gms.intellx.in/task/close/${issue?.issueNo}`,
+        `${BACKEND_URL}/task/close/${issue?.issueNo}`,
         body
       );
       if (response.status === 200) {
@@ -168,7 +169,7 @@ export default function IssueDetails() {
           content: newComment,
         };
         const response = await axios.post(
-          `https://api.gms.intellx.in/client/issue/add-comment/${issue?.issueNo}`,
+          `${BACKEND_URL}/client/issue/add-comment/${issue?.issueNo}`,
           body
         );
         if (response.status === 200) {

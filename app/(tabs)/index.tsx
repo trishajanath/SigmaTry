@@ -20,6 +20,7 @@ import { useUser } from "@/Hooks/userContext";
 import * as jwt from "jwt-decode";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-toast-message";
+import { BACKEND_URL } from "@/production.config";
 
 type RootStackParamList = {
   Login: undefined;
@@ -85,7 +86,7 @@ const LoginScreen = () => {
         password: state.password,
       };
       const response = await axios.post(
-        "https://api.gms.intellx.in/client/login",
+        `${BACKEND_URL}/client/login`,
         body
       );
       await AsyncStorage.setItem("token", response.data.token);
@@ -141,7 +142,7 @@ const LoginScreen = () => {
   };
   const checkServerStatus = async () => {
     try {
-      const response = await axios.get("https://api.gms.intellx.in");
+      const response = await axios.get(BACKEND_URL);
       if (response.status === 200) {
         console.log("Server is up and running");
         return true;
@@ -188,7 +189,7 @@ const LoginScreen = () => {
           id: state.email,
         };
         const response = await axios.post(
-          "https://api.gms.intellx.in/client/forgot_password",
+          `${BACKEND_URL}/client/forgot_password`,
           body
         );
         Toast.show({

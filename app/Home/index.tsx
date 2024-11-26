@@ -37,7 +37,7 @@ import {
 import { useUser } from "@/Hooks/userContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { black } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
+import { BACKEND_URL } from "@/production.config";
 
 const { width } = Dimensions.get("window");
 const menuTheme = {
@@ -153,7 +153,7 @@ const Index = () => {
         user_id: user.id,
       };
       const response = await axios.post(
-        "https://api.gms.intellx.in/client/issue/status",
+        `${BACKEND_URL}/client/issue/status`,
         body
       );
       setIssues(response.data.data);

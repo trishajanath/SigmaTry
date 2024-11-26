@@ -18,6 +18,7 @@
     "@react-native-picker/picker": "2.7.5",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
+    "@types/react-native": "^0.70.19",
     "@venedicto/react-native-dropdown": "^2.0.4",
     "axios": "^1.7.2",
     "expo": "^51.0.22",

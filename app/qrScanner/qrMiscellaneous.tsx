@@ -16,6 +16,7 @@ import axios from "axios";
 import { useUser } from "@/Hooks/userContext";
 import { Appbar } from "react-native-paper";
 import Toast from "react-native-toast-message";
+import { BACKEND_URL } from "@/production.config";
 
 const { width } = Dimensions.get("window");
 
@@ -87,7 +88,7 @@ const SinglePageForm = () => {
         ],
       };
       const response = await axios.post(
-        "https://api.gms.intellx.in/client/issue/report",
+        `${BACKEND_URL}/client/issue/report`,
         Submit
       );
       console.log(response.data);

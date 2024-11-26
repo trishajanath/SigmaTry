@@ -16,6 +16,7 @@ import axios from "axios";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { BACKEND_URL } from "@/production.config";
 
 const LazyHomeScreen = React.lazy(() => import("./index"));
 
@@ -100,7 +101,7 @@ const SignUpScreen = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://api.gms.intellx.in/client/register",
+        `${BACKEND_URL}/client/register`,
         {
           name: state.fullName,
           id: state.email,
