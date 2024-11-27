@@ -107,6 +107,7 @@ const SinglePageForm: React.FC = () => {
 
   const handleSubmit = async () => {
     if (
+      !state.name ||
       !state.number ||
       !state.department ||
       state.cabin === "Select Option" ||
@@ -132,7 +133,7 @@ const SinglePageForm: React.FC = () => {
 
         issueCat: state.domain,
         actionItem: "Department",
-        block: state.number,
+        block: `Block-${state.name} Floor-${state.number}`,
 
         floor: state.department,
         issueContent: state.cabin,
@@ -186,10 +187,19 @@ const SinglePageForm: React.FC = () => {
         <View style={styles.container}>
           <Text style={styles.main}>Department Complaint</Text>
           <View style={styles.formContainer}>
+          <Text style={styles.label}>Block Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Block Name"
+              value={state.name}
+              onChangeText={(text) =>
+                dispatch({ type: "SET_FIELD", field: "name", value: text })
+              }
+            />
             <Text style={styles.label}>Floor Number</Text>
             <TextInput
               style={styles.input}
-              placeholder="Floor Number"
+              placeholder="Floor Number as - 1"
               value={state.number}
               onChangeText={(text) =>
                 dispatch({ type: "SET_FIELD", field: "number", value: text })

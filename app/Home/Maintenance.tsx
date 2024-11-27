@@ -22,6 +22,7 @@ const { width } = Dimensions.get("window");
 
 const initialState = {
   type: "Select Type",
+  block:"",
   content: "",
   anonymous: false,
 };
@@ -30,6 +31,8 @@ function reducer(state: any, action: any) {
   switch (action.type) {
     case "SET_TYPE":
       return { ...state, type: action.payload };
+    case "SET_BLOCK": 
+      return { ...state, block: action.payload };
     case "SET_CONTENT":
       return { ...state, content: action.payload };
     case "SET_ANONYMOUS":
@@ -38,6 +41,7 @@ function reducer(state: any, action: any) {
       return state;
   }
 }
+
 
 const SinglePageForm = () => {
   const users = useUser();
@@ -77,7 +81,7 @@ const SinglePageForm = () => {
         issueType: state.type,
         issueCat: "",
         actionItem: "Miscellaneous",
-        block: "",
+        block: state.block,
         floor: "",
         issueContent: "",
         comments: [
@@ -115,6 +119,15 @@ const SinglePageForm = () => {
       >
         <View style={styles.container}>
           <Text style={styles.main}>Miscellaneous Form</Text>
+          <Text style={styles.label}>Block Name</Text>
+          <TextInput
+          style={styles.input}
+         placeholder="Block Name"
+         value={state.block} 
+          onChangeText={(text) =>
+          dispatch({ type: "SET_BLOCK", payload: text }) 
+         }
+          />
 
           <Text style={styles.pickerLabel}>Type</Text>
           <View style={styles.dropdownWrapper}>

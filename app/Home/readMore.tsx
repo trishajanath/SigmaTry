@@ -265,7 +265,7 @@ export default function IssueDetails() {
             <Text style={styles.detailsText}>Raised By: {issue?.raised_by.name} </Text>
             <Text style={styles.detailsText}>
       Location:
-      {issue?.issue.actionItem === "Department" ? " Floor -" : issue?.issue.actionItem === "Miscellaneous" ? "Not Available " : " Block -"} {issue?.issue.block}  
+      {issue?.issue.actionItem === "Department" ? "" : " Block -"} {issue?.issue.block}  
       {issue?.issue.actionItem === "Department" ? "  Department - " : issue?.issue.actionItem === "Lift -" ? "" :issue?.issue.actionItem === "Miscellaneous" ? "": issue?.issue.actionItem === "Lift" ? "" : "  Floor -"} {issue?.issue.floor}  
       {issue?.issue.actionItem === "Restroom" ? "  Restroom:" : issue?.issue.actionItem === "Classroom" ? " Room No: " : issue?.issue.actionItem === "Department" ? "\nCabin: " : issue?.issue.actionItem === "Water Dispenser" ? " Dispenser No: " : ""}
     
