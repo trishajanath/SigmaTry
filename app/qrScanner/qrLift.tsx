@@ -264,7 +264,7 @@ const SinglePageForm = () => {
           )}
 
           <View style={styles.switchContainer}>
-            <Text style={styles.switchLabel}>Anonymous Replies</Text>
+            <Text style={styles.switchLabel}>Anonymous Complaints</Text>
             <Switch
               style={styles.switch}
               value={state.anonymous}
