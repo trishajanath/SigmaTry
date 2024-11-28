@@ -39,10 +39,30 @@ interface Issue {
     floor: string;
     actionItem: string;
   };
-  comments:{ date: string; by: string;content: string }[];
+  comments: {
+    date: string;
+    by: string;
+    content: [
+      {
+        by: string;
+        content: string;
+      }
+    ];
+  }[];
   status: string;
   log: { date: string; action: string; by: string }[];
-  survey: { Cleanliness: number; Functionality: number; Chair: number; Projector: number;Table: number; Urinals: number; Floor: number; Lights:number; Mirror:number; Toilets:number};
+  survey: {
+    Cleanliness: number;
+    Functionality: number;
+    Chair: number;
+    Projector: number;
+    Table: number;
+    Urinals: number;
+    Floor: number;
+    Lights: number;
+    Mirror: number;
+    Toilets: number;
+  };
   anonymity: string;
 }
 const getRatingText = (rating: number | null | undefined) => {
@@ -83,8 +103,7 @@ export default function IssueDetails() {
       );
       setIssue(response.data.issue);
       setComments(response.data.issue.comments);
-      console.log(response.data.issue.comments[0].content)
-     
+      console.log(response.data.issue);
       setLoading(false);
     } catch (error: any) {
       console.error(error);
@@ -127,10 +146,6 @@ export default function IssueDetails() {
     }
   };
 
-    console.log(issue?.comments[0].content)
-
-
-  
   const CloseISsue = async () => {
     try {
       const body = {
@@ -143,7 +158,7 @@ export default function IssueDetails() {
       if (response.status === 200) {
         Alert.alert("Issue has been closed successfully");
         navigation.goBack();
-      } 
+      }
     } catch (error) {
       // Check if error is an Axios error
       if (axios.isAxiosError(error)) {
@@ -170,7 +185,7 @@ export default function IssueDetails() {
           by: user.id, // replace with actual current user ID
           content: newComment,
         };
-        setComments((prevComments) => [newCommentObj, ...prevComments]); // Add new comment at the top
+        setComments((prevComments: any) => [newCommentObj, ...prevComments]); // Add new comment at the top
         const body = {
           user_id: user.id,
           content: newComment,
@@ -202,7 +217,6 @@ export default function IssueDetails() {
     });
   }, [navigation]);
 
-
   if (loading) {
     return (
       <View
@@ -217,7 +231,7 @@ export default function IssueDetails() {
     );
   }
   return (
-   <>
+    <>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content title="Sigma - GMS" />
@@ -228,11 +242,17 @@ export default function IssueDetails() {
         extraHeight={100}
       >
         <View style={styles.container}>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
             <View>
               <Text style={styles.cat}>Category</Text>
-              <Text style={{ fontWeight: "bold", fontSize: 20, color: "black" }}>
-                {issue?.issue.actionItem === "Miscellaneous" ? "Miscellaneous" : issue?.issue.issueCat}
+              <Text
+                style={{ fontWeight: "bold", fontSize: 20, color: "black" }}
+              >
+                {issue?.issue.actionItem === "Miscellaneous"
+                  ? "Miscellaneous"
+                  : issue?.issue.issueCat}
               </Text>
             </View>
             <View>
@@ -251,15 +271,29 @@ export default function IssueDetails() {
               marginTop: 17,
             }}
           ></View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 10,
+            }}
+          >
             <View>
-              <Text>Lastly Updated Date: {issue?.issue.issueLastUpdateDate}{" "} </Text>
+              <Text>
+                Lastly Updated Date: {issue?.issue.issueLastUpdateDate}{" "}
+              </Text>
             </View>
             <View>
               <Text>Time: {issue?.issue.issueLastUpdateTime}</Text>
             </View>
           </View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 15,
+            }}
+          >
             <View>
               <Text>Raised on: {issue?.date} </Text>
             </View>
@@ -267,55 +301,71 @@ export default function IssueDetails() {
               <Text>Time: {issue?.time}</Text>
             </View>
           </View>
-          
+
           <View style={{ marginTop: 20, gap: 10 }}>
-            <Text style={styles.detailsText}>Raised By: {issue?.raised_by.name} </Text>
             <Text style={styles.detailsText}>
-      Location:
-      {issue?.issue.actionItem === "Department" ? "" : " Block -"} {issue?.issue.block}  
-      {issue?.issue.actionItem === "Department" ? "  Department - " : issue?.issue.actionItem === "Lift -" ? "" :issue?.issue.actionItem === "Miscellaneous" ? "": issue?.issue.actionItem === "Lift" ? "" : "  Floor -"} {issue?.issue.floor}  
-      {issue?.issue.actionItem === "Restroom" ? "  Restroom:" : issue?.issue.actionItem === "Classroom" ? " Room No: " : issue?.issue.actionItem === "Department" ? "\nCabin: " : issue?.issue.actionItem === "Water Dispenser" ? " Dispenser No: " : ""}
-    
-  {issue?.issue.issueContent}
-</Text>
+              Raised By: {issue?.raised_by.name}{" "}
+            </Text>
+            <Text style={styles.detailsText}>
+              Location:
+              {issue?.issue.actionItem === "Department" ? "" : " Block -"}{" "}
+              {issue?.issue.block}
+              {issue?.issue.actionItem === "Department"
+                ? "  Department - "
+                : issue?.issue.actionItem === "Lift -"
+                ? ""
+                : issue?.issue.actionItem === "Miscellaneous"
+                ? ""
+                : issue?.issue.actionItem === "Lift"
+                ? ""
+                : "  Floor -"}{" "}
+              {issue?.issue.floor}
+              {issue?.issue.actionItem === "Restroom"
+                ? "  Restroom:"
+                : issue?.issue.actionItem === "Classroom"
+                ? " Room No: "
+                : issue?.issue.actionItem === "Department"
+                ? "\nCabin: "
+                : issue?.issue.actionItem === "Water Dispenser"
+                ? " Dispenser No: "
+                : ""}
+              {issue?.issue.issueContent}
+            </Text>
 
-          
-            <Text style={styles.detailsText}>Type: { issue?.issue.issueType}</Text>
-            <Text style={styles.detailsText}>Action Item: {issue?.issue.actionItem}</Text>
+            <Text style={styles.detailsText}>
+              Type: {issue?.issue.issueType}
+            </Text>
+            <Text style={styles.detailsText}>
+              Action Item: {issue?.issue.actionItem}
+            </Text>
             {issue?.issue?.issueType !== "Complaint" && (
-  <Text style={styles.detailsText}>
-    Status: {issue?.status}
-  </Text>
-)}
-</View>
+              <Text style={styles.detailsText}>Status: {issue?.status}</Text>
+            )}
+          </View>
 
-{issue?.status === "OPEN" ? (
-  issue?.issue?.issueType !== "feedback" && (
-    <TouchableOpacity
-      style={styles.closeButton}
-      onPress={() => {
-        CloseISsue();
-      }}
-    >
-      <Text style={styles.closeButtonText}>CLOSE THIS ISSUE</Text>
-    </TouchableOpacity>
-  )
-) : (
-  <TouchableOpacity
-    style={styles.closeButton}
-    onPress={() => {
-      reopenIssue();
-    }}
-  >
-    <Text style={styles.closeButtonText}>REOPEN THIS ISSUE</Text>
-  </TouchableOpacity>
-)}
+          {issue?.status === "OPEN" ? (
+            issue?.issue?.issueType !== "feedback" && (
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => {
+                  CloseISsue();
+                }}
+              >
+                <Text style={styles.closeButtonText}>CLOSE THIS ISSUE</Text>
+              </TouchableOpacity>
+            )
+          ) : (
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                reopenIssue();
+              }}
+            >
+              <Text style={styles.closeButtonText}>REOPEN THIS ISSUE</Text>
+            </TouchableOpacity>
+          )}
 
-
-          
-            {/* Conditionally display issue status for complaints */}
-            
-          
+          {/* Conditionally display issue status for complaints */}
 
           <Text style={styles.commentsHeading}>Survey Details</Text>
           <View
@@ -332,24 +382,44 @@ export default function IssueDetails() {
             <>
               {issue?.issue.actionItem === "Classroom" && (
                 <>
-                  <Text style={styles.detailsText}>Table: {getRatingText(issue?.survey.Table)}</Text>
-                  <Text style={styles.detailsText}>Chair: {getRatingText(issue?.survey.Chair)}</Text>
-                  <Text style={styles.detailsText}>Projector: {getRatingText(issue?.survey.Projector)}</Text>
-                  <Text style={styles.detailsText}>Cleanliness: {getRatingText(issue?.survey.Cleanliness)}</Text>
+                  <Text style={styles.detailsText}>
+                    Table: {getRatingText(issue?.survey.Table)}
+                  </Text>
+                  <Text style={styles.detailsText}>
+                    Chair: {getRatingText(issue?.survey.Chair)}
+                  </Text>
+                  <Text style={styles.detailsText}>
+                    Projector: {getRatingText(issue?.survey.Projector)}
+                  </Text>
+                  <Text style={styles.detailsText}>
+                    Cleanliness: {getRatingText(issue?.survey.Cleanliness)}
+                  </Text>
                 </>
               )}
               {issue?.issue.actionItem === "Restroom" && (
                 <>
-                  <Text style={styles.detailsText}>Mirror & Washbasin: {getRatingText(issue?.survey.Mirror)}</Text>
-                  <Text style={styles.detailsText}>Urinals: {getRatingText(issue?.survey.Urinals)}</Text>
-                  <Text style={styles.detailsText}>Toilets: {getRatingText(issue?.survey.Toilets)}</Text>
-                  <Text style={styles.detailsText}>Floor: {getRatingText(issue?.survey.Floor)}</Text>
-                  <Text style={styles.detailsText}>Lights: {getRatingText(issue?.survey.Lights)}</Text>
+                  <Text style={styles.detailsText}>
+                    Mirror & Washbasin: {getRatingText(issue?.survey.Mirror)}
+                  </Text>
+                  <Text style={styles.detailsText}>
+                    Urinals: {getRatingText(issue?.survey.Urinals)}
+                  </Text>
+                  <Text style={styles.detailsText}>
+                    Toilets: {getRatingText(issue?.survey.Toilets)}
+                  </Text>
+                  <Text style={styles.detailsText}>
+                    Floor: {getRatingText(issue?.survey.Floor)}
+                  </Text>
+                  <Text style={styles.detailsText}>
+                    Lights: {getRatingText(issue?.survey.Lights)}
+                  </Text>
                 </>
               )}
               {issue?.issue.actionItem === "Department" && (
                 <>
-                  <Text style={styles.detailsText}>Cleanliness: {getRatingText(issue?.survey.Cleanliness)}</Text>
+                  <Text style={styles.detailsText}>
+                    Cleanliness: {getRatingText(issue?.survey.Cleanliness)}
+                  </Text>
                 </>
               )}
               {issue?.issue.actionItem === "Miscellaneous" && (
@@ -357,94 +427,102 @@ export default function IssueDetails() {
               )}
               {issue?.issue.actionItem === "Water Dispenser" && (
                 <>
-                  <Text>Cleanliness: {getRatingText(issue?.survey.Cleanliness)}</Text>
-                  <Text>Functionality: {getRatingText(issue?.survey.Functionality)}</Text>
+                  <Text>
+                    Cleanliness: {getRatingText(issue?.survey.Cleanliness)}
+                  </Text>
+                  <Text>
+                    Functionality: {getRatingText(issue?.survey.Functionality)}
+                  </Text>
                 </>
               )}
               {issue?.issue.actionItem === "Lift" && (
-                <Text>Cleanliness: {getRatingText(issue?.survey.Cleanliness)}</Text>
+                <Text>
+                  Cleanliness: {getRatingText(issue?.survey.Cleanliness)}
+                </Text>
               )}
             </>
           )}
-        {issue?.issue.issueType !== "Feedback" && (
-  <>
-    {/* Comments Section */}
-    <Text style={styles.commentsHeading}>COMMENTS</Text>
-    {issue?.comments && issue.comments.length > 0 ? (
-      issue.comments.map((comment, index) => (
-        <View key={index} style={styles.commentBox}>
-          <Text style={styles.commentUser}>{comment.by}</Text>
-          <Text style={styles.commentContent}>{comment.date}</Text>
-          <Text style={styles.commentContent}>Comment: {comment.content}</Text>
-        </View>
-      ))
-    ) : (
-      <Text style={{ alignSelf: "center", margin: 10 }}>No comments available</Text>
-    )}
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.textInput}
-        value={newComment}
-        onChangeText={setNewComment}
-        placeholder="Add a comment"
-      />
-      <TouchableOpacity style={styles.addButton} onPress={handleAddComment}>
-        <AntDesign name="plus" size={15} color="#555555" />
-      </TouchableOpacity>
-    </View>
-  
+          {issue?.issue.issueType !== "Feedback" && (
+            <>
+              {/* Comments Section */}
+              <Text style={styles.commentsHeading}>COMMENTS</Text>
+              {issue?.comments && issue.comments.length > 0 ? (
+                issue.comments.map((comment, index) => (
+                  <View key={index} style={styles.commentBox}>
+                    <Text style={styles.commentUser}>{comment.by}</Text>
+                    <Text style={styles.commentContent}>{comment.date}</Text>
+                    <Text style={styles.commentContent}>
+                      {comment.content[0].content}
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={{ alignSelf: "center", margin: 10 }}>
+                  No comments available
+                </Text>
+              )}
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  value={newComment}
+                  onChangeText={setNewComment}
+                  placeholder="Add a comment"
+                />
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={handleAddComment}
+                >
+                  <AntDesign name="plus" size={15} color="#555555" />
+                </TouchableOpacity>
+              </View>
 
-    {/* Report Log Section */}
-    <Text style={styles.commentsHeading}>Report Log</Text>
-    <View style={styles.divider}></View>
-    {issue?.log && issue.log.length > 0 ? (
-      issue.log.map((log, index) => (
-        <View key={index} style={styles.commentBox}>
-          <Text style={styles.commentUser}>{log.by}</Text>
-          <Text style={styles.commentContent}>
-            {log.action} on {log.date}
-          </Text>
-        </View>
-      ))
-    ) : (
-      <Text style={{ alignSelf: "center", margin: 10 }}>No logs available</Text>
-    )}
-  </>
-)}
+              {/* Report Log Section */}
+              <Text style={styles.commentsHeading}>Report Log</Text>
+              <View style={styles.divider}></View>
+              {issue?.log && issue.log.length > 0 ? (
+                issue.log.map((log, index) => (
+                  <View key={index} style={styles.commentBox}>
+                    <Text style={styles.commentUser}>{log.by}</Text>
+                    <Text style={styles.commentContent}>
+                      {log.action} on {log.date}
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={{ alignSelf: "center", margin: 10 }}>
+                  No logs available
+                </Text>
+              )}
+            </>
+          )}
 
-          <TouchableOpacity style={styles.closeButton} onPress={handlePrintToPDF}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={handlePrintToPDF}
+          >
             <Text style={styles.closeButtonText}>Print Issue to PDF</Text>
           </TouchableOpacity>
-         
-         
-          
-        
         </View>
       </KeyboardAwareScrollView>
-      </>
+    </>
   );
 }
 
-
-
-
 const styles = StyleSheet.create({
-  cat:{
-    fontStyle:"italic",
+  cat: {
+    fontStyle: "italic",
     fontSize: 10,
-
   },
   scrollView: {
     backgroundColor: "#FFFFFF",
     flexGrow: 1,
     padding: "2%",
-   
   },
-  
+
   divider: {
-    width: '100%',
+    width: "100%",
     height: 1,
-    backgroundColor: 'black',
+    backgroundColor: "black",
     marginBottom: 10,
   },
   container: {
@@ -546,9 +624,9 @@ const styles = StyleSheet.create({
   },
   detailsText: {
     fontSize: 14,
-    marginBottom:'3%',
+    marginBottom: "3%",
   },
-  
+
   closeButton: {
     borderWidth: 1,
     borderColor: "#DDE6F0",
@@ -582,7 +660,7 @@ const styles = StyleSheet.create({
   },
   commentContent: {
     fontSize: 12,
-    marginTop :1 ,
+    marginTop: 1,
   },
   inputContainer: {
     flexDirection: "row",
@@ -594,7 +672,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: "center",
   },
- 
+
   addButton: {
     width: 30,
     height: 30,
