@@ -222,6 +222,8 @@ const SinglePageForm: React.FC = () => {
                 save="value"
               />
             </View>
+            {state.selectedOptionType !== "Feedback" && (
+  <>
             <Text style={styles.pickerLabel}>Domain</Text>
             <View style={styles.dropdownWrapper}>
               <SelectList
@@ -252,6 +254,8 @@ const SinglePageForm: React.FC = () => {
                 dispatch({ type: "SET_FORM_DATA", payload: { content: text } })
               }
             />
+            </>
+            )}
             {state.selectedOptionType === "Feedback" && (
               <View style={styles.ratingContainer}>
                 <Text style={styles.lab}>Give your ratings</Text>

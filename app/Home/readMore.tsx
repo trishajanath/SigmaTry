@@ -282,29 +282,35 @@ export default function IssueDetails() {
           
             <Text style={styles.detailsText}>Type: { issue?.issue.issueType}</Text>
             <Text style={styles.detailsText}>Action Item: {issue?.issue.actionItem}</Text>
-            {issue?.issue.issueType === "Complaint" && (
-              <Text style={styles.detailsText}>Status: {issue?.status}</Text>
-            )}
-          </View>
-            {issue?.status === "OPEN" ? (
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                CloseISsue();
-              }}
-            >
-              <Text style={styles.closeButtonText}>CLOSE THIS ISSUE</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                reopenIssue();
-              }}
-            >
-              <Text style={styles.closeButtonText}>REOPEN THIS ISSUE</Text>
-            </TouchableOpacity>
-          )}
+            {issue?.issue?.issueType !== "Complaint" && (
+  <Text style={styles.detailsText}>
+    Status: {issue?.status}
+  </Text>
+)}
+</View>
+
+{issue?.status === "OPEN" ? (
+  issue?.issue?.issueType !== "feedback" && (
+    <TouchableOpacity
+      style={styles.closeButton}
+      onPress={() => {
+        CloseISsue();
+      }}
+    >
+      <Text style={styles.closeButtonText}>CLOSE THIS ISSUE</Text>
+    </TouchableOpacity>
+  )
+) : (
+  <TouchableOpacity
+    style={styles.closeButton}
+    onPress={() => {
+      reopenIssue();
+    }}
+  >
+    <Text style={styles.closeButtonText}>REOPEN THIS ISSUE</Text>
+  </TouchableOpacity>
+)}
+
 
           
             {/* Conditionally display issue status for complaints */}
@@ -360,48 +366,52 @@ export default function IssueDetails() {
               )}
             </>
           )}
-         
-         <Text style={styles.commentsHeading}>COMMENTS</Text>
-{comments.filter((comment) => typeof comment.content === 'string' && comment.content.trim()).map((comment, index) => (
-  <View key={index} style={styles.commentBox}>
-    <Text style={styles.commentUser}>{comment.by}</Text>
-    <Text style={styles.commentContent}>{comment.content}</Text>
-  </View>
-))}
-<View style={styles.inputContainer}>
-  <TextInput
-    style={styles.textInput}
-    value={newComment}
-    onChangeText={setNewComment}
-    placeholder="Add a comment"
-  />
-  <TouchableOpacity
-    style={styles.addButton}
-    onPress={handleAddComment}
-  >
-    <AntDesign name="plus" size={15} color="#555555" />
-  </TouchableOpacity>
-</View>
-          {/* Display Report Log */}
-          <Text style={styles.commentsHeading}>Report Log</Text>
-          <View
-            style={{
-              width: "100%",
-              height: "0.1%",
-              backgroundColor: "black",
-              marginBottom: 10,
-            }}
-          ></View>
-          {issue?.log.map((log, index) => (
-            <View key={index} style={styles.commentBox}>
-              <Text style={styles.commentUser}>{log.by}</Text>
-              <Text style={styles.commentContent}>
-                {log.action} on {log.date}
-              </Text>
-              
-            </View>
-            
-          ))}
+        {issue?.issue.issueType !== "Feedback" && (
+  <>
+    {/* Comments Section */}
+    <Text style={styles.commentsHeading}>COMMENTS</Text>
+    {issue?.comments && issue.comments.length > 0 ? (
+      issue.comments.map((comment, index) => (
+        <View key={index} style={styles.commentBox}>
+          <Text style={styles.commentUser}>{comment.by}</Text>
+          <Text style={styles.commentContent}>{comment.date}</Text>
+          <Text style={styles.commentContent}>Comment: {comment.content}</Text>
+        </View>
+      ))
+    ) : (
+      <Text style={{ alignSelf: "center", margin: 10 }}>No comments available</Text>
+    )}
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.textInput}
+        value={newComment}
+        onChangeText={setNewComment}
+        placeholder="Add a comment"
+      />
+      <TouchableOpacity style={styles.addButton} onPress={handleAddComment}>
+        <AntDesign name="plus" size={15} color="#555555" />
+      </TouchableOpacity>
+    </View>
+  
+
+    {/* Report Log Section */}
+    <Text style={styles.commentsHeading}>Report Log</Text>
+    <View style={styles.divider}></View>
+    {issue?.log && issue.log.length > 0 ? (
+      issue.log.map((log, index) => (
+        <View key={index} style={styles.commentBox}>
+          <Text style={styles.commentUser}>{log.by}</Text>
+          <Text style={styles.commentContent}>
+            {log.action} on {log.date}
+          </Text>
+        </View>
+      ))
+    ) : (
+      <Text style={{ alignSelf: "center", margin: 10 }}>No logs available</Text>
+    )}
+  </>
+)}
+
           <TouchableOpacity style={styles.closeButton} onPress={handlePrintToPDF}>
             <Text style={styles.closeButtonText}>Print Issue to PDF</Text>
           </TouchableOpacity>

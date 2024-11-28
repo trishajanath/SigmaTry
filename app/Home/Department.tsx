@@ -246,6 +246,8 @@ const SinglePageForm: React.FC = () => {
                 save="value"
               />
             </View>
+            {state.type !== "Feedback" && (
+  <>
 
             <Text style={styles.pickerLabel}>Domain</Text>
             <View style={styles.dropdownWrapper}>
@@ -273,7 +275,10 @@ const SinglePageForm: React.FC = () => {
               onChangeText={(text) =>
                 dispatch({ type: "SET_FIELD", field: "content", value: text })
               }
+              
             />
+            </>
+)}
             {state.type === "Feedback" && (
               <View style={styles.ratingContainer}>
                 <Text style={styles.lab}>Give your ratings</Text>

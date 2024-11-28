@@ -210,36 +210,41 @@ const SinglePageForm: React.FC = () => {
                 save="value"
               />
             </View>
-            <Text style={styles.label}>Domain</Text>
-            <View style={styles.dropdownWrapper}>
-              <SelectList
-                setSelected={(value: string) =>
-                  dispatch({
-                    type: "SET_FORM_DATA",
-                    payload: { selectedOptionDomain: value },
-                  })
-                }
-                data={[
-                  "Cleaning",
-                  "Plumbing",
-                  "Civil & Carpentry",
-                  "Electrical",
-                  "AV and Projectors",
-                  "Others",
-                ]}
-                search={false}
-                save="value"
-              />
-            </View>
-            <Text style={styles.label}>Content</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Content Here"
-              value={state.content}
-              onChangeText={(text) =>
-                dispatch({ type: "SET_FORM_DATA", payload: { content: text } })
-              }
-            />
+            {state.selectedOptionType !== "Feedback" && (
+  <>
+    <Text style={styles.label}>Domain</Text>
+    <View style={styles.dropdownWrapper}>
+      <SelectList
+        setSelected={(value: string) =>
+          dispatch({
+            type: "SET_FORM_DATA",
+            payload: { selectedOptionDomain: value },
+          })
+        }
+        data={[
+          "Cleaning",
+          "Plumbing",
+          "Civil & Carpentry",
+          "Electrical",
+          "AV and Projectors",
+          "Others",
+        ]}
+        search={false}
+        save="value"
+      />
+    </View>
+    <Text style={styles.label}>Content</Text>
+    <TextInput
+      style={styles.input}
+      placeholder="Enter Content Here"
+      value={state.content}
+      onChangeText={(text) =>
+        dispatch({ type: "SET_FORM_DATA", payload: { content: text } })
+      }
+    />
+  </>
+)}
+
             {/* Conditionally render rating section */}
             {state.selectedOptionType === "Feedback" && (
               <View style={styles.ratingContainer}>

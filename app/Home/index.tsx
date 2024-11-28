@@ -305,7 +305,8 @@ const Index = () => {
         />
 
         <Text style={styles.headerSubText}>
-          {truncateText(`${user.id.toUpperCase()}-${user.name}`, 35)}
+          {truncateText(`${(user.id?.toUpperCase() ?? '')}-${user.name ?? ''}`, 35)
+        }
         </Text>
         <TouchableOpacity style={styles.headerIconContainer}></TouchableOpacity>
       </View>

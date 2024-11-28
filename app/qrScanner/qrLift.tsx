@@ -209,7 +209,8 @@ const SinglePageForm = () => {
               save="value"
             />
           </View>
-
+          {state.selectedOptionType !== "Feedback" && (
+  <>
           <Text style={styles.pickerLabel}>Domain</Text>
           <View style={styles.dropdownWrapper}>
             <SelectList
@@ -231,6 +232,8 @@ const SinglePageForm = () => {
               dispatch({ type: "SET_CONTENT", payload: text })
             }
           />
+          </>
+          )}
           {state.selectedOptionType === "Feedback" && (
             <View style={styles.ratingContainer}>
               <Text style={styles.lab}>Give your ratings</Text>
