@@ -199,6 +199,11 @@ const LoginScreen = () => {
         });
       } catch (error) {
         console.log("Error resetting password", error);
+        Toast.show({
+          type: "error",
+          text1: "Failed to reset password",
+          visibilityTime: 3000,
+        });
       }
     }
   };

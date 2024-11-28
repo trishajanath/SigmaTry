@@ -190,7 +190,7 @@ const SinglePageForm: React.FC = () => {
           <Text style={styles.label}>Block Name</Text>
             <TextInput
               style={styles.input}
-              placeholder="Block Name"
+              placeholder="Block Name as - A"
               value={state.name}
               onChangeText={(text) =>
                 dispatch({ type: "SET_FIELD", field: "name", value: text })
