@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
   Button,
+  Linking,
 } from "react-native";
 import { router, useGlobalSearchParams, useNavigation } from "expo-router";
 import { AntDesign, Feather, SimpleLineIcons } from "@expo/vector-icons";
@@ -154,7 +155,13 @@ export default function IssueDetails() {
       }
     }
   };
-
+  const handlePrintToPDF = () => {
+    const issueCode = `${issue?.issueNo}`; // Replace this with the actual issue code dynamically
+    const pdfURL = `${BACKEND_URL}/task/export/${issueCode}`;
+    Linking.openURL(pdfURL).catch((err) =>
+      console.error("Failed to open URL:", err)
+    );
+  };
   const handleAddComment = async () => {
     try {
       if (newComment.trim()) {
@@ -391,8 +398,13 @@ export default function IssueDetails() {
               <Text style={styles.commentContent}>
                 {log.action} on {log.date}
               </Text>
+              
             </View>
+            
           ))}
+          <TouchableOpacity style={styles.closeButton} onPress={handlePrintToPDF}>
+            <Text style={styles.closeButtonText}>Print Issue to PDF</Text>
+          </TouchableOpacity>
          
          
           
@@ -459,6 +471,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#003366",
     textAlign: "center",
+  },
+  pdfBtn: {
+    backgroundColor: "#003366",
+    paddingVertical: "3%",
+    paddingHorizontal: "3%",
+    borderRadius: 5,
+    marginTop: "5%",
+    alignItems: "center",
+  },
+  pdfBtnText: {
+    color: "#fff",
+    fontSize: 16,
   },
   detailsContainer: {
     // borderWidth: 1,

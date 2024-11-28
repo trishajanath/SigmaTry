@@ -1,1 +1,1 @@
-export const BACKEND_URL = "https://sigma-api.vercel.app"
+export const BACKEND_URL = "https://sigma-api-r7ao.onrender.com"
