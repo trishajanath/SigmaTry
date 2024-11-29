@@ -54,18 +54,13 @@ const initialState: FormData = {
 
 type Action =
   | { type: "SET_FORM_DATA"; payload: Partial<FormData> }
-  | { type: "SET_ISSUES_LIST"; issues: string[] }
-  | { type: "SET_SELECTED_ISSUE"; issue: string }
+ 
   | { type: "SET_RATING", category: string; rating: number };
 
 function reducer(state: FormData, action: Action): FormData {
   switch (action.type) {
     case "SET_FORM_DATA":
       return { ...state, ...action.payload };
-      case "SET_ISSUES_LIST":
-        return { ...state, issuesList: action.issues };
-        case "SET_SELECTED_ISSUE":
-      return { ...state, selectedIssue: action.issue };
     case "SET_RATING":
       return {
         ...state,
@@ -80,45 +75,56 @@ const SinglePageForm: React.FC = () => {
   const users = useUser();
   const navigation = useNavigation();
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [similarIssues, setSimilarIssues] = useState<any[]>([]);
+  const [selectedIssue, setSelectedIssue] = useState<string>("");
   useEffect(() => {
-    if (state.selectedOptionType === "Complaint" && state.name && state.number) {
-      const fetchIssues = async () => {
-        try {
-          const response = await axios.get(`${BACKEND_URL}/client/get_similar_issues`, {
-            params: {
-              block: state.name,
-              floor: state.number,
-              actionItem: "Classroom",
-              issueType: "Complaint",
-            },
-          });
-
-          const issues = response.data; // Assuming response.data is an array of issues
-          if (issues.length > 0) {
-            dispatch({
-              type: "SET_ISSUES_LIST",
-              issues: issues.map((issue: any) => issue.id), // Assume issue has an "id" field
-            });
-          } else {
-            dispatch({
-              type: "SET_ISSUES_LIST",
-              issues: [],
-            });
+    const fetchSimilarIssues = async () => {
+      if (!state.name.trim() || !state.number.trim()) {
+        setSimilarIssues([]);
+        return;
+      }
+  
+      try {
+        const response = await axios.post(
+          `${BACKEND_URL}/client/get_similar_issues`,
+          {
+            block: state.name, // Value from your form
+            floor: state.number, // Default value for floor
           }
-        } catch (error) {
-          console.error("Error fetching issues:", error);
-          Toast.show({
-            type: "error",
-            text1: "Error fetching issues",
-            text2: "Please try again later.",
-            visibilityTime: 2000,
-          });
-        }
-      };
+        );
+        console.log("Response data:", response.data);
 
-      fetchIssues();
-    }
-  }, [state.name, state.number, state.selectedOptionType]);
+        console.log("API Response:", JSON.stringify(response.data, null, 2));
+  
+        if (Array.isArray(response.data)) {
+          response.data.forEach((issue: any, index: number) => {
+            console.log(`Issue ${index + 1}:`, issue);
+          });
+  
+          // Adjusted filter logic to match API response structure
+          const issues = response.data.filter(
+            (issue: any) =>
+              issue.actionItem === "Classroom" &&
+            issue.floor === state.number &&
+              issue.block.toLowerCase() === state.name.toLowerCase()
+          );
+  
+          console.log("Filtered Issues:", issues);
+          setSimilarIssues(issues);
+        } else {
+          console.warn("API did not return an array!");
+          setSimilarIssues([]);
+        }
+      } catch (error) {
+        console.error("Error fetching similar issues:", error);
+      }
+    };
+  
+    fetchSimilarIssues();
+  }, [state.name,state.number]);
+  
+  
+
 
   const handleSwitchChange = (value: boolean) => {
     dispatch({ type: "SET_FORM_DATA", payload: { anonymous: value } });
@@ -270,6 +276,43 @@ const SinglePageForm: React.FC = () => {
                 save="value"
               />
             </View>
+            {state.selectedOptionType === "Complaint" && similarIssues.length > 0 && (
+  <>
+    <Text style={styles.label}>Similar Issues Found</Text>
+    <View style={styles.dropdownWrapper}>
+    <SelectList
+      setSelected={(value: string) => {
+        setSelectedIssue(value);
+        if (value !== "None of the Above") {
+          alert("We are already working on this complaint.It will be resolved soon.")
+          // Toast.show({
+          //   type: "info",
+          //   text1: "We are already working on this complaint.",
+          //   text2: "It will be resolved soon.",
+          //   visibilityTime: 3000,
+          // });
+          router.back();
+        }
+      }}
+      
+      data={[
+        ...similarIssues.map((issue, index) => ({
+          key: index.toString(),
+          value: `Description: ${issue.comments} | Date: ${issue.date}`, 
+        })),
+        { key: "none",  value: "None of the Above" },
+      ]}
+      search={false}
+      save="value"
+      
+    />
+      </View>
+  </>
+    
+)}
+  
+
+
             {state.selectedOptionType !== "Feedback" && (
   <>
     <Text style={styles.label}>Domain</Text>
@@ -293,21 +336,9 @@ const SinglePageForm: React.FC = () => {
         save="value"
       />
     </View>
-    {state.selectedOptionType === "Complaint" && state.issuesList.length > 0 && (
-              <>
-                <Text style={styles.label}>Do you want to select an existing issue?</Text>
-                <SelectList
-  setSelected={(value: string) => {
-    console.log("Selected issue:", value); // Debug selection
-    dispatch({ type: "SET_SELECTED_ISSUE", issue: value });
-  }}
-  data={[...state.issuesList, "None of the above"]}
-  search={false}
-  save="value"
-/>
+    
 
-              </>
-            )}
+              
     <Text style={styles.label}>Content</Text>
     <TextInput
       style={styles.input}

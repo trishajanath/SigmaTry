@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ const { width } = Dimensions.get("window");
 
 const initialState = {
   type: "Select Type",
-  block:"",
+  block: "",
   content: "",
   anonymous: false,
 };
@@ -31,7 +31,7 @@ function reducer(state: any, action: any) {
   switch (action.type) {
     case "SET_TYPE":
       return { ...state, type: action.payload };
-    case "SET_BLOCK": 
+    case "SET_BLOCK":
       return { ...state, block: action.payload };
     case "SET_CONTENT":
       return { ...state, content: action.payload };
@@ -42,14 +42,11 @@ function reducer(state: any, action: any) {
   }
 }
 
-
 const SinglePageForm = () => {
   const users = useUser();
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  const handleSwitchChange = (value: any) => {
-    dispatch({ type: "SET_ANONYMOUS", payload: value });
-  };
+  const [similarIssues, setSimilarIssues] = useState<any[]>([]);
+  const [selectedIssue, setSelectedIssue] = useState<string>("");
 
   const navigation = useNavigation();
   useEffect(() => {
@@ -57,6 +54,60 @@ const SinglePageForm = () => {
       headerShown: false,
     });
   }, []);
+
+  // Fetch similar issues when block changes
+  
+    useEffect(() => {
+      const fetchSimilarIssues = async () => {
+        if (!state.block.trim()) {
+          setSimilarIssues([]);
+          return;
+        }
+    
+        try {
+          const response = await axios.post(
+            `${BACKEND_URL}/client/get_similar_issues`,
+            {
+              block: state.block, // Value from your form
+              floor: "", // Default value for floor
+            }
+          );
+    
+          console.log("API Response:", JSON.stringify(response.data, null, 2));
+    
+          if (Array.isArray(response.data)) {
+            response.data.forEach((issue: any, index: number) => {
+              console.log(`Issue ${index + 1}:`, issue);
+            });
+    
+            // Adjusted filter logic to match API response structure
+            const issues = response.data.filter(
+              (issue: any) =>
+                issue.actionItem === "Miscellaneous" &&
+              
+                issue.block.toLowerCase() === state.block.toLowerCase()
+            );
+    
+            console.log("Filtered Issues:", issues);
+            setSimilarIssues(issues);
+          } else {
+            console.warn("API did not return an array!");
+            setSimilarIssues([]);
+          }
+        } catch (error) {
+          console.error("Error fetching similar issues:", error);
+        }
+      };
+    
+      fetchSimilarIssues();
+    }, [state.block]);
+    
+  
+
+  const handleSwitchChange = (value: any) => {
+    dispatch({ type: "SET_ANONYMOUS", payload: value });
+  };
+
   const handleSubmit = async () => {
     if (state.type === "Select Type") {
       Toast.show({
@@ -74,6 +125,16 @@ const SinglePageForm = () => {
       });
       return;
     }
+    if (selectedIssue === "None of the Above") {
+      Toast.show({
+        type: "info",
+        text1: "You can continue entering your complaint.",
+        visibilityTime: 2000,
+      });
+    
+      return;
+    }
+
     try {
       const Submit = {
         name: users.name,
@@ -95,7 +156,6 @@ const SinglePageForm = () => {
         `${BACKEND_URL}/client/issue/report`,
         Submit
       );
-      console.log(response.data);
       router.replace({
         pathname: "/Home/submitPage",
         params: response.data,
@@ -121,13 +181,15 @@ const SinglePageForm = () => {
           <Text style={styles.main}>Miscellaneous Form</Text>
           <Text style={styles.label}>Block Name</Text>
           <TextInput
-          style={styles.input}
-         placeholder="Block Name"
-         value={state.block} 
-          onChangeText={(text) =>
-          dispatch({ type: "SET_BLOCK", payload: text }) 
-         }
+            style={styles.input}
+            placeholder="Block Name"
+            value={state.block}
+            onChangeText={(text) =>
+              dispatch({ type: "SET_BLOCK", payload: text })
+            }
           />
+
+
 
           <Text style={styles.pickerLabel}>Type</Text>
           <View style={styles.dropdownWrapper}>
@@ -140,6 +202,36 @@ const SinglePageForm = () => {
               save="value"
             />
           </View>
+          {state.type === "Complaint" && similarIssues.length > 0 && (
+  <>
+    <Text style={styles.label}>Similar Issues Found</Text>
+    <SelectList
+      setSelected={(value: string) => {
+        setSelectedIssue(value);
+        if (value !== "None of the Above") {
+          alert("We are already working on this complaint.It will be resolved soon.")
+          // Toast.show({
+          //   type: "info",
+          //   text1: "We are already working on this complaint.",
+          //   text2: "It will be resolved soon.",
+          //   visibilityTime: 3000,
+          // });
+          router.back();
+        }
+      }}
+      data={[
+        ...similarIssues.map((issue, index) => ({
+          key: index.toString(),
+          value: `Description: ${issue.comments} Raised On: ${issue.date}, `,
+        })),
+        { key: "none",  value: "None of the Above" },
+      ]}
+      save="value"
+      placeholder="Select an issue"
+    />
+  </>
+)}
+
 
           <Text style={styles.label}>Content</Text>
           <TextInput
