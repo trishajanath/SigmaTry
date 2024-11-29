@@ -256,7 +256,7 @@ const Index = () => {
       <View style={styles.complaintContainer}>
         <View style={styles.complaintHeader}>
           <RNText style={styles.issueTypeText}>
-            {item.category == "" ? "MISCELLANEOUS" : item.category}
+            {item.category == "" ? "MISCELLANEOUS" : item.issueType=="Feedback"?"Feedback":item.category}
           </RNText>
           {item.status == "CLOSE" ? (
             <Feather name="check-circle" size={20} color="green" />

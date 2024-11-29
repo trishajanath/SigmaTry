@@ -32,6 +32,8 @@ interface FormData {
   ratingChair?: number;
   ratingProjector?: number;
   ratingCleanliness?: number;
+  issuesList: string[];  // Added to store matching issues
+  selectedIssue: string | null; // Store the selected issue (if any)
 }
 
 const initialState: FormData = {
@@ -46,16 +48,24 @@ const initialState: FormData = {
   ratingChair: undefined,
   ratingProjector: undefined,
   ratingCleanliness: undefined,
+  issuesList: [],
+  selectedIssue: null,
 };
 
 type Action =
   | { type: "SET_FORM_DATA"; payload: Partial<FormData> }
-  | { type: "SET_RATING"; category: string; rating: number };
+  | { type: "SET_ISSUES_LIST"; issues: string[] }
+  | { type: "SET_SELECTED_ISSUE"; issue: string }
+  | { type: "SET_RATING", category: string; rating: number };
 
 function reducer(state: FormData, action: Action): FormData {
   switch (action.type) {
     case "SET_FORM_DATA":
       return { ...state, ...action.payload };
+      case "SET_ISSUES_LIST":
+        return { ...state, issuesList: action.issues };
+        case "SET_SELECTED_ISSUE":
+      return { ...state, selectedIssue: action.issue };
     case "SET_RATING":
       return {
         ...state,
@@ -70,6 +80,45 @@ const SinglePageForm: React.FC = () => {
   const users = useUser();
   const navigation = useNavigation();
   const [state, dispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+    if (state.selectedOptionType === "Complaint" && state.name && state.number) {
+      const fetchIssues = async () => {
+        try {
+          const response = await axios.get(`${BACKEND_URL}/client/get_similar_issues`, {
+            params: {
+              block: state.name,
+              floor: state.number,
+              actionItem: "Classroom",
+              issueType: "Complaint",
+            },
+          });
+
+          const issues = response.data; // Assuming response.data is an array of issues
+          if (issues.length > 0) {
+            dispatch({
+              type: "SET_ISSUES_LIST",
+              issues: issues.map((issue: any) => issue.id), // Assume issue has an "id" field
+            });
+          } else {
+            dispatch({
+              type: "SET_ISSUES_LIST",
+              issues: [],
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching issues:", error);
+          Toast.show({
+            type: "error",
+            text1: "Error fetching issues",
+            text2: "Please try again later.",
+            visibilityTime: 2000,
+          });
+        }
+      };
+
+      fetchIssues();
+    }
+  }, [state.name, state.number, state.selectedOptionType]);
 
   const handleSwitchChange = (value: boolean) => {
     dispatch({ type: "SET_FORM_DATA", payload: { anonymous: value } });
@@ -86,9 +135,9 @@ const SinglePageForm: React.FC = () => {
       !state.name.trim() ||
       !state.number.trim() ||
       !state.classroom.trim() ||
-      !state.content.trim() ||
+      
       state.selectedOptionType === "Select Type" ||
-      state.selectedOptionDomain === "Select Domain" ||
+      
       (state.selectedOptionType === "Feedback" &&
         (state.ratingTable === undefined ||
           state.ratingChair === undefined ||
@@ -101,6 +150,17 @@ const SinglePageForm: React.FC = () => {
         text2: "Please fill all the fields",
         visibilityTime: 2000,
       });
+      return;
+    }
+    if (state.selectedIssue && state.selectedIssue !== "None of the above") {
+      Toast.show({
+        type: "error",
+        text1: "We are already working on this issue.",
+        text2: "It will be resolved soon.",
+        visibilityTime: 2000,
+      });
+      // Navigate back after showing the message
+      navigation.goBack();
       return;
     }
     try {
@@ -233,6 +293,21 @@ const SinglePageForm: React.FC = () => {
         save="value"
       />
     </View>
+    {state.selectedOptionType === "Complaint" && state.issuesList.length > 0 && (
+              <>
+                <Text style={styles.label}>Do you want to select an existing issue?</Text>
+                <SelectList
+  setSelected={(value: string) => {
+    console.log("Selected issue:", value); // Debug selection
+    dispatch({ type: "SET_SELECTED_ISSUE", issue: value });
+  }}
+  data={[...state.issuesList, "None of the above"]}
+  search={false}
+  save="value"
+/>
+
+              </>
+            )}
     <Text style={styles.label}>Content</Text>
     <TextInput
       style={styles.input}

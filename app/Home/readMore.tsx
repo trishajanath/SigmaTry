@@ -251,7 +251,7 @@ export default function IssueDetails() {
                 style={{ fontWeight: "bold", fontSize: 20, color: "black" }}
               >
                 {issue?.issue.actionItem === "Miscellaneous"
-                  ? "Miscellaneous"
+                  ? "Miscellaneous" : issue?.issue.issueType === "Feedback"? "Feedback "
                   : issue?.issue.issueCat}
               </Text>
             </View>
@@ -343,27 +343,7 @@ export default function IssueDetails() {
             )}
           </View>
 
-          {issue?.status === "OPEN" ? (
-            issue?.issue?.issueType !== "feedback" && (
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => {
-                  CloseISsue();
-                }}
-              >
-                <Text style={styles.closeButtonText}>CLOSE THIS ISSUE</Text>
-              </TouchableOpacity>
-            )
-          ) : (
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                reopenIssue();
-              }}
-            >
-              <Text style={styles.closeButtonText}>REOPEN THIS ISSUE</Text>
-            </TouchableOpacity>
-          )}
+        
 
           {/* Conditionally display issue status for complaints */}
 
@@ -475,6 +455,28 @@ export default function IssueDetails() {
                   <AntDesign name="plus" size={15} color="#555555" />
                 </TouchableOpacity>
               </View>
+              {issue?.status === "OPEN" ? (
+  issue?.issue?.issueType !== "feedback" && (
+    <TouchableOpacity
+      style={styles.closeButton}
+      onPress={() => {
+        CloseISsue();
+      }}
+    >
+      <Text style={styles.closeButtonText}>CLOSE THIS ISSUE</Text>
+    </TouchableOpacity>
+  )
+) : (
+  <TouchableOpacity
+    style={styles.closeButton}
+    onPress={() => {
+      reopenIssue();
+    }}
+  >
+    <Text style={styles.closeButtonText}>REOPEN THIS ISSUE</Text>
+  </TouchableOpacity>
+)}
+
 
               {/* Report Log Section */}
               <Text style={styles.commentsHeading}>Report Log</Text>

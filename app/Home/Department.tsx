@@ -112,8 +112,7 @@ const SinglePageForm: React.FC = () => {
       !state.department ||
       state.cabin === "Select Option" ||
       state.type === "Select Type" ||
-      state.domain === "Select Domain" ||
-      !state.content ||
+      
       (state.type === "Feedback" && state.ratingCleanliness === undefined)
     ) {
       Toast.show({
@@ -159,6 +158,7 @@ const SinglePageForm: React.FC = () => {
     } catch (error: any) {
       console.error("Error occurred during submission:", error);
       if (error.response) {
+        console.log(Response);
         console.error("Server responded with:", error.response.data);
       }
       Toast.show({
