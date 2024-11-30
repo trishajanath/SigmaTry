@@ -256,7 +256,7 @@ export default function IssueDetails() {
               </Text>
             </View>
             <View>
-              {issue?.status == "CLOSE" ? (
+              {issue?.status == "CLOSE" || issue?.issue.issueType==="Feedback" ? (
                 <Feather name="check-circle" size={27} color="green" />
               ) : (
                 <SimpleLineIcons name="close" size={27} color="red" />

@@ -224,17 +224,23 @@ const Index = () => {
     return count;
   };
 
-  const getCardColor = (action: string) => {
-    switch (action) {
-      case "OPEN":
-        return "#a3c3e7";
-      case "CLOSE":
-        return "#bbbef3";
-      case "Pending":
-        return "#e7bcec";
-      default:
-        return "#ffffff";
+  const getCardColor = (action: string ) => {
+    if(action.issueType==="Feedback"){
+      return "#e7bcec";
     }
+    else{
+      switch (action) {
+        case "OPEN":
+          return "#a3c3e7";
+        case "CLOSE":
+          return "#bbbef3";
+        case "Pending":
+          return "#e7bcec";
+        default:
+          return "#ffffff";
+      }
+    }
+   
   };
 
   const renderComplaintItem = ({ item }: { item: (typeof issues)[0] }) => (
@@ -258,7 +264,7 @@ const Index = () => {
           <RNText style={styles.issueTypeText}>
             {item.category == "" ? "MISCELLANEOUS" : item.issueType=="Feedback"?"Feedback":item.category}
           </RNText>
-          {item.status == "CLOSE" ? (
+          {item.status == "CLOSE" || item.issueType==="Feedback" ?  (
             <Feather name="check-circle" size={20} color="green" />
           ) : (
             <SimpleLineIcons name="close" size={20} color="red" />
@@ -270,14 +276,17 @@ const Index = () => {
           <RNText style={styles.categoryText}> | DATE : {item.date}</RNText>
         </View>
         <View style={styles.readMoreContainer}>
-          <RNText style={styles.dateText}>
-            {" "}
-            {item.status == "OPEN"
-              ? "Yet to be fixed !"
-              : item.status == "PENDING"
-              ? "Final Stages of the Work !"
-              : "Issue Solved Thank you !"}{" "}
-          </RNText>
+        <RNText style={styles.dateText}>
+  {" "}
+  {item.issueType === "Feedback"
+    ? "Thank you for your feedback!"
+    : item.status === "OPEN"
+    ? "Yet to be fixed!"
+    : item.status === "PENDING"
+    ? "Final Stages of the Work!"
+    : "Issue Solved Thank you!"}{" "}
+</RNText>
+
           <TouchableOpacity
             style={styles.readMoreButton}
             onPress={() => {
