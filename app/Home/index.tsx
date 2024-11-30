@@ -227,7 +227,7 @@ const Index = () => {
   const getCardColor = (action: any) => {
     console.log(action);
     if (action.issueType === "Feedback") {
-      return "#e7bcec";
+      return "#bbbef3";
     } else {
       switch (action.status) {
         case "OPEN":
