@@ -308,10 +308,10 @@ export default function IssueDetails() {
             </Text>
             <Text style={styles.detailsText}>
               Location:
-              {issue?.issue.actionItem === "Department" ? "" : " Block -"}{" "}
+              {issue?.issue.actionItem === "Department" ? "Block -" : " Block -"}{" "}
               {issue?.issue.block}
               {issue?.issue.actionItem === "Department"
-                ? "  Department - "
+                ? "  Floor - "
                 : issue?.issue.actionItem === "Lift -"
                 ? ""
                 : issue?.issue.actionItem === "Miscellaneous"
@@ -325,7 +325,7 @@ export default function IssueDetails() {
                 : issue?.issue.actionItem === "Classroom"
                 ? " Room No: "
                 : issue?.issue.actionItem === "Department"
-                ? "\nCabin: "
+                ? ""
                 : issue?.issue.actionItem === "Water Dispenser"
                 ? " Dispenser No: "
                 : ""}

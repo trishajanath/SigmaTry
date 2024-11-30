@@ -30,6 +30,8 @@ interface State {
   content: string;
   anonymous: boolean;
   ratingCleanliness?: number;
+  issuesList: string[];  // Added to store matching issues
+  selectedIssue: string | null; // Store the selected issue (if any)
 }
 
 const initialState: State = {
@@ -42,6 +44,8 @@ const initialState: State = {
   content: "",
   anonymous: false,
   ratingCleanliness: undefined,
+  issuesList: [],
+  selectedIssue: null,
 };
 
 type Action =
@@ -68,6 +72,7 @@ function reducer(state: State, action: Action): State {
 
 const SinglePageForm: React.FC = () => {
   const navigation = useNavigation();
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -79,6 +84,53 @@ const SinglePageForm: React.FC = () => {
   const [openType, setOpenType] = useState(false);
   const [openDomain, setOpenDomain] = useState(false);
   const [openCabin, setOpenCabin] = useState(false);
+  const [similarIssues, setSimilarIssues] = useState<any[]>([]);
+  const [selectedIssue, setSelectedIssue] = useState<string>("");
+  useEffect(() => {
+    const fetchSimilarIssues = async () => {
+      if (!state.name.trim() || !state.number.trim()) {
+        setSimilarIssues([]);
+        return;
+      }
+  
+      try {
+        const response = await axios.post(
+          `${BACKEND_URL}/client/get_similar_issues`,
+          {
+            block: state.name, // Value from your form
+            floor: state.number, // Default value for floor
+          }
+        );
+        console.log("Response data:", response.data);
+
+        console.log("API Response:", JSON.stringify(response.data, null, 2));
+  
+        if (Array.isArray(response.data)) {
+          response.data.forEach((issue: any, index: number) => {
+            console.log(`Issue ${index + 1}:`, issue);
+          });
+  
+          // Adjusted filter logic to match API response structure
+          const issues = response.data.filter(
+            (issue: any) =>
+              issue.actionItem === "Department" &&
+            issue.floor === state.number &&
+              issue.block.toLowerCase() === state.name.toLowerCase()
+          );
+  
+          console.log("Filtered Issues:", issues);
+          setSimilarIssues(issues);
+        } else {
+          console.warn("API did not return an array!");
+          setSimilarIssues([]);
+        }
+      } catch (error) {
+        console.error("Error fetching similar issues:", error);
+      }
+    };
+  
+    fetchSimilarIssues();
+  }, [state.name,state.number]);
 
   const handleSwitchChange = (value: boolean) => {
     dispatch({ type: "SET_FIELD", field: "anonymous", value });
@@ -123,7 +175,17 @@ const SinglePageForm: React.FC = () => {
       });
       return;
     }
-
+    if (state.selectedIssue && state.selectedIssue !== "None of the above") {
+      Toast.show({
+        type: "error",
+        text1: "We are already working on this issue.",
+        text2: "It will be resolved soon.",
+        visibilityTime: 2000,
+      });
+      // Navigate back after showing the message
+      navigation.goBack();
+      return;
+    }
     try {
       const Submit = {
         name: user.name,
@@ -132,10 +194,10 @@ const SinglePageForm: React.FC = () => {
 
         issueCat: state.domain,
         actionItem: "Department",
-        block: `Block-${state.name} Floor-${state.number}`,
+        block: state.name,
 
-        floor: state.department,
-        issueContent: state.cabin,
+        floor: state.number,
+        issueContent: `  Department-${state.department} Cabin-${state.cabin}`,
 
         comments: [
           {
@@ -246,6 +308,40 @@ const SinglePageForm: React.FC = () => {
                 save="value"
               />
             </View>
+            {state.type === "Complaint" && similarIssues.length > 0 && (
+  <>
+    <Text style={styles.label}>Similar Issues Found</Text>
+    <View style={styles.dropdownWrapper}>
+    <SelectList
+      setSelected={(value: string) => {
+        setSelectedIssue(value);
+        if (value !== "None of the Above") {
+          alert("We are already working on this complaint.It will be resolved soon.")
+          // Toast.show({
+          //   type: "info",
+          //   text1: "We are already working on this complaint.",
+          //   text2: "It will be resolved soon.",
+          //   visibilityTime: 3000,
+          // });
+          router.back();
+        }
+      }}
+      
+      data={[
+        ...similarIssues.map((issue, index) => ({
+          key: index.toString(),
+          value: `Description: ${issue.comments} | Date: ${issue.date}`, 
+        })),
+        { key: "none",  value: "None of the Above" },
+      ]}
+      search={false}
+      save="value"
+      
+    />
+      </View>
+  </>
+    
+)}
             {state.type !== "Feedback" && (
   <>
 

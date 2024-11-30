@@ -256,7 +256,7 @@ const SinglePageForm = () => {
               save="value"
             />
           </View>
-          {state.type === "Complaint" && similarIssues.length > 0 && (
+          {state.selectedOptionType === "Complaint" && similarIssues.length > 0 && (
   <>
     <Text style={styles.label}>Similar Issues Found</Text>
     <SelectList
