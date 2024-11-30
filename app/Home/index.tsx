@@ -224,12 +224,12 @@ const Index = () => {
     return count;
   };
 
-  const getCardColor = (action: string ) => {
-    if(action.issueType==="Feedback"){
+  const getCardColor = (action: any) => {
+    console.log(action);
+    if (action.issueType === "Feedback") {
       return "#e7bcec";
-    }
-    else{
-      switch (action) {
+    } else {
+      switch (action.status) {
         case "OPEN":
           return "#a3c3e7";
         case "CLOSE":
@@ -240,14 +240,13 @@ const Index = () => {
           return "#ffffff";
       }
     }
-   
   };
 
   const renderComplaintItem = ({ item }: { item: (typeof issues)[0] }) => (
     <View
       key={item.code}
       style={{
-        backgroundColor: getCardColor(item.status),
+        backgroundColor: getCardColor(item),
         borderRadius: 12,
         width: width * 0.89,
         padding: "3%",
@@ -262,9 +261,13 @@ const Index = () => {
       <View style={styles.complaintContainer}>
         <View style={styles.complaintHeader}>
           <RNText style={styles.issueTypeText}>
-            {item.category == "" ? "MISCELLANEOUS" : item.issueType=="Feedback"?"Feedback":item.category}
+            {item.category == ""
+              ? "MISCELLANEOUS"
+              : item.issueType == "Feedback"
+              ? "Feedback"
+              : item.category}
           </RNText>
-          {item.status == "CLOSE" || item.issueType==="Feedback" ?  (
+          {item.status == "CLOSE" || item.issueType === "Feedback" ? (
             <Feather name="check-circle" size={20} color="green" />
           ) : (
             <SimpleLineIcons name="close" size={20} color="red" />
@@ -276,16 +279,16 @@ const Index = () => {
           <RNText style={styles.categoryText}> | DATE : {item.date}</RNText>
         </View>
         <View style={styles.readMoreContainer}>
-        <RNText style={styles.dateText}>
-  {" "}
-  {item.issueType === "Feedback"
-    ? "Thank you for your feedback!"
-    : item.status === "OPEN"
-    ? "Yet to be fixed!"
-    : item.status === "PENDING"
-    ? "Final Stages of the Work!"
-    : "Issue Solved Thank you!"}{" "}
-</RNText>
+          <RNText style={styles.dateText}>
+            {" "}
+            {item.issueType === "Feedback"
+              ? "Thank you for your feedback!"
+              : item.status === "OPEN"
+              ? "Yet to be fixed!"
+              : item.status === "PENDING"
+              ? "Final Stages of the Work!"
+              : "Issue Solved Thank you!"}{" "}
+          </RNText>
 
           <TouchableOpacity
             style={styles.readMoreButton}
@@ -314,8 +317,10 @@ const Index = () => {
         />
 
         <Text style={styles.headerSubText}>
-          {truncateText(`${(user.id?.toUpperCase() ?? '')}-${user.name ?? ''}`, 35)
-        }
+          {truncateText(
+            `${user.id?.toUpperCase() ?? ""}-${user.name ?? ""}`,
+            35
+          )}
         </Text>
         <TouchableOpacity style={styles.headerIconContainer}></TouchableOpacity>
       </View>
