@@ -177,8 +177,8 @@ const SinglePageForm: React.FC = () => {
       !state.department ||
       state.cabin === "Select Option" ||
       state.type === "Select Type" ||
-      state.domain === "Select Domain" ||
-      !state.content ||
+      (state.type==="Complaint" && (state.domain === "Select Domain" ||
+        !state.content )) ||
       (state.type === "Feedback" && state.ratingCleanliness === undefined)
     ) {
       Toast.show({
@@ -344,7 +344,7 @@ const SinglePageForm: React.FC = () => {
       data={[
         ...similarIssues.map((issue, index) => ({
           key: index.toString(),
-          value: `Description: ${issue.comments} | Date: ${issue.date}`, 
+          value: `Description: ${issue.comments} | ${issue.issueContent} | Domain: ${issue.issueCat} | Date: ${issue.date}`,  
         })),
         { key: "none",  value: "None of the Above" },
       ]}

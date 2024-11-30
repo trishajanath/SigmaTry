@@ -146,7 +146,7 @@ const SinglePageForm = () => {
       });
       return;
     }
-    if (state.selectedOptionDomain === "Select Domain") {
+    if (state.selectedOptionType==="Complaint" && state.selectedOptionDomain === "Select Domain") {
       Toast.show({
         type: "error",
         text1: "Please select a Domain.",
@@ -154,7 +154,7 @@ const SinglePageForm = () => {
       });
       return;
     }
-    if (!state.content.trim()) {
+    if (state.selectedOptionType==="Complaint" && !state.content.trim()) {
       Toast.show({
         type: "error",
         text1: "Content is required.",
@@ -286,7 +286,7 @@ const SinglePageForm = () => {
       data={[
         ...similarIssues.map((issue, index) => ({
           key: index.toString(),
-          value: `Description: ${issue.comments} Raised On: ${issue.date}, `,
+          value: `Description: ${issue.comments} | Domain: ${issue.issueCat} | Raised On: ${issue.date}, `,
         })),
         { key: "none",  value: "None of the Above" },
       ]}

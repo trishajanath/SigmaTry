@@ -137,7 +137,7 @@ const SinglePageForm = () => {
       !state.name.trim() ||
       !state.number.trim() ||
       !state.dispenserName.trim() ||
-      !state.content.trim() ||
+      (state.selectedOptionType ==="Complaint" && !state.content.trim() )||
       state.selectedOptionType === "Select Type" ||
       (state.selectedOptionType === "Feedback" &&
         (state.ratingFunctionality === undefined ||
@@ -284,7 +284,7 @@ const SinglePageForm = () => {
       data={[
         ...similarIssues.map((issue, index) => ({
           key: index.toString(),
-          value: `Description: ${issue.comments} | Date: ${issue.date}`, 
+          value: `Description: ${issue.comments} | Dispenser Number: ${issue.issueContent} | Date: ${issue.date}`, 
         })),
         { key: "none",  value: "None of the Above" },
       ]}

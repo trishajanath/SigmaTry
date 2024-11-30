@@ -141,7 +141,8 @@ const SinglePageForm: React.FC = () => {
       !state.name.trim() ||
       !state.number.trim() ||
       !state.classroom.trim() ||
-      
+      (state.selectedOptionType==="Complaint" && (state.selectedOptionDomain === "Select Domain" ||
+        !state.content )) ||
       state.selectedOptionType === "Select Type" ||
       
       (state.selectedOptionType === "Feedback" &&
@@ -298,7 +299,7 @@ const SinglePageForm: React.FC = () => {
       data={[
         ...similarIssues.map((issue, index) => ({
           key: index.toString(),
-          value: `Description: ${issue.comments} | Date: ${issue.date}`, 
+          value: `Description: ${issue.comments} | Domain:${issue.issueCat} | Classroom: ${issue.issueContent} | Date: ${issue.date} `, 
         })),
         { key: "none",  value: "None of the Above" },
       ]}

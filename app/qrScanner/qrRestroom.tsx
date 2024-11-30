@@ -147,8 +147,8 @@ const SinglePageForm: React.FC = () => {
       !state.number ||
       state.restroom === "Select Option" ||
       state.type === "Select Type" ||
-      state.domain === "Select Domain" ||
-      !state.content ||
+      (state.type==="Complaint" && (state.domain === "Select Domain" ||
+        !state.content )) ||
       (state.type === "Feedback" &&
         (state.ratingmirror === undefined ||
           state.ratingurinals === undefined ||
@@ -308,7 +308,7 @@ const SinglePageForm: React.FC = () => {
       data={[
         ...similarIssues.map((issue, index) => ({
           key: index.toString(),
-          value: `Description: ${issue.comments} | Date: ${issue.date}`, 
+          value: `Description: ${issue.comments} | Restroom: ${issue.issueContent} | Domain: ${issue.issueCat} | Date: ${issue.date}`,
         })),
         { key: "none",  value: "None of the Above" },
       ]}
