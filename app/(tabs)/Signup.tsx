@@ -37,6 +37,7 @@ const HomeScreenLoader = () => {
 type State = {
   fullName: string;
   email: string;
+  number: string;
   password: string;
   confirmPassword: string;
 };
@@ -44,6 +45,7 @@ type State = {
 type Action =
   | { type: "SET_FULL_NAME"; payload: string }
   | { type: "SET_EMAIL"; payload: string }
+  | { type: "SET_NUMBER"; payload: string }
   | { type: "SET_PASSWORD"; payload: string }
   | { type: "SET_CONFIRM_PASSWORD"; payload: string };
 
@@ -53,6 +55,8 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, fullName: action.payload };
     case "SET_EMAIL":
       return { ...state, email: action.payload };
+      case "SET_NUMBER":
+        return { ...state, number: action.payload };
     case "SET_PASSWORD":
       return { ...state, password: action.payload };
     case "SET_CONFIRM_PASSWORD":
@@ -66,6 +70,7 @@ const SignUpScreen = () => {
   const [state, dispatch] = useReducer(reducer, {
     fullName: "",
     email: "",
+    number: "",
     password: "",
     confirmPassword: "",
   });
@@ -77,11 +82,11 @@ const SignUpScreen = () => {
   });
 
   const validateInputs = () => {
-    const { fullName, email, password, confirmPassword } = state;
+    const { fullName, email,number, password, confirmPassword } = state;
     
    
 
-    if (!fullName || !email || !password || !confirmPassword) {
+    if (!fullName || !number || !email || !password || !confirmPassword) {
       Alert.alert("Error", "All fields are required.");
       return false;
     }
@@ -106,6 +111,7 @@ const SignUpScreen = () => {
           name: state.fullName,
           id: state.email,
           password: state.password,
+          phone_number: state.number,
         }
       );
 
@@ -175,6 +181,21 @@ const SignUpScreen = () => {
           value={state.email}
           onChangeText={(text) =>
             dispatch({ type: "SET_EMAIL", payload: text })
+          }
+        />
+      </View>
+      <Text style={styles.ti}>
+        Enter your phone number
+      </Text>
+      <View style={styles.inputContainer}>
+      <AntDesign name="phone" size={20} color="black" />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone Number"
+          placeholderTextColor="#999"
+          value={state.number}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_NUMBER", payload: text })
           }
         />
       </View>

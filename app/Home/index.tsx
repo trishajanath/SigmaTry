@@ -11,6 +11,7 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { router } from "expo-router";
 import { Text, Button, Menu, Divider, Provider } from "react-native-paper";
@@ -106,6 +107,12 @@ const ovalContainers = [
   },
   {
     id: 8,
+    icon:<MaterialCommunityIcons name="store-search-outline" size={24} color="#555555" />,
+    onPress: "/Home/lostAndFound",
+    title: "Lost & Found",
+  },
+  {
+    id: 9,
     icon: <Entypo name="home" size={23} color="#555555" />,
     title: "Hostel",
     onPress: null,
@@ -202,8 +209,11 @@ const Index = () => {
         CommonActions.reset({
           index: 0,
           routes: [{ name: "(tabs)" }],
+          
         })
+        
       );
+    
     } catch (error) {
       console.log("Error during logout:", error);
     }
@@ -394,21 +404,29 @@ const Index = () => {
               title={<Text style={{ color: "white" }}>Closed</Text>}
             />
           </Menu>
-          <TouchableOpacity
-            style={styles.iconButtonContainer}
-            onPress={() => {
-              Alert.alert("Logout", "Are you sure you want to logout?", [
-                {
-                  text: "Cancel",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel",
-                },
-                { text: "OK", onPress: () => logout() },
-              ]);
-            }}
-          >
-            <MaterialIcons name="logout" size={18} color="#555555" />
-          </TouchableOpacity>
+         
+
+
+         {/* <TouchableOpacity onPress={() => logout() }> <Text> Logout</Text></TouchableOpacity> */}
+         <TouchableOpacity
+  style={styles.iconButtonContainer}
+  onPress={() => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: logout, // Pass the function reference directly
+      },
+    ]);
+  }}
+>
+  <MaterialIcons name="logout" size={18} color="#555555" />
+</TouchableOpacity>
+
         </View>
 
         <RNText style={styles.boldText}>Write a Complaint</RNText>

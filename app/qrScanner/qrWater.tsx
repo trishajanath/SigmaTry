@@ -368,13 +368,13 @@ const SinglePageForm = () => {
             </View>
           )}
 
-          <View style={styles.switchContainer}>
+          {/* <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Anonymous Complaints</Text>
             <Switch
               value={state.anonymous}
               onValueChange={handleSwitchChange}
             />
-          </View>
+          </View> */}
           <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
             <Text style={styles.submitBtnText}>Submit</Text>
           </TouchableOpacity>
