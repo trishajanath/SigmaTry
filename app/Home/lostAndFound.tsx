@@ -1,440 +1,433 @@
-import React, { useReducer, useState, useEffect } from "react";
-import * as ImagePicker from "expo-image-picker";
+import React, { useCallback, useState } from "react";
 import {
-  View,
-  Text,
-  TextInput,
   StyleSheet,
-  Image,
-  Platform,
-  Dimensions,
   TouchableOpacity,
+  View,
+  ScrollView,
+  TextInput,
+  Image,
+  FlatList,
+  Alert,
+  ActivityIndicator,
+  Dimensions,
+  Text as RNText,
 } from "react-native";
-import { SelectList } from "@venedicto/react-native-dropdown";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { router, useNavigation } from "expo-router";
+import { Provider, Text } from "react-native-paper";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
-import { useUser } from "@/Hooks/userContext";
-import { Appbar } from "react-native-paper";
-import Toast from "react-native-toast-message";
+
 import { BACKEND_URL } from "@/production.config";
-import { Image as SvgImage } from "react-native-svg";
+import { router, useRouter } from "expo-router";
+import { ArrowUpRightIcon } from "react-native-heroicons/outline";
+import { Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
-interface FormData {
-  name: string;
-  cat: string;
- date:string;
-  content: string;
-  location: string;
-  user_account_id:string;
-  comments:string;
-  image: string | null;
-  
-}
-
-const initialState: FormData = {
-  name: "",
-  cat: "",
- date:"",
- location:"",
- comments:"",
-  content: "",
-  user_account_id:"",
-  image:null,
-  
-};
-
-type Action =
-  | { type: "SET_FORM_DATA"; payload: Partial<FormData> };
- 
- 
-
-function reducer(state: FormData, action: Action): FormData {
-  switch (action.type) {
-    case "SET_FORM_DATA":
-      return { ...state, ...action.payload };
-    
-    default:
-      return state;
+interface Issue {
+  item_details:{
+    item_name: string;
+    category:string;
   }
+  name: string;
+  roll_no: string;
+  
+  date_lost: string;
+  last_seen_location: string;
+  user_account_id: string;
 }
+const handlePress = () => {
+  router.push('/Home/lostAndFoundForm');
+};
+const LostAndFound = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [issues, setIssues] = useState<Issue[]>([]);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-const SinglePageForm: React.FC = () => {
-  const users = useUser();
-  const navigation = useNavigation();
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, []);
-  const handleImagePick = async () => {
+  // Fetch lost and found items
+  const fetchAllLostAndFound = async () => {
+    setLoading(true);
     try {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-      if (!permissionResult.granted) {
-        Toast.show({
-          type: "error",
-          text1: "Permission denied",
-          text2: "You need to grant permission to access media.",
-        });
-        return;
-      }
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        dispatch({ type: "SET_FORM_DATA", payload: { image: result.assets[0].uri } });
-      }
+      const response = await axios.get(`${BACKEND_URL}/get_all_lost_items`);
+      console.log("API Response:", response.data); // Debug here
+      setIssues(response.data?.lost_items || []);
     } catch (error) {
-      console.error("Error picking image:", error);
+      console.error("Error fetching issues:", error);
+      Alert.alert("Error", "Failed to fetch lost and found items.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSubmit = async () => {
-    if (
-      !state.name ||
-      !state.cat||
- !state.content || !state.date || !state.location || !state.comments || !state.user_account_id
-      
-    ) {
-      Toast.show({
-        type: "error",
-        text1: "Some fields are missing",
-        text2: "Please fill all the fields",
-        visibilityTime: 2000,
-      });
-      return;
-    }
-    const formData = new FormData();
-    formData.append("name", users.name);
-    formData.append("roll_no", users.id);
-    formData.append("contact_number", users.phone_number);
-    formData.append("email", users.email);
-    formData.append("department", users.department);
-    formData.append("item_name", state.name);
-    formData.append("category", state.cat);
-    formData.append("description", state.content);
-    formData.append("date_lost", state.date);
-    formData.append("last_seen_location", state.location);
-    formData.append("comments", state.comments);
-    formData.append("user_account_id", state.user_account_id);
+  useFocusEffect(
+    useCallback(() => {
+      fetchAllLostAndFound();
+    }, [])
+  );
 
-    if (state.image) {
-      const imageFile = {
-        uri: state.image,
-        type: "image/jpeg", 
-        name: "lost_item.jpg",
-      };
-      formData.append("images", imageFile as any);
-    }
+  
+  const filteredIssues = issues.filter((issue) =>
+    issue.item_details.item_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-    try {
-      const response = await axios.post(`${BACKEND_URL}/raise_lost_item`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      router.replace({
-        pathname: "/Home/submitPage",
-        params: response.data,
-      });
-    } catch (error: any) {
-      console.error("Error during submission:", error);
-      Toast.show({
-        type: "error",
-        text1: "Submission failed",
-        text2: "Please try again later.",
-      });
-    }
-  };
- 
-  return (
-    <>
-      <Appbar.Header>
-        <Appbar.BackAction onPress={() => router.back()} />
-        <Appbar.Content title="Sigma - GMS " />
-      </Appbar.Header>
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollView}
-        enableOnAndroid={true}
-        extraHeight={10}
+  
+  const renderComplaintItem = ({ item: issue }: { item: Issue }) => (
+  <View style={styles.cardContainer}>
+    <Text style={styles.cardTitle}>{issue.item_details.item_name}</Text>
+    <View style={styles.rowContainer}>
+      <View style={styles.infoBlock}>
+        <Text style={styles.infoHeading}>Last Seen</Text>
+        <Text style={styles.infoContent} numberOfLines={1} ellipsizeMode="tail">
+          {issue.last_seen_location}
+        </Text>
+      </View>
+      <View style={styles.infoBlock}>
+        <Text style={styles.infoHeading}>Date Lost</Text>
+        <Text style={styles.infoContent} numberOfLines={1} ellipsizeMode="tail">
+          {issue.date_lost}
+        </Text>
+      </View>
+    </View>
+    <View style={styles.divider} />
+    <View style={styles.userContainer}>
+      <Ionicons name="person-circle" size={40} color="gray" />
+      <View style={styles.userInfo}>
+        <Text style={styles.userName} numberOfLines={1}>
+          {issue.name}
+        </Text>
+        <Text style={styles.userRollNo} numberOfLines={1}>
+          {issue.roll_no}
+        </Text>
+      </View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          router.push({
+            pathname: "/Home/lostAndFoundRM",
+            params: { issue: JSON.stringify(issue) },
+          })
+        }
       >
-        <View style={styles.container}>
-          <Text style={styles.main}>Lost Item Form</Text>
-          <View style={styles.formContainer}>
-            <Text style={styles.label}>Item name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="item name"
-              value={state.name}
-              onChangeText={(text) =>
-                dispatch({ type: "SET_FORM_DATA", payload: { name: text } })
-              }
-            />
-            <Text style={styles.label}>Category</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="category"
-              value={state.cat}
-              onChangeText={(text) =>
-                dispatch({ type: "SET_FORM_DATA", payload: { cat: text } })
-              }
-            />
-            <Text style={styles.label}>Description</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Description"
-              value={state.content}
-              onChangeText={(text) =>
-                dispatch({
-                  type: "SET_FORM_DATA",
-                  payload: { content: text },
-                })
-              }
-            />
-            <Text style={styles.label}>Date Lost</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Date Lost"
-              value={state.date}
-              onChangeText={(text) =>
-                dispatch({
-                  type: "SET_FORM_DATA",
-                  payload: { date: text },
-                })
-              }
-            />
-            <Text style={styles.label}>Last Seen Location</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Last seen Location"
-              value={state.location}
-              onChangeText={(text) =>
-                dispatch({
-                  type: "SET_FORM_DATA",
-                  payload: { location: text },
-                })
-              }
-            />
-            <Text style={styles.label}>Comments</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Comments"
-              value={state.comments}
-              onChangeText={(text) =>
-                dispatch({
-                  type: "SET_FORM_DATA",
-                  payload: { comments: text },
-                })
-              }
-            />
-           <Text style={styles.label}>Enter the Reg. No of the person who has lost the item</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Register Number"
-              value={state.user_account_id}
-              onChangeText={(text) =>
-                dispatch({
-                  type: "SET_FORM_DATA",
-                  payload: { user_account_id: text },
-                })
-              }
-            />
-            
-  
-
-
-  
-    
-
-              
-    
-  
-
-
-            {/* Conditionally render rating section */}
-           
-
-            {/* <View style={styles.switchContainer}>
-              <Text style={styles.switchLabel}>Anonymous Complaints</Text>
-              <Switch
-                style={styles.switch}
-                value={state.anonymous}
-                onValueChange={handleSwitchChange}
-              />
-            </View> */}
-              <Text style={styles.label}>Upload an Image</Text>
-            <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
-              <Text style={styles.imagePickerText}>
-                {state.image ? "Change Image" : "Choose Image"}
-              </Text>
-            </TouchableOpacity>
-
-            {state.image && (
-              <Image source={{ uri: state.image }} style={styles.previewImage} />
-            )}
-          </View>
-          <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-            <Text style={styles.submitBtnText}>Submit</Text>
-          </TouchableOpacity>
+        <View>
+          <Text style={styles.userI}> View More </Text>
         </View>
-      </KeyboardAwareScrollView>
-      <Toast />
-    </>
+       
+      </TouchableOpacity>
+    </View>
+  </View>
+);
+  
+
+  return (
+    <Provider>
+     
+
+      <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
+        <View style={styles.searchContainer}>
+          <MaterialIcons name="search" size={20} color="#555" style={styles.searchIcon} />
+          <TextInput
+            placeholder="Search by category"
+            onChangeText={setSearchQuery}
+            value={searchQuery}
+            placeholderTextColor="#555"
+            style={styles.searchInput}
+          />
+        </View>
+
+        <RNText style={styles.sectionTitle}>Lost and Found Items</RNText>
+
+       
+        {loading ? (
+          <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: "10%",
+                      }}
+                    >
+            <ActivityIndicator size="large" color="#8283e9" />
+          </View>
+        ) : filteredIssues.length === 0 ? (
+          <RNText style={styles.noComplaintsText}>No Items Found</RNText>
+        ) : (
+          <FlatList
+            data={filteredIssues.slice().reverse()}
+            renderItem={renderComplaintItem}
+            keyExtractor={(item) => item.roll_no}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+              <TouchableOpacity style={styles.addButton} onPress={handlePress}>
+
+<Ionicons name="add-circle" size={44} color="#8283e9" />
+</TouchableOpacity>
+      </ScrollView>
+    </Provider>
   );
 };
+
+export default LostAndFound;
+
 const styles = StyleSheet.create({
-  scrollView: {
-    flexGrow: 1,
-    padding: "2%",
+  // headerContainer: {
+  //   height: 100,
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   backgroundColor: "#f2f2f2",
+  // },
+  addButton: {
+    position: 'absolute',
+    bottom:-25,
+    right: 20,
+  
+   
+    
+    alignItems: 'center',
+    justifyContent: 'center',
+    
   },
-  imagePicker: {
-    backgroundColor: "#8283e9",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    marginBottom: 10,
+  cardContainer: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  imagePickerText: {
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+    textTransform: "uppercase",
+    color: "#333",
+  },
+  rowContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    marginBottom: 8,
+    gap: 16,
+  },
+  infoBlock: {
+    flex: 1,
+  },
+  infoHeading: {
+    fontSize: 12,
+    color: "gray",
+    marginBottom: 4,
+  },
+  infoContent: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+  },
+  divider: {
+    borderTopWidth: 1,
+    borderTopColor: "#E0E0E0",
+    marginVertical: 8,
+  },
+  userContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  userInfo: {
+    marginLeft: 16,
+    flex: 1,
+  },
+  userI:{
     color: "#fff",
+    fontSize: 9, // Increase font size
     textAlign: "center",
   },
-  previewImage: {
-    width: "100%",
-    height: 200,
-    borderRadius: 5,
-    marginTop: 10,
+  userName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
   },
-  main: {
-    fontSize: 20,
-    marginTop: Platform.OS === "ios" ? "1%" : "1%",
-    marginBottom: "7%",
+  userRollNo: {
+    fontSize: 12,
+    color: "gray",
+  },
+  button: {
+    backgroundColor: "#8283e9",
+    paddingVertical: 10, // Increase vertical padding
+    paddingHorizontal: 10, // Increase horizontal padding
+    borderRadius: 10,
+    alignSelf: "flex-start",
+    marginTop: "3%", // Adjust margin if needed
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    resizeMode: "contain",
+  },
+  scrollViewContentContainer: {
+    paddingBottom: 20,
+    paddingHorizontal: 16,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#e6e6e4",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginVertical: 16,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    fontSize: 14,
+    color: "#333",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 16,
+  },
+  loaderContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 40,
+  },
+  noComplaintsText: {
+    textAlign: "center",
+    marginTop: 20,
+    color: "#555",
+    fontSize: 16,
+  },
+  card: {
+    backgroundColor: "#f0f4fa",
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 8,
+  },
+  complaintContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    flex: 1,
+  },
+  complaintHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "2%",
+  },
+  readMoreButton: {
+    backgroundColor: "#8283e9",
+    paddingVertical: 10, // Increase vertical padding
+    paddingHorizontal: 10, // Increase horizontal padding
+    borderRadius: 10,
+    alignSelf: "flex-start",
+    marginTop: "-1%", // Adjust margin if needed
+  },
+  readMoreButtonText: {
+    color: "#fff",
+    fontSize: 9, // Increase font size
+    textAlign: "center",
+  },
+  readMoreContainer: {
+    flexDirection: "row",
+    // justifyContent: "end",
+    justifyContent: "space-between",
+  },
+
+  headerContainer: {
+    height: "8%",
+    backgroundColor: "#f2f2f2",
+    marginTop: "12%",
+    padding: "3%",
+    paddingLeft: "7%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  headerText: {
+    fontWeight: "bold",
+    color: "#444444",
+    flex: 1,
+  },
+  headerSubText: {
+    color: "#555555",
+    marginLeft: 10,
+    fontSize: 14,
+    flex: 2,
+    textAlign: "right",
+  },
+  headerSubTex: {
+    color: "#555555",
+    marginLeft: 10,
+    fontSize: 12,
+    flex: 2,
+    textAlign: "right",
+    marginTop: "-5%",
+    marginRight: "4%",
+  },
+  headerIconContainer: {
+    position: "absolute",
+    right: "5%",
+    top: "30%",
+  },
+  // issueTypeText: {
+  //   fontSize: 16,
+  //   fontWeight: "bold",
+  //   marginBottom: 8,
+  // },
+  // categoryText: {
+  //   fontSize: 14,
+  //   color: "#555",
+  //   marginBottom: 4,
+  // },
+  dateText: {
+    fontSize: 12,
+    color: "#040200",
+  },
+  complaintBody: {
+    flexDirection: "row", // Set to row to place items horizontally
+
+    marginBottom: 10,
+  },
+  categoryText: {
+    fontSize: 10,
+    color: "#0d0907",
+    marginBottom: 5,
+  },
+  statusText: {
+    fontSize: 10,
+    color: "#0d0907",
+    marginBottom: 0,
+    paddingRight: 2,
+    textAlign: "right",
+    flex: 1,
     fontWeight: "bold",
   },
-  formContainer: {
-    alignItems: "flex-start",
-    justifyContent: "center",
-    marginBottom: "10%",
-    width: "100%",
+  issueTypeText: {
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "#333",
   },
-  label: {
-    fontSize: 15,
-    marginBottom: "4%",
-  },
-  labe: {
-    fontSize: 15,
-    marginBottom: "2%",
-    marginTop: "2%",
-  },
-  ratingItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 20, // Adjust spacing between items if needed
-  },
-  input: {
-    width: "100%",
-    height: 40,
-    backgroundColor: "#f5f5f5",
-    paddingHorizontal: "2%",
-    marginBottom: "5%",
-    shadowColor: "#8283e9",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    borderRadius: 5,
-  },
-  dropdownWrapper: {
-    width: "100%",
-    marginBottom: "4%",
-  },
-  ratingContainer: {
-    marginTop: 10,
-    marginBottom: "5%",
-    width: "100%",
-  },
-  ratingLabel: {
-    fontSize: 15,
-    marginBottom: "4%",
-  },
-  lab: {
-    fontSize: 20,
-    marginBottom: "3%",
-  },
-  customRatingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 5,
-  },
-  circle: {
-    width: 20,
-    height: 20,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: "#171717",
-    justifyContent: "center",
+  // readMoreButton: {
+  //   backgroundColor: "#8283e9",
+  //   paddingVertical: 8,
+  //   paddingHorizontal: 16,
+  //   borderRadius: 8,
+  //   alignSelf: "flex-start",
+  //   marginTop: 8,
+  // },
+  // readMoreButtonText: {
+  //   color: "#fff",
+  //   fontSize: 14,
+  // },
+  footer: {
+    padding: 16,
     alignItems: "center",
   },
-  selectedCircle: {
-    backgroundColor: "#171717",
-  },
-  circleText: {
-    fontSize: 15,
-    color: "#4B5563",
-  },
-  ratingText: {
-    fontSize: 14,
-    color: "#4B5563",
-    marginLeft: 5,
-    marginRight: 20,
-  },
-  pickerLabel: {
-    fontSize: 16,
-    marginTop: Platform.OS === "ios" ? "2%" : 0,
-    marginBottom: "3%",
-  },
-
-  switchContainer: {
-    marginTop: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "5%",
-    padding: "1%",
-    borderRadius: 5,
-  },
-  switchLabel: {
-    fontSize: 16,
-  },
-  switch: {
-    alignItems: "flex-end",
-    marginLeft: "39%",
-  },
-  submitBtn: {
-    backgroundColor: "#8283e9",
-    paddingVertical: "3%",
-    paddingHorizontal: "3%",
-    borderRadius: 5,
-    marginTop: "-10%",
-    alignItems: "center",
-  },
-  submitBtnText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  container: {
-    flex: 1,
-    padding: "5%",
+  footerText: {
+    color: "#555",
   },
 });
-
-export default SinglePageForm;

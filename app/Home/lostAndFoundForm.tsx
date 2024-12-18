@@ -28,8 +28,11 @@ interface FormData {
  date:string;
   content: string;
   location: string;
+  user_account_id:string;
+  contact_number:string;
+  email:string;
   comments:string;
-  image: string | null;
+  images: string | null;
   
 }
 
@@ -38,9 +41,12 @@ const initialState: FormData = {
   cat: "",
  date:"",
  location:"",
+ contact_number:"",
+ email:"",
  comments:"",
   content: "",
-  image:null,
+  user_account_id:"",
+  images:null,
   
 };
 
@@ -87,9 +93,10 @@ const SinglePageForm: React.FC = () => {
         allowsEditing: true,
         quality: 1,
       });
-
+console.log(result);
       if (!result.canceled) {
-        dispatch({ type: "SET_FORM_DATA", payload: { image: result.assets[0].uri } });
+        dispatch({ type: "SET_FORM_DATA", payload: { images: result.assets[0].uri } });
+        
       }
     } catch (error) {
       console.error("Error picking image:", error);
@@ -100,8 +107,8 @@ const SinglePageForm: React.FC = () => {
     if (
       !state.name ||
       !state.cat||
- !state.content || !state.date || !state.location || !state.comments 
-      
+ !state.content || !state.date || !state.location || !state.comments || !state.user_account_id
+ || !state.contact_number|| !state.email
     ) {
       Toast.show({
         type: "error",
@@ -111,11 +118,12 @@ const SinglePageForm: React.FC = () => {
       });
       return;
     }
+    
     const formData = new FormData();
     formData.append("name", users.name);
     formData.append("roll_no", users.id);
-    formData.append("contact_number", users.phone_number);
-    formData.append("email", users.email);
+    formData.append("contact_number", state.contact_number);
+    formData.append("email", state.email);
     formData.append("department", users.department);
     formData.append("item_name", state.name);
     formData.append("category", state.cat);
@@ -123,16 +131,17 @@ const SinglePageForm: React.FC = () => {
     formData.append("date_lost", state.date);
     formData.append("last_seen_location", state.location);
     formData.append("comments", state.comments);
+    formData.append("user_account_id", state.user_account_id);
 
-    if (state.image) {
+    if (state.images) {
       const imageFile = {
-        uri: state.image,
-        type: "image/jpeg", // Assuming JPEG, change if needed
+        uri: state.images,
+        type: "image/jpeg", 
         name: "lost_item.jpg",
       };
       formData.append("images", imageFile as any);
     }
-
+console.log(formData);
     try {
       const response = await axios.post(`${BACKEND_URL}/raise_lost_item`, formData, {
         headers: {
@@ -140,7 +149,7 @@ const SinglePageForm: React.FC = () => {
         },
       });
       router.replace({
-        pathname: "/Home/submitPage",
+        pathname: "/Home",
         params: response.data,
       });
     } catch (error: any) {
@@ -233,15 +242,39 @@ const SinglePageForm: React.FC = () => {
                 })
               }
             />
-           <Text style={styles.label}>Please upload an image in the form of jpeg or png</Text>
+           <Text style={styles.label}>Enter the Reg. No of the person who has lost the item</Text>
             <TextInput
               style={styles.input}
-              placeholder="Comments"
-              value={state.comments}
+              placeholder="Register Number"
+              value={state.user_account_id}
               onChangeText={(text) =>
                 dispatch({
                   type: "SET_FORM_DATA",
-                  payload: { comments: text },
+                  payload: { user_account_id: text },
+                })
+              }
+            />
+            <Text style={styles.label}>Enter the Phone Number of the person who has lost the item</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              value={state.contact_number}
+              onChangeText={(text) =>
+                dispatch({
+                  type: "SET_FORM_DATA",
+                  payload: { contact_number: text },
+                })
+              }
+            />
+            <Text style={styles.label}>Enter the email of the person who has lost the item</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={state.email}
+              onChangeText={(text) =>
+                dispatch({
+                  type: "SET_FORM_DATA",
+                  payload: { email: text },
                 })
               }
             />
@@ -253,15 +286,7 @@ const SinglePageForm: React.FC = () => {
     
 
               
-    <Text style={styles.label}>Content</Text>
-    <TextInput
-      style={styles.input}
-      placeholder="Enter Content Here"
-      value={state.content}
-      onChangeText={(text) =>
-        dispatch({ type: "SET_FORM_DATA", payload: { content: text } })
-      }
-    />
+    
   
 
 
@@ -279,12 +304,12 @@ const SinglePageForm: React.FC = () => {
               <Text style={styles.label}>Upload an Image</Text>
             <TouchableOpacity style={styles.imagePicker} onPress={handleImagePick}>
               <Text style={styles.imagePickerText}>
-                {state.image ? "Change Image" : "Choose Image"}
+                {state.images ? "Change Image" : "Choose Image"}
               </Text>
             </TouchableOpacity>
 
-            {state.image && (
-              <Image source={{ uri: state.image }} style={styles.previewImage} />
+            {state.images && (
+              <Image source={{ uri: state.images }} style={styles.previewImage} />
             )}
           </View>
           <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
@@ -306,7 +331,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: '-1%',
+    marginTop:'-2%',
+    alignItems:'center',
+    flex:1,
+    justifyContent:'center',
+    // alignSelf:'center'
+    
   },
   imagePickerText: {
     color: "#fff",
@@ -429,7 +460,7 @@ const styles = StyleSheet.create({
     paddingVertical: "3%",
     paddingHorizontal: "3%",
     borderRadius: 5,
-    marginTop: "-10%",
+    marginTop: "-7%",
     alignItems: "center",
   },
   submitBtnText: {
