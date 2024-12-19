@@ -2120,22 +2120,7 @@
     "@react-types/shared" "^3.23.1"
     "@swc/helpers" "^0.5.0"
 
-"@react-aria/listbox@^3.12.1":
-  version "3.12.1"
-  resolved "https://registry.npmjs.org/@react-aria/listbox/-/listbox-3.12.1.tgz"
-  integrity sha512-7JiUp0NGykbv/HgSpmTY1wqhuf/RmjFxs1HZcNaTv8A+DlzgJYc7yQqFjP3ZA/z5RvJFuuIxggIYmgIFjaRYdA==
-  dependencies:
-    "@react-aria/interactions" "^3.21.3"
-    "@react-aria/label" "^3.7.8"
-    "@react-aria/selection" "^3.18.1"
-    "@react-aria/utils" "^3.24.1"
-    "@react-stately/collections" "^3.10.7"
-    "@react-stately/list" "^3.10.5"
-    "@react-types/listbox" "^3.4.9"
-    "@react-types/shared" "^3.23.1"
-    "@swc/helpers" "^0.5.0"
-
-"@react-aria/listbox@^3.2.4":
+"@react-aria/listbox@^3.12.1", "@react-aria/listbox@^3.2.4":
   version "3.12.1"
   resolved "https://registry.npmjs.org/@react-aria/listbox/-/listbox-3.12.1.tgz"
   integrity sha512-7JiUp0NGykbv/HgSpmTY1wqhuf/RmjFxs1HZcNaTv8A+DlzgJYc7yQqFjP3ZA/z5RvJFuuIxggIYmgIFjaRYdA==
@@ -2209,20 +2194,7 @@
     "@react-types/shared" "^3.23.1"
     "@swc/helpers" "^0.5.0"
 
-"@react-aria/selection@^3.18.1", "@react-aria/selection@^3.3.2":
-  version "3.18.1"
-  resolved "https://registry.npmjs.org/@react-aria/selection/-/selection-3.18.1.tgz"
-  integrity sha512-GSqN2jX6lh7v+ldqhVjAXDcrWS3N4IsKXxO6L6Ygsye86Q9q9Mq9twWDWWu5IjHD6LoVZLUBCMO+ENGbOkyqeQ==
-  dependencies:
-    "@react-aria/focus" "^3.17.1"
-    "@react-aria/i18n" "^3.11.1"
-    "@react-aria/interactions" "^3.21.3"
-    "@react-aria/utils" "^3.24.1"
-    "@react-stately/selection" "^3.15.1"
-    "@react-types/shared" "^3.23.1"
-    "@swc/helpers" "^0.5.0"
-
-"@react-aria/selection@^3.3.1":
+"@react-aria/selection@^3.18.1", "@react-aria/selection@^3.3.1", "@react-aria/selection@^3.3.2":
   version "3.18.1"
   resolved "https://registry.npmjs.org/@react-aria/selection/-/selection-3.18.1.tgz"
   integrity sha512-GSqN2jX6lh7v+ldqhVjAXDcrWS3N4IsKXxO6L6Ygsye86Q9q9Mq9twWDWWu5IjHD6LoVZLUBCMO+ENGbOkyqeQ==
@@ -2854,15 +2826,15 @@
     hermes-parser "0.19.1"
     nullthrows "^1.1.1"
 
-"@react-native/normalize-colors@^0.74.1", "@react-native/normalize-colors@0.74.84":
-  version "0.74.84"
-  resolved "https://registry.npmjs.org/@react-native/normalize-colors/-/normalize-colors-0.74.84.tgz"
-  integrity sha512-Y5W6x8cC5RuakUcTVUFNAIhUZ/tYpuqHZlRBoAuakrTwVuoNHXfQki8lj1KsYU7rW6e3VWgdEx33AfOQpdNp6A==
-
-"@react-native/normalize-colors@0.74.85":
+"@react-native/normalize-colors@^0.74.1", "@react-native/normalize-colors@0.74.85":
   version "0.74.85"
   resolved "https://registry.npmjs.org/@react-native/normalize-colors/-/normalize-colors-0.74.85.tgz"
   integrity sha512-pcE4i0X7y3hsAE0SpIl7t6dUc0B0NZLd1yv7ssm4FrLhWG+CGyIq4eFDXpmPU1XHmL5PPySxTAjEMiwv6tAmOw==
+
+"@react-native/normalize-colors@0.74.84":
+  version "0.74.84"
+  resolved "https://registry.npmjs.org/@react-native/normalize-colors/-/normalize-colors-0.74.84.tgz"
+  integrity sha512-Y5W6x8cC5RuakUcTVUFNAIhUZ/tYpuqHZlRBoAuakrTwVuoNHXfQki8lj1KsYU7rW6e3VWgdEx33AfOQpdNp6A==
 
 "@react-native/virtualized-lists@0.74.84":
   version "0.74.84"
@@ -2932,18 +2904,7 @@
     color "^4.2.3"
     warn-once "^0.1.0"
 
-"@react-stately/checkbox@^3.0.1":
-  version "3.6.5"
-  resolved "https://registry.npmjs.org/@react-stately/checkbox/-/checkbox-3.6.5.tgz"
-  integrity sha512-IXV3f9k+LtmfQLE+DKIN41Q5QB/YBLDCB1YVx5PEdRp52S9+EACD5683rjVm8NVRDwjMi2SP6RnFRk7fVb5Azg==
-  dependencies:
-    "@react-stately/form" "^3.0.3"
-    "@react-stately/utils" "^3.10.1"
-    "@react-types/checkbox" "^3.8.1"
-    "@react-types/shared" "^3.23.1"
-    "@swc/helpers" "^0.5.0"
-
-"@react-stately/checkbox@3.0.3":
+"@react-stately/checkbox@^3.0.1", "@react-stately/checkbox@3.0.3":
   version "3.0.3"
   resolved "https://registry.npmjs.org/@react-stately/checkbox/-/checkbox-3.0.3.tgz"
   integrity sha512-amT889DTLdbjAVjZ9j9TytN73PszynGIspKi1QSUCvXeA2OVyCwShxhV0Pn7yYX8cMinvGXrjhWdhn0nhYeMdg==
@@ -3035,7 +2996,7 @@
     "@react-types/overlays" "^3.8.7"
     "@swc/helpers" "^0.5.0"
 
-"@react-stately/radio@^3.10.4", "@react-stately/radio@^3.2.1":
+"@react-stately/radio@^3.10.4":
   version "3.10.4"
   resolved "https://registry.npmjs.org/@react-stately/radio/-/radio-3.10.4.tgz"
   integrity sha512-kCIc7tAl4L7Hu4Wt9l2jaa+MzYmAJm0qmC8G8yPMbExpWbLRu6J8Un80GZu+JxvzgDlqDyrVvyv9zFifwH/NkQ==
@@ -3046,7 +3007,7 @@
     "@react-types/shared" "^3.23.1"
     "@swc/helpers" "^0.5.0"
 
-"@react-stately/radio@3.2.1":
+"@react-stately/radio@^3.2.1", "@react-stately/radio@3.2.1":
   version "3.2.1"
   resolved "https://registry.npmjs.org/@react-stately/radio/-/radio-3.2.1.tgz"
   integrity sha512-WGYMWCDJQOicFLf+bW2CbAnlRWaqsUd028WpsS41GWyIx/w7DVpUeGFwTSvyCXC5SCQZuambsWHgXNz8Ng5WIA==
@@ -3077,17 +3038,7 @@
     "@react-types/shared" "^3.23.1"
     "@swc/helpers" "^0.5.0"
 
-"@react-stately/slider@^3.0.1", "@react-stately/slider@^3.5.4":
-  version "3.5.4"
-  resolved "https://registry.npmjs.org/@react-stately/slider/-/slider-3.5.4.tgz"
-  integrity sha512-Jsf7K17dr93lkNKL9ij8HUcoM1sPbq8TvmibD6DhrK9If2lje+OOL8y4n4qreUnfMT56HCAeS9wCO3fg3eMyrw==
-  dependencies:
-    "@react-stately/utils" "^3.10.1"
-    "@react-types/shared" "^3.23.1"
-    "@react-types/slider" "^3.7.3"
-    "@swc/helpers" "^0.5.0"
-
-"@react-stately/slider@3.0.1":
+"@react-stately/slider@^3.0.1", "@react-stately/slider@3.0.1":
   version "3.0.1"
   resolved "https://registry.npmjs.org/@react-stately/slider/-/slider-3.0.1.tgz"
   integrity sha512-gGpfdVbTmdsOvrmZvFx4hJ5b7nczvAWdHR/tFFJKfxH0/V8NudZ5hGnawY84R3x+OvgV+tKUfifEUKA+oJyG5w==
@@ -3097,6 +3048,16 @@
     "@react-aria/utils" "^3.6.0"
     "@react-stately/utils" "^3.2.0"
     "@react-types/slider" "^3.0.1"
+
+"@react-stately/slider@^3.5.4":
+  version "3.5.4"
+  resolved "https://registry.npmjs.org/@react-stately/slider/-/slider-3.5.4.tgz"
+  integrity sha512-Jsf7K17dr93lkNKL9ij8HUcoM1sPbq8TvmibD6DhrK9If2lje+OOL8y4n4qreUnfMT56HCAeS9wCO3fg3eMyrw==
+  dependencies:
+    "@react-stately/utils" "^3.10.1"
+    "@react-types/shared" "^3.23.1"
+    "@react-types/slider" "^3.7.3"
+    "@swc/helpers" "^0.5.0"
 
 "@react-stately/tabs@3.0.0-alpha.0":
   version "3.0.0-alpha.0"
@@ -3118,14 +3079,15 @@
     "@react-stately/utils" "^3.2.0"
     "@react-types/tabs" "3.0.0-alpha.2"
 
-"@react-stately/toggle@^3.2.1", "@react-stately/toggle@^3.7.4":
-  version "3.7.4"
-  resolved "https://registry.npmjs.org/@react-stately/toggle/-/toggle-3.7.4.tgz"
-  integrity sha512-CoYFe9WrhLkDP4HGDpJYQKwfiYCRBAeoBQHv+JWl5eyK61S8xSwoHsveYuEZ3bowx71zyCnNAqWRrmNOxJ4CKA==
+"@react-stately/toggle@^3.2.1", "@react-stately/toggle@3.2.1":
+  version "3.2.1"
+  resolved "https://registry.npmjs.org/@react-stately/toggle/-/toggle-3.2.1.tgz"
+  integrity sha512-gZVuJ8OYoATUoXzdprsyx6O1w3wCrN+J0KnjhrjjKTrBG68n3pZH0p6dM0XpsaCzlSv0UgNa4fhHS3dYfr/ovw==
   dependencies:
-    "@react-stately/utils" "^3.10.1"
-    "@react-types/checkbox" "^3.8.1"
-    "@swc/helpers" "^0.5.0"
+    "@babel/runtime" "^7.6.2"
+    "@react-stately/utils" "^3.1.1"
+    "@react-types/checkbox" "^3.2.1"
+    "@react-types/shared" "^3.2.1"
 
 "@react-stately/toggle@^3.2.3":
   version "3.7.4"
@@ -3136,15 +3098,14 @@
     "@react-types/checkbox" "^3.8.1"
     "@swc/helpers" "^0.5.0"
 
-"@react-stately/toggle@3.2.1":
-  version "3.2.1"
-  resolved "https://registry.npmjs.org/@react-stately/toggle/-/toggle-3.2.1.tgz"
-  integrity sha512-gZVuJ8OYoATUoXzdprsyx6O1w3wCrN+J0KnjhrjjKTrBG68n3pZH0p6dM0XpsaCzlSv0UgNa4fhHS3dYfr/ovw==
+"@react-stately/toggle@^3.7.4":
+  version "3.7.4"
+  resolved "https://registry.npmjs.org/@react-stately/toggle/-/toggle-3.7.4.tgz"
+  integrity sha512-CoYFe9WrhLkDP4HGDpJYQKwfiYCRBAeoBQHv+JWl5eyK61S8xSwoHsveYuEZ3bowx71zyCnNAqWRrmNOxJ4CKA==
   dependencies:
-    "@babel/runtime" "^7.6.2"
-    "@react-stately/utils" "^3.1.1"
-    "@react-types/checkbox" "^3.2.1"
-    "@react-types/shared" "^3.2.1"
+    "@react-stately/utils" "^3.10.1"
+    "@react-types/checkbox" "^3.8.1"
+    "@swc/helpers" "^0.5.0"
 
 "@react-stately/tree@^3.8.1":
   version "3.8.1"
@@ -8801,6 +8762,11 @@ react-native-heroicons@^4.0.0:
   resolved "https://registry.npmjs.org/react-native-heroicons/-/react-native-heroicons-4.0.0.tgz"
   integrity sha512-RY3XhAr0aQxLtWUkIUifTUBYC3tOspe0pMTHTATpQYyg6Uw7PYO5qmHYFul9w8tvYAB43WDRZ+yomdVmMQ2Jqw==
 
+react-native-image-viewing@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/react-native-image-viewing/-/react-native-image-viewing-0.2.2.tgz"
+  integrity sha512-osWieG+p/d2NPbAyonOMubttajtYEYiRGQaJA54slFxZ69j1V4/dCmcrVQry47ktVKy8/qpFwCpW1eT6MH5T2Q==
+
 react-native-iphone-x-helper@^1.0.3:
   version "1.3.1"
   resolved "https://registry.npmjs.org/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz"
@@ -8923,7 +8889,7 @@ react-native-web@^0.19.12:
     postcss-value-parser "^4.2.0"
     styleq "^0.1.3"
 
-react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", react-native@^0.74.2, react-native@>=0.35, react-native@>=0.42.0, react-native@>=0.44, react-native@>=0.46, react-native@>=0.48.4, react-native@>=0.59, react-native@>=0.72.5:
+react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", react-native@^0.74.2, react-native@>=0.35, react-native@>=0.42.0, react-native@>=0.44, react-native@>=0.46, react-native@>=0.48.4, react-native@>=0.59, react-native@>=0.61.3, react-native@>=0.72.5:
   version "0.74.2"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.74.2.tgz"
   integrity sha512-EBMBjPPL4/GjHMP4NqsZabT3gI5WU9cSmduABGAGrd8uIcmTZ5F2Ng9k6gFmRm7n8e8CULxDNu98ZpQfBjl7Bw==
@@ -9003,7 +8969,7 @@ react-test-renderer@18.2.0:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.0"
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.6.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0-rc.1", "react@^16.8.0 || ^17.0.0-rc.1 || ^18.0.0", react@^18.0.0, react@^18.2.0, react@>=16.13, react@>=16.3.0, react@>=16.8, react@>=16.8.0, react@>=17.0.0, react@>=18, react@>=18.2.0, react@18.2.0:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.6.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0-rc.1", "react@^16.8.0 || ^17.0.0-rc.1 || ^18.0.0", react@^18.0.0, react@^18.2.0, react@>=16.11.0, react@>=16.13, react@>=16.3.0, react@>=16.8, react@>=16.8.0, react@>=17.0.0, react@>=18, react@>=18.2.0, react@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -10876,15 +10842,7 @@ yaml@^2.2.1, yaml@^2.3.4:
   resolved "https://registry.npmjs.org/yaml/-/yaml-2.4.5.tgz"
   integrity sha512-aBx2bnqDzVOyNKfsysjA2ms5ZlnjSAW2eG3/L5G/CSujfjLJTJsEw1bGw8kCf04KodQWk1pxlGnZ56CRxiawmg==
 
-yargs-parser@^18.1.2:
-  version "18.1.3"
-  resolved "https://registry.npmjs.org/yargs-parser/-/yargs-parser-18.1.3.tgz"
-  integrity sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==
-  dependencies:
-    camelcase "^5.0.0"
-    decamelize "^1.2.0"
-
-yargs-parser@^18.1.3:
+yargs-parser@^18.1.2, yargs-parser@^18.1.3:
   version "18.1.3"
   resolved "https://registry.npmjs.org/yargs-parser/-/yargs-parser-18.1.3.tgz"
   integrity sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==

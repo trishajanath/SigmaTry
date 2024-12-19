@@ -18,6 +18,8 @@ import { useUser } from "@/Hooks/userContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Appbar } from "react-native-paper";
 import { BACKEND_URL } from "@/production.config";
+import ImageViewing from "react-native-image-viewing";
+import Toast from "react-native-toast-message";
 
 const { width, height } = Dimensions.get("window");
 
@@ -80,14 +82,16 @@ export default function IssueDetails() {
       headerShown: false,
     });
   }, [navigation]);
-
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const CloseIssue = async () => {
     // Check if the logged-in user is authorized to close the issue
-    if (user?.id !== issue?.user_account_id) {
-      Alert.alert(
-        "Unauthorized",
-        "You are not authorized to close this issue."
-      );
+    if (user?.id !== issue?.roll_no) {
+      Toast.show({
+              type: "error",
+              text1: "You are not authorized to close this issue.",
+              visibilityTime: 2000,
+            });
       return;
     }
   
@@ -98,7 +102,11 @@ export default function IssueDetails() {
       const response = await axios.post(`${BACKEND_URL}/remove_lost_item`, body);
   
       if (response.status === 200) {
-        Alert.alert("Success", "Issue has been closed successfully.");
+        Toast.show({
+                type: "success",
+                text1: "Issue closed successfully",
+                visibilityTime: 2000,
+              });
         navigation.goBack();
       }
     } catch (error) {
@@ -170,13 +178,10 @@ export default function IssueDetails() {
               Date reported: {issue?.reported_on || "N/A"}
             </Text>
             <Text style={styles.detailsText}>
-              Issue ID: {issue?._id || "N/A"}
-            </Text>
-            <Text style={styles.detailsText}>
               Reported By: {issue?.name || "N/A"}
             </Text>
             <Text style={styles.detailsText}>
-              Roll No: {issue?.roll_no || "N/A"}
+              Roll No: {issue?.user_account_id || "N/A"}
             </Text>
             <Text style={styles.detailsText}>
               Contact: {issue?.contact_number || "N/A"}
@@ -199,17 +204,28 @@ export default function IssueDetails() {
             <Text style={styles.detailsText}>
               Email: {issue?.email || "N/A"}
             </Text>
-            <Text style={styles.commentsHeading}>Attached Images</Text>
+            <Text style={styles.commentsHeading}>Attached Image </Text>
             {issue?.images?.length > 0 ? (
               issue.images.map((image: any, index: any) => (
+                <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setCurrentImageIndex(index);
+                  setModalVisible(true);
+                }}
+              >
                 <Image
-                  key={index}
                   source={{ uri: image }}
                   style={{ width: 100, height: 100, margin: 5 }}
+                  resizeMode="cover"
                 />
+              </TouchableOpacity>
               ))
             ) : (
+              <View>
+    
               <Text>No images attached.</Text>
+              </View>
             )}
           </View>
           <TouchableOpacity
@@ -221,6 +237,12 @@ export default function IssueDetails() {
             <Text style={styles.closeButtonText}>FOUND THE ITEM</Text>
           </TouchableOpacity>
         </View>
+        {/* <ImageViewing
+          images={issue?.images?.map((image:string) => ({ uri: image })) || []}
+          imageIndex={currentImageIndex}
+          visible={isModalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        /> */}
       </KeyboardAwareScrollView>
     </ScrollView>
   );

@@ -10,13 +10,14 @@ import {
   ActivityIndicator,
   Platform,
 } from "react-native";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons, AntDesign, Fontisto } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { BACKEND_URL } from "@/production.config";
+import { SelectList } from "@venedicto/react-native-dropdown";
 
 const LazyHomeScreen = React.lazy(() => import("./index"));
 
@@ -40,12 +41,20 @@ type State = {
   number: string;
   password: string;
   confirmPassword: string;
+  signup:string
+  dept:string
+  clubname:string
+  clubemail:string
 };
 
 type Action =
   | { type: "SET_FULL_NAME"; payload: string }
   | { type: "SET_EMAIL"; payload: string }
   | { type: "SET_NUMBER"; payload: string }
+  | { type: "SET_DEPT" ; payload: string}
+  | { type: "SET_CLUBNAME" ; payload: string}
+  | { type: "SET_CLUBEMAIL" ; payload:string}
+  | { type: "SET_SIGNUP"; payload:string}
   | { type: "SET_PASSWORD"; payload: string }
   | { type: "SET_CONFIRM_PASSWORD"; payload: string };
 
@@ -55,8 +64,16 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, fullName: action.payload };
     case "SET_EMAIL":
       return { ...state, email: action.payload };
+      case "SET_SIGNUP":
+      return { ...state, signup: action.payload };
+      case "SET_DEPT":
+        return { ...state, dept: action.payload };
       case "SET_NUMBER":
         return { ...state, number: action.payload };
+        case "SET_CLUBEMAIL":
+          return { ...state, clubemail: action.payload };
+          case "SET_CLUBNAME":
+        return { ...state, clubname: action.payload };
     case "SET_PASSWORD":
       return { ...state, password: action.payload };
     case "SET_CONFIRM_PASSWORD":
@@ -65,12 +82,16 @@ const reducer = (state: State, action: Action): State => {
       return state;
   }
 };
-
+const phoneNumberRegex = /^[6-9][0-9]{9}$/;
 const SignUpScreen = () => {
   const [state, dispatch] = useReducer(reducer, {
     fullName: "",
     email: "",
     number: "",
+    signup:"",
+    dept:"",
+    clubemail:"",
+    clubname:"",
     password: "",
     confirmPassword: "",
   });
@@ -82,15 +103,46 @@ const SignUpScreen = () => {
   });
 
   const validateInputs = () => {
-    const { fullName, email,number, password, confirmPassword } = state;
+    const { fullName, email,number,signup, password, confirmPassword, clubemail,clubname,dept } = state;
     
    
 
-    if (!fullName || !number || !email || !password || !confirmPassword) {
+    if (!fullName || !number || !signup || !email || !password || !confirmPassword) {
       Alert.alert("Error", "All fields are required.");
       return false;
     }
+    if (!phoneNumberRegex.test(number)) {
+      Toast.show({
+        type: "info",
+        text1: "Phone number is invalid.",
+       
+        visibilityTime: 2000,
+      });
+      return;
+    }
 
+    // Conditional validation based on signup type
+    if (signup === 'Club') {
+      if (!clubname || !clubemail) {
+        Toast.show({
+          type: "info",
+          text1: "Club name and supervisor email are required.",
+         
+          visibilityTime: 2000,
+        });
+        return;
+      }
+    } else if (signup === 'Department') {
+      if (!dept) {
+        Toast.show({
+          type: "info",
+          text1: "Department name is required.",
+         
+          visibilityTime: 2000,
+        });
+        return;
+      }
+    }
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match.");
       return false;
@@ -112,6 +164,9 @@ const SignUpScreen = () => {
           id: state.email,
           password: state.password,
           phone_number: state.number,
+          club:state.clubname,
+          club_email:state.clubemail,
+          department:state.dept
         }
       );
 
@@ -146,7 +201,7 @@ const SignUpScreen = () => {
         >
     <View style={styles.container}>
       <Image
-        source={require("../../assets/images/sigmalogo.png")}
+        source={require("../../assets/images/sigmalogowithpsglogo-.png")}
         style={styles.logo}
       />
 
@@ -188,7 +243,7 @@ const SignUpScreen = () => {
         Enter your phone number
       </Text>
       <View style={styles.inputContainer}>
-      <AntDesign name="phone" size={20} color="black" />
+      <AntDesign name="phone" size={17} color="#999" />
         <TextInput
           style={styles.input}
           placeholder="Phone Number"
@@ -199,7 +254,139 @@ const SignUpScreen = () => {
           }
         />
       </View>
+      <Text style={styles.ti}>Sign up on behalf of</Text>
+            <View style={styles.dropdownWrapper}>
+              <SelectList
+                data={[
+                  
+                  
+                  "Department",
+                  "Club",
+                ]}
+                setSelected={(value: string) =>
+                  dispatch({ type: "SET_SIGNUP", payload: value })
+                }
+                search={false}
+                save="value"
+                boxStyles={{
+                  borderColor: "#BCBCBC", // Change the border color of the dropdown box
+                  borderWidth: 1, 
+                  borderRadius: 8,
+                  backgroundColor: "#f9f9f9", // Background color of the dropdown
+                  paddingVertical: 10, // Adjust padding for dropdown box
+                }}
+                inputStyles={{
+                  color: "#555", // Change the text color of the input
+                  fontSize: 14, // Adjust font size of the input text
+                }}
+                dropdownStyles={{
+                  backgroundColor: "#fff", 
+                  borderColor: "#BCBCBC", // Border color for dropdown list
+                  borderWidth: 1,
+                }}
+                dropdownTextStyles={{
+                  color: "#555", // Change the text color of the dropdown items
+                  fontSize: 12, // Adjust font size for dropdown items
+                }}
+              />
+            </View>
+            {state.signup === "Department" && (
+              <>
+              <Text style={styles.ti}>Department Name</Text>
+            <View style={styles.dropdownWrapper}>
+              <SelectList
+                data={[
+                  "Apparel & Fashion Design",
+        "Applied Mathematics & Computational Sciences",
+        "Applied Science",
+        "Automobile Engineering",
+        "Biotechnology",
+        "Biomedical Engineering",
+        "Chemistry",
+        "Civil Engineering",
+        "Computer Science & Engineering",
+        "Electronics & Communication Engineering",
+        "Electrical & Electronics Engineering",
+        "English",
+        "Fashion Technology",
+        "Humanities",
+        "Instrumentation & Control Systems Engineering",
+        "Information Technology",
+        "Mathematics",
+        "Computer Applications",
+        "Mechanical Engineering",
+        "Metallurgical Engineering",
+        "Physics",
+        "Production Engineering",
+        "Robotics & Automation Engineering",
+        "Textile Technology"
+                ]}
+                setSelected={(value: string) =>
+                  dispatch({ type: "SET_DEPT", payload: value })
+                }
+                search={false}
+                save="value"
+                boxStyles={{
+                  borderColor: "#BCBCBC", // Change the border color of the dropdown box
+                  borderWidth: 1, 
+                  borderRadius: 8,
+                  backgroundColor: "#f9f9f9", // Background color of the dropdown
+                  paddingVertical: 10, // Adjust padding for dropdown box
+                }}
+                inputStyles={{
+                  color: "#555", // Change the text color of the input
+                  fontSize: 14, // Adjust font size of the input text
+                }}
+                dropdownStyles={{
+                  backgroundColor: "#fff", 
+                  borderColor: "#BCBCBC", // Border color for dropdown list
+                  borderWidth: 1,
+                }}
+                dropdownTextStyles={{
+                  color: "#555", // Change the text color of the dropdown items
+                  fontSize: 12, // Adjust font size for dropdown items
+                }}
+              />
+            </View>
+              </>
+            )}
+        {state.signup === 'Club' && (
+          <>
+           <Text style={styles.ti}>
+        Enter Club Name
+      </Text>
+      <View style={styles.inputContainer}>
+      <AntDesign name="book" size={17} color="#999" />
+        <TextInput
+          style={styles.input}
+          placeholder="Club Name"
+          placeholderTextColor="#999"
+        
+          value={state.clubname}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_CLUBNAME", payload: text })
+          }
+        />
+      </View>
       <Text style={styles.ti}>
+        Enter Club Supervisor Email
+      </Text>
+      <View style={styles.inputContainer}>
+        <Fontisto name="email" size={17} color="#999" />
+        <TextInput
+          style={styles.input}
+          placeholder="Supervisor Email"
+          placeholderTextColor="#999"
+      
+          value={state.clubemail}
+          onChangeText={(text) =>
+            dispatch({ type: "SET_CLUBEMAIL", payload: text })
+          }
+        />
+      </View>
+          </>
+        )}
+        <Text style={styles.ti}>
         Enter a strong password you will always remember. It is suggested to be
         a combination of capital letters, small letters, and numbers.
       </Text>
@@ -285,6 +472,10 @@ const styles = StyleSheet.create({
     fontVariant: ["small-caps"],
     marginLeft: "-30%",
     marginBottom: 20,
+  },
+  dropdownWrapper: {
+    width: "100%",
+    marginBottom: "4%",
   },
   
   inputContainer: {

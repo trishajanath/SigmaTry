@@ -31,7 +31,7 @@ interface Issue {
   }
   name: string;
   roll_no: string;
-  
+  images:[];
   date_lost: string;
   last_seen_location: string;
   user_account_id: string;
@@ -73,50 +73,70 @@ const LostAndFound = () => {
 
   
   const renderComplaintItem = ({ item: issue }: { item: Issue }) => (
-  <View style={styles.cardContainer}>
-    <Text style={styles.cardTitle}>{issue.item_details.item_name}</Text>
-    <View style={styles.rowContainer}>
-      <View style={styles.infoBlock}>
-        <Text style={styles.infoHeading}>Last Seen</Text>
-        <Text style={styles.infoContent} numberOfLines={1} ellipsizeMode="tail">
-          {issue.last_seen_location}
-        </Text>
-      </View>
-      <View style={styles.infoBlock}>
-        <Text style={styles.infoHeading}>Date Lost</Text>
-        <Text style={styles.infoContent} numberOfLines={1} ellipsizeMode="tail">
-          {issue.date_lost}
-        </Text>
-      </View>
-    </View>
-    <View style={styles.divider} />
-    <View style={styles.userContainer}>
-      <Ionicons name="person-circle" size={40} color="gray" />
-      <View style={styles.userInfo}>
-        <Text style={styles.userName} numberOfLines={1}>
-          {issue.name}
-        </Text>
-        <Text style={styles.userRollNo} numberOfLines={1}>
-          {issue.roll_no}
-        </Text>
-      </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          router.push({
-            pathname: "/Home/lostAndFoundRM",
-            params: { issue: JSON.stringify(issue) },
-          })
-        }
-      >
-        <View>
-          <Text style={styles.userI}> View More </Text>
+    <View style={styles.cardContainer}>
+      <View style={styles.rowContainer}> {/* This container holds both image and text in a row */}
+        <View style={styles.imageContainer}>
+          {issue?.images?.length > 0 ? (
+            issue.images.map((image: any, index: any) => (
+              <Image
+                key={index}
+                source={{ uri: image }}
+                style={styles.image}
+              />
+            ))
+          ) : (
+            <Text>No images attached.</Text>
+          )}
         </View>
-       
-      </TouchableOpacity>
+  
+        <View style={styles.textContainer}>
+        {/* <Text style={styles.infoHeading}>Item Name</Text> */}
+          <Text style={styles.cardTitle}>{issue.item_details.item_name}</Text>
+          <View style={styles.rowContainer}>
+            <View style={styles.infoBlock}>
+              <Text style={styles.infoHeading}>Last Seen</Text>
+              <Text style={styles.infoContent} numberOfLines={1} ellipsizeMode="tail">
+                {issue.last_seen_location}
+              </Text>
+            </View>
+            <View style={styles.infoBlock}>
+              <Text style={styles.infoHeading}>Date Lost</Text>
+              <Text style={styles.infoContent} numberOfLines={1} ellipsizeMode="tail">
+                {issue.date_lost}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      
+      <View style={styles.divider} />
+      <View style={styles.userContainer}>
+        <Ionicons name="person-circle" size={40} color="gray" />
+        <View style={styles.userInfo}>
+          <Text style={styles.userName} numberOfLines={1}>
+            {issue.name}
+          </Text>
+          <Text style={styles.userRollNo} numberOfLines={1}>
+            {issue.roll_no}
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            router.push({
+              pathname: "/Home/lostAndFoundRM",
+              params: { issue: JSON.stringify(issue) },
+            })
+          }
+        >
+          <View>
+            <Text style={styles.userI}> View More </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-);
+  );
+  
   
 
   return (
@@ -127,7 +147,7 @@ const LostAndFound = () => {
         <View style={styles.searchContainer}>
           <MaterialIcons name="search" size={20} color="#555" style={styles.searchIcon} />
           <TextInput
-            placeholder="Search by category"
+            placeholder="Search by Item Name"
             onChangeText={setSearchQuery}
             value={searchQuery}
             placeholderTextColor="#555"
@@ -207,8 +227,9 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     flexDirection: "row",
+    alignItems: "center",  // Align items vertically in the center
+    justifyContent: "space-between", 
     flexWrap: "wrap",
-    alignItems: "center",
     marginBottom: 8,
     gap: 16,
   },
@@ -279,6 +300,19 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginRight: 8,
+  },
+  imageContainer: {
+    flex: 0.3,  
+    marginRight: 16,  
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,  
+  },
+  textContainer: {
+    flex: 0.7,  
+    flexDirection: "column",  
   },
   searchInput: {
     flex: 1,

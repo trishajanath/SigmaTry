@@ -71,6 +71,13 @@ const NavigationPage = () => {
           <Text style={styles.menuItemText}>Miscellaneous</Text>
           <Icon name="chevron-forward" size={20} color="#333" />
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/Home/lostAndFound')}
+        >
+          <Text style={styles.menuItemText}>Lost & Found</Text>
+          <Icon name="chevron-forward" size={20} color="#333" />
+        </TouchableOpacity>
          
 
 <TouchableOpacity

@@ -322,7 +322,7 @@ const Index = () => {
     <Provider>
       <View style={styles.headerContainer}>
         <Image
-          source={require("../../assets/images/sigmalogo.png")}
+          source={require("../../assets/images/sigmalogowithpsglogo-.png")}
           style={styles.logo}
         />
 

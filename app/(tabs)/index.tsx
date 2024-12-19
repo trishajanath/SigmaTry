@@ -223,7 +223,7 @@ const LoginScreen = () => {
          
           <View style={styles.container}>
             <Image
-              source={require("../../assets/images/sigmalogo.png")}
+              source={require("../../assets/images/sigmalogowithpsglogo-.png")}
               style={styles.logo}
             />
 

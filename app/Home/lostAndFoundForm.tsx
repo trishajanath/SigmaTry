@@ -121,7 +121,7 @@ console.log(result);
     
     const formData = new FormData();
     formData.append("name", users.name);
-    formData.append("roll_no", users.id);
+    formData.append("roll_no", state.user_account_id);
     formData.append("contact_number", state.contact_number);
     formData.append("email", state.email);
     formData.append("department", users.department);
@@ -131,7 +131,7 @@ console.log(result);
     formData.append("date_lost", state.date);
     formData.append("last_seen_location", state.location);
     formData.append("comments", state.comments);
-    formData.append("user_account_id", state.user_account_id);
+    formData.append("user_account_id",users.id );
 
     if (state.images) {
       const imageFile = {
@@ -149,7 +149,7 @@ console.log(formData);
         },
       });
       router.replace({
-        pathname: "/Home",
+        pathname: "/Home/lostAndFound",
         params: response.data,
       });
     } catch (error: any) {
