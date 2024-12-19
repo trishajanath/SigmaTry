@@ -12,45 +12,49 @@ import {
   Dimensions,
   Text as RNText,
 } from "react-native";
-import { Provider, Text } from "react-native-paper";
+import { Appbar, Text } from "react-native-paper";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 
 import { BACKEND_URL } from "@/production.config";
-import { router, useRouter } from "expo-router";
-import { ArrowUpRightIcon } from "react-native-heroicons/outline";
+import { useNavigation, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const { width } = Dimensions.get("window");
 
 interface Issue {
-  item_details:{
+  item_details: {
     item_name: string;
-    category:string;
-  }
+    category: string;
+  };
   name: string;
   roll_no: string;
-  images:[];
+  images: [];
   date_lost: string;
   last_seen_location: string;
   user_account_id: string;
 }
-const handlePress = () => {
-  router.push('/Home/lostAndFoundForm');
-};
+
 const LostAndFound = () => {
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState("");
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  
+ React.useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
   // Fetch lost and found items
   const fetchAllLostAndFound = async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${BACKEND_URL}/get_all_lost_items`);
-      console.log("API Response:", response.data); // Debug here
+      console.log("API Response:", response.data);
       setIssues(response.data?.lost_items || []);
     } catch (error) {
       console.error("Error fetching issues:", error);
@@ -66,31 +70,23 @@ const LostAndFound = () => {
     }, [])
   );
 
-  
   const filteredIssues = issues.filter((issue) =>
     issue.item_details.item_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  
   const renderComplaintItem = ({ item: issue }: { item: Issue }) => (
     <View style={styles.cardContainer}>
-      <View style={styles.rowContainer}> {/* This container holds both image and text in a row */}
+      <View style={styles.rowContainer}>
         <View style={styles.imageContainer}>
           {issue?.images?.length > 0 ? (
             issue.images.map((image: any, index: any) => (
-              <Image
-                key={index}
-                source={{ uri: image }}
-                style={styles.image}
-              />
+              <Image key={index} source={{ uri: image }} style={styles.image} />
             ))
           ) : (
             <Text>No images attached.</Text>
           )}
         </View>
-  
         <View style={styles.textContainer}>
-        {/* <Text style={styles.infoHeading}>Item Name</Text> */}
           <Text style={styles.cardTitle}>{issue.item_details.item_name}</Text>
           <View style={styles.rowContainer}>
             <View style={styles.infoBlock}>
@@ -108,7 +104,6 @@ const LostAndFound = () => {
           </View>
         </View>
       </View>
-      
       <View style={styles.divider} />
       <View style={styles.userContainer}>
         <Ionicons name="person-circle" size={40} color="gray" />
@@ -130,20 +125,27 @@ const LostAndFound = () => {
           }
         >
           <View>
-            <Text style={styles.userI}> View More </Text>
+            <Text style={styles.userI}>View More</Text>
           </View>
         </TouchableOpacity>
       </View>
     </View>
   );
-  
-  
 
   return (
-    <Provider>
-     
+    <>
+      {/* Header */}
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => router.back()} />
+        <Appbar.Content title="Sigma-GMS" />
+      </Appbar.Header>
 
-      <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
+      {/* Main Content */}
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollView}
+        enableOnAndroid={true}
+        extraHeight={10}
+      >
         <View style={styles.searchContainer}>
           <MaterialIcons name="search" size={20} color="#555" style={styles.searchIcon} />
           <TextInput
@@ -157,16 +159,8 @@ const LostAndFound = () => {
 
         <RNText style={styles.sectionTitle}>Lost and Found Items</RNText>
 
-       
         {loading ? (
-          <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: "10%",
-                      }}
-                    >
+          <View style={styles.loaderContainer}>
             <ActivityIndicator size="large" color="#8283e9" />
           </View>
         ) : filteredIssues.length === 0 ? (
@@ -179,34 +173,29 @@ const LostAndFound = () => {
             showsVerticalScrollIndicator={false}
           />
         )}
-              <TouchableOpacity style={styles.addButton} onPress={handlePress}>
-
-<Ionicons name="add-circle" size={44} color="#8283e9" />
-</TouchableOpacity>
-      </ScrollView>
-    </Provider>
+        <TouchableOpacity style={styles.addButton} onPress={() => router.push("/Home/lostAndFoundForm")}>
+          <Ionicons name="add-circle" size={44} color="#8283e9" />
+        </TouchableOpacity>
+      </KeyboardAwareScrollView>
+    </>
   );
 };
 
 export default LostAndFound;
 
 const styles = StyleSheet.create({
-  // headerContainer: {
-  //   height: 100,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   backgroundColor: "#f2f2f2",
-  // },
+  scrollView: {
+    backgroundColor: "#FFFFFF",
+    flexGrow: 1,
+    padding: "2%",
+    marginBottom: "5%",
+  },
   addButton: {
-    position: 'absolute',
-    bottom:-25,
+    position: "absolute",
+    bottom: -25,
     right: 20,
-  
-   
-    
-    alignItems: 'center',
-    justifyContent: 'center',
-    
+    alignItems: "center",
+    justifyContent: "center",
   },
   cardContainer: {
     backgroundColor: "white",
@@ -227,8 +216,8 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     flexDirection: "row",
-    alignItems: "center",  // Align items vertically in the center
-    justifyContent: "space-between", 
+    alignItems: "center",
+    justifyContent: "space-between",
     flexWrap: "wrap",
     marginBottom: 8,
     gap: 16,
@@ -259,9 +248,9 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     flex: 1,
   },
-  userI:{
+  userI: {
     color: "#fff",
-    fontSize: 9, // Increase font size
+    fontSize: 9,
     textAlign: "center",
   },
   userName: {
@@ -275,20 +264,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#8283e9",
-    paddingVertical: 10, // Increase vertical padding
-    paddingHorizontal: 10, // Increase horizontal padding
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     borderRadius: 10,
     alignSelf: "flex-start",
-    marginTop: "3%", // Adjust margin if needed
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    resizeMode: "contain",
-  },
-  scrollViewContentContainer: {
-    paddingBottom: 20,
-    paddingHorizontal: 16,
+    marginTop: "3%",
   },
   searchContainer: {
     flexDirection: "row",
@@ -302,17 +282,17 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   imageContainer: {
-    flex: 0.3,  
-    marginRight: 16,  
+    flex: 0.3,
+    marginRight: 16,
   },
   image: {
     width: 100,
     height: 100,
-    borderRadius: 8,  
+    borderRadius: 8,
   },
   textContainer: {
-    flex: 0.7,  
-    flexDirection: "column",  
+    flex: 0.7,
+    flexDirection: "column",
   },
   searchInput: {
     flex: 1,
@@ -335,133 +315,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: "#555",
     fontSize: 16,
-  },
-  card: {
-    backgroundColor: "#f0f4fa",
-    borderRadius: 12,
-    padding: 16,
-    marginVertical: 8,
-  },
-  complaintContainer: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    flex: 1,
-  },
-  complaintHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "2%",
-  },
-  readMoreButton: {
-    backgroundColor: "#8283e9",
-    paddingVertical: 10, // Increase vertical padding
-    paddingHorizontal: 10, // Increase horizontal padding
-    borderRadius: 10,
-    alignSelf: "flex-start",
-    marginTop: "-1%", // Adjust margin if needed
-  },
-  readMoreButtonText: {
-    color: "#fff",
-    fontSize: 9, // Increase font size
-    textAlign: "center",
-  },
-  readMoreContainer: {
-    flexDirection: "row",
-    // justifyContent: "end",
-    justifyContent: "space-between",
-  },
-
-  headerContainer: {
-    height: "8%",
-    backgroundColor: "#f2f2f2",
-    marginTop: "12%",
-    padding: "3%",
-    paddingLeft: "7%",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  headerText: {
-    fontWeight: "bold",
-    color: "#444444",
-    flex: 1,
-  },
-  headerSubText: {
-    color: "#555555",
-    marginLeft: 10,
-    fontSize: 14,
-    flex: 2,
-    textAlign: "right",
-  },
-  headerSubTex: {
-    color: "#555555",
-    marginLeft: 10,
-    fontSize: 12,
-    flex: 2,
-    textAlign: "right",
-    marginTop: "-5%",
-    marginRight: "4%",
-  },
-  headerIconContainer: {
-    position: "absolute",
-    right: "5%",
-    top: "30%",
-  },
-  // issueTypeText: {
-  //   fontSize: 16,
-  //   fontWeight: "bold",
-  //   marginBottom: 8,
-  // },
-  // categoryText: {
-  //   fontSize: 14,
-  //   color: "#555",
-  //   marginBottom: 4,
-  // },
-  dateText: {
-    fontSize: 12,
-    color: "#040200",
-  },
-  complaintBody: {
-    flexDirection: "row", // Set to row to place items horizontally
-
-    marginBottom: 10,
-  },
-  categoryText: {
-    fontSize: 10,
-    color: "#0d0907",
-    marginBottom: 5,
-  },
-  statusText: {
-    fontSize: 10,
-    color: "#0d0907",
-    marginBottom: 0,
-    paddingRight: 2,
-    textAlign: "right",
-    flex: 1,
-    fontWeight: "bold",
-  },
-  issueTypeText: {
-    fontSize: 17,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  // readMoreButton: {
-  //   backgroundColor: "#8283e9",
-  //   paddingVertical: 8,
-  //   paddingHorizontal: 16,
-  //   borderRadius: 8,
-  //   alignSelf: "flex-start",
-  //   marginTop: 8,
-  // },
-  // readMoreButtonText: {
-  //   color: "#fff",
-  //   fontSize: 14,
-  // },
-  footer: {
-    padding: 16,
-    alignItems: "center",
-  },
-  footerText: {
-    color: "#555",
   },
 });

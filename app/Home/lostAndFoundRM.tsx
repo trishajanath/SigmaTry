@@ -86,7 +86,7 @@ export default function IssueDetails() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const CloseIssue = async () => {
     // Check if the logged-in user is authorized to close the issue
-    if (user?.id !== issue?.roll_no) {
+    if (user?.id !== issue?.user_account_id) {
       Toast.show({
               type: "error",
               text1: "You are not authorized to close this issue.",
@@ -169,9 +169,7 @@ export default function IssueDetails() {
               marginTop: 10,
             }}
           >
-            <View>
-              <Text>Lastly seen: {issue?.date_lost || "N/A"}</Text>
-            </View>
+            
           </View>
           <View style={{ marginTop: 20, gap: 10 }}>
             <Text style={styles.detailsText}>
@@ -180,8 +178,9 @@ export default function IssueDetails() {
             <Text style={styles.detailsText}>
               Reported By: {issue?.name || "N/A"}
             </Text>
+            <Text style={styles.detailsTex}>Details of person who lost the item</Text>
             <Text style={styles.detailsText}>
-              Roll No: {issue?.user_account_id || "N/A"}
+              Roll no: {issue?.user_account_id || "N/A"}
             </Text>
             <Text style={styles.detailsText}>
               Contact: {issue?.contact_number || "N/A"}
@@ -189,9 +188,16 @@ export default function IssueDetails() {
             <Text style={styles.detailsText}>
               Department: {issue?.department || "N/A"}
             </Text>
-            <Text style={styles.detailsText}>
-              Location: {issue?.last_seen_location || "N/A"}
+        
+              <Text>Last seen Date: {issue?.date_lost || "N/A"}</Text>
+              
+        
+              <Text style={styles.detailsText}>
+              Last seen location: {issue?.last_seen_location || "N/A"}
             </Text>
+            
+            
+            
             <Text style={styles.detailsText}>
               Item Name: {issue?.item_details?.item_name || "N/A"}
             </Text>
@@ -237,12 +243,12 @@ export default function IssueDetails() {
             <Text style={styles.closeButtonText}>FOUND THE ITEM</Text>
           </TouchableOpacity>
         </View>
-        {/* <ImageViewing
+        {/* { <ImageViewing
           images={issue?.images?.map((image:string) => ({ uri: image })) || []}
           imageIndex={currentImageIndex}
           visible={isModalVisible}
           onRequestClose={() => setModalVisible(false)}
-        /> */}
+        /> } */}
       </KeyboardAwareScrollView>
     </ScrollView>
   );
@@ -360,5 +366,10 @@ const styles = StyleSheet.create({
   detailsText: {
     fontSize: 14,
     marginBottom: 5,
+  },
+  detailsTex: {
+    fontSize: 17,
+    marginBottom: 5,
+    fontWeight:'semibold'
   },
 });
