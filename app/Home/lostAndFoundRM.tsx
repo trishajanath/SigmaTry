@@ -212,27 +212,32 @@ export default function IssueDetails() {
             </Text>
             <Text style={styles.commentsHeading}>Attached Image </Text>
             {issue?.images?.length > 0 ? (
-              issue.images.map((image: any, index: any) => (
-                <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  setCurrentImageIndex(index);
-                  setModalVisible(true);
-                }}
-              >
-                <Image
-                  source={{ uri: image }}
-                  style={{ width: 100, height: 100, margin: 5 }}
-                  resizeMode="cover"
-                />
-              </TouchableOpacity>
-              ))
-            ) : (
-              <View>
-    
-              <Text>No images attached.</Text>
-              </View>
-            )}
+  issue.images.map((image: string, index: number) => (
+    <TouchableOpacity
+      key={index}
+      onPress={() => {
+        setCurrentImageIndex(index); // Set the clicked image's index
+        setModalVisible(true);      // Show the modal
+      }}
+    >
+      <Image
+        source={{ uri: image }}
+        style={{ width: 100, height: 100, margin: 5 }}
+        resizeMode="cover"
+      />
+    </TouchableOpacity>
+  ))
+) : (
+    <Text>No images attached.</Text>
+  
+)}
+  {/* <ImageViewing
+    images={issue?.images?.map((image: string) => ({ uri: image })) || []}
+    imageIndex={currentImageIndex}
+    visible={isModalVisible}
+    onRequestClose={() => setModalVisible(false)}
+  /> */}
+
           </View>
           <TouchableOpacity
             style={styles.closeButton}
@@ -243,12 +248,12 @@ export default function IssueDetails() {
             <Text style={styles.closeButtonText}>FOUND THE ITEM</Text>
           </TouchableOpacity>
         </View>
-        {/* { <ImageViewing
+         { <ImageViewing
           images={issue?.images?.map((image:string) => ({ uri: image })) || []}
           imageIndex={currentImageIndex}
           visible={isModalVisible}
           onRequestClose={() => setModalVisible(false)}
-        /> } */}
+        /> } 
       </KeyboardAwareScrollView>
     </ScrollView>
   );
