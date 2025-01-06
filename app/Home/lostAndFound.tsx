@@ -146,17 +146,21 @@ const LostAndFound = () => {
         enableOnAndroid={true}
         extraHeight={10}
       >
+        <View style={styles.searchRow}>
         <View style={styles.searchContainer}>
-          <MaterialIcons name="search" size={20} color="#555" style={styles.searchIcon} />
-          <TextInput
-            placeholder="Search by Item Name"
-            onChangeText={setSearchQuery}
-            value={searchQuery}
-            placeholderTextColor="#555"
-            style={styles.searchInput}
-          />
+    <MaterialIcons name="search" size={20} color="#555" style={styles.searchIcon} />
+    <TextInput
+      placeholder="Search by Item Name"
+      onChangeText={setSearchQuery}
+      value={searchQuery}
+      placeholderTextColor="#555"
+      style={styles.searchInput}
+    />
+  </View>
+  <TouchableOpacity style={styles.addButton} onPress={() => router.push("/Home/lostAndFoundForm")}>
+    <Ionicons name="add-circle" size={36} color="#8283e9" />
+  </TouchableOpacity>
         </View>
-
         <RNText style={styles.sectionTitle}>Lost and Found Items</RNText>
 
         {loading ? (
@@ -173,9 +177,7 @@ const LostAndFound = () => {
             showsVerticalScrollIndicator={false}
           />
         )}
-        <TouchableOpacity style={styles.addButton} onPress={() => router.push("/Home/lostAndFoundForm")}>
-          <Ionicons name="add-circle" size={44} color="#8283e9" />
-        </TouchableOpacity>
+        
       </KeyboardAwareScrollView>
     </>
   );
@@ -188,15 +190,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     flexGrow: 1,
     padding: "2%",
-    marginBottom: "5%",
+    marginBottom: "12%",
   },
-  addButton: {
-    position: "absolute",
-    bottom: -25,
-    right: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  // addButton: {
+  //   position: "absolute",
+  //   bottom:'-4%',
+  //   right: 20,
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  // },
   cardContainer: {
     backgroundColor: "white",
     borderRadius: 16,
@@ -270,14 +272,32 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginTop: "3%",
   },
+  searchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#e6e6e4",
     borderRadius: 8,
     paddingHorizontal: 8,
-    marginVertical: 16,
+    flex: 1,
   },
+  addButton: {
+    marginLeft: 8,
+  },
+  
+  // searchContainer: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   backgroundColor: "#e6e6e4",
+  //   borderRadius: 8,
+  //   paddingHorizontal: 8,
+  //   marginVertical: 16,
+  // },
   searchIcon: {
     marginRight: 8,
   },
