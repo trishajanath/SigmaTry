@@ -39,6 +39,9 @@ import { useUser } from "@/Hooks/userContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKEND_URL } from "@/production.config";
+import Toast from "react-native-toast-message";
+import { SelectList } from "@venedicto/react-native-dropdown";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const { width } = Dimensions.get("window");
 const menuTheme = {
@@ -64,60 +67,137 @@ const constantContainer = {
 
 const ovalContainers = [
   {
+    id: 1,
+    icon: <Ionicons name="qr-code-outline" size={23} color="#555555" />,
+    title: "Scan",
+    onPress: "/qrScanner",
+  },
+  {
     id: 2,
     icon: <Feather name="book-open" size={23} color="#555555" />,
     title: "Classroom",
     onPress: "/Home/classroom1",
+    category: "student"
   },
   {
     id: 3,
     icon: <FontAwesome5 name="restroom" size={23} color="#555555" />,
     onPress: "/Home/restroom",
     title: "Restroom",
+    category: "student"
   },
   {
     id: 4,
-    icon: (
-      <MaterialCommunityIcons
-        name="office-building-outline"
-        size={23}
-        color="#555555"
-      />
-    ),
-    onPress: "/Home/Department",
+    icon: <MaterialCommunityIcons name="office-building-outline" size={23} color="#555555" />,
     title: "Department",
+    onPress: "/Home/Department",
+    category: "employee"
   },
   {
     id: 5,
     icon: <FontAwesome6 name="glass-water-droplet" size={23} color="#555555" />,
     onPress: "/Home/Water",
     title: "Water",
+    category: "student"
   },
   {
     id: 6,
     icon: <Foundation name="elevator" size={23} color="#555555" />,
     onPress: "/Home/Elevator",
     title: "Lift",
+    category: "student"
   },
   {
     id: 7,
     icon: <FontAwesome6 name="screwdriver-wrench" size={23} color="#555555" />,
     onPress: "/Home/Maintenance",
-    title: "Miscellaneous",
+    title: "Maintenance",
+    category: "student"
   },
   {
     id: 8,
-    icon:<MaterialCommunityIcons name="store-search-outline" size={24} color="#555555" />,
+    icon: <MaterialCommunityIcons name="store-search-outline" size={24} color="#555555" />,
     onPress: "/Home/lostAndFound",
     title: "Lost & Found",
+    category: "student"
   },
   {
     id: 9,
+    icon: <MaterialCommunityIcons name="printer" size={23} color="#555555" />,
+    title: "Printer",
+    onPress: "/Home/printer",
+    category: "employee"
+  },
+  {
+    id: 10,
+    icon: <MaterialCommunityIcons name="air-conditioner" size={23} color="#555555" />,
+    title: "AC",
+    onPress: "/Home/ac",
+    category: "employee"
+  },
+  {
+    id: 11,
+    icon: <MaterialCommunityIcons name="lightbulb-outline" size={23} color="#555555" />,
+    title: "Electrical",
+    onPress: "/Home/electrical",
+    category: "employee"
+  },
+  {
+    id: 12,
     icon: <Entypo name="home" size={23} color="#555555" />,
     title: "Hostel",
-    onPress: null,
-    disabled: true,
+    onPress: "/Home/hostel",
+    category: "employee"
   },
+  {
+    id: 13,
+    icon: <MaterialCommunityIcons name="view-list" size={23} color="#555555" />,
+    title: "View All",
+    onPress: "/Home/viewMore",
+    category: "all"
+  }
+];
+
+const complaintCategories = [
+  {
+    key: "student",
+    label: "Student Complaints",
+    options: [
+      { key: "classroom", label: "Classroom", route: "/Home/classroom1" },
+      { key: "restroom", label: "Washroom", route: "/Home/restroom" },
+      { key: "water", label: "Water Dispenser", route: "/Home/Water" },
+      { key: "elevator", label: "Elevator", route: "/Home/Elevator" },
+      { key: "maintenance", label: "Maintenance", route: "/Home/Maintenance" },
+      { key: "lostAndFound", label: "Lost & Found", route: "/Home/lostAndFound" },
+    ]
+  },
+  {
+    key: "employee",
+    label: "Employee Complaints",
+    options: [
+      { key: "department", label: "Department", route: "/Home/Department" },
+      { key: "printer", label: "Printer", route: "/Home/printer" },
+      { key: "ac", label: "AC", route: "/Home/ac" },
+      { key: "electrical", label: "Electrical", route: "/Home/electrical" },
+      { key: "hostel", label: "Hostel", route: "/Home/hostel" },
+      { key: "laundry", label: "Laundry", route: "/Home/laundry" },
+      { key: "mess", label: "Mess", route: "/Home/mess" },
+      { key: "commonAreas", label: "Common Areas", route: "/Home/commonAreas" },
+      { key: "newInstallation", label: "New Installation Request", route: "/Home/newInstallation" },
+      { key: "other", label: "Other Issues", route: "/Home/other" },
+    ]
+  },
+  {
+    key: "hod",
+    label: "HOD Accessible",
+    options: [
+      { key: "department", label: "Department", route: "/Home/Department" },
+      { key: "academic", label: "Academic Issues", route: "/Home/academic" },
+      { key: "faculty", label: "Faculty Related", route: "/Home/faculty" },
+      { key: "curriculum", label: "Curriculum", route: "/Home/curriculum" },
+      { key: "research", label: "Research", route: "/Home/research" },
+    ]
+  }
 ];
 
 const Index = () => {
@@ -130,6 +210,10 @@ const Index = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const user = useUser();
+  const [complaints, setComplaints] = useState([]);
+  const [selectedComplaint, setSelectedComplaint] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [showSubOptions, setShowSubOptions] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
@@ -168,6 +252,12 @@ const Index = () => {
       console.log(error);
       console.log("Error in FetchAllIssues");
       console.log(error.response);
+      Toast.show({
+        type: "error",
+        text1: "Failed to fetch complaints",
+        text2: "Please try again later",
+        visibilityTime: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -318,6 +408,53 @@ const Index = () => {
     </View>
   );
 
+  const fetchComplaints = async () => {
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/client/issue/report/${user.id}`
+      );
+      setComplaints(response.data);
+    } catch (error) {
+      console.error("Error fetching complaints:", error);
+      Toast.show({
+        type: "error",
+        text1: "Failed to fetch complaints",
+        text2: "Please try again later",
+        visibilityTime: 2000,
+      });
+    }
+  };
+
+  const handleCategorySelect = (value: string) => {
+    setSelectedCategory(value);
+    setShowSubOptions(true);
+  };
+
+  const handleComplaintSelect = (value: string) => {
+    const category = complaintCategories.find(cat => cat.key === selectedCategory);
+    if (category) {
+      const selectedOption = category.options.find(option => option.key === value);
+      if (selectedOption) {
+        router.push(selectedOption.route);
+        setShowSubOptions(false);
+        setSelectedCategory("");
+      }
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "#FFA500";
+      case "in progress":
+        return "#007AFF";
+      case "resolved":
+        return "#4CD964";
+      default:
+        return "#FF3B30";
+    }
+  };
+
   return (
     <Provider>
       <View style={styles.headerContainer}>
@@ -430,61 +567,48 @@ const Index = () => {
         </View>
 
         <RNText style={styles.boldText}>Write a Complaint</RNText>
-        <TouchableOpacity
-          onPress={() => {
-            router.push({
-              pathname: "/Home/viewMore",
-            });
-          }}
-        >
-          <RNText style={styles.headerSubTex}>View all</RNText>
-        </TouchableOpacity>
-
-        <View style={styles.iconWrapper}>
-          <TouchableOpacity
-            style={styles.iconContainer}
-            onPress={() => {
-              router.push(
-                constantContainer.onPress ? constantContainer.onPress : "/"
-              );
-            }}
-          >
-            {constantContainer.icon}
-            <RNText style={styles.iconText}>
-              {truncateText(constantContainer.title, 5)}
-            </RNText>
-          </TouchableOpacity>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalScrollContainer}
-          >
-            {ovalContainers.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={[
-                  styles.iconContainer,
-                  item.disabled ? styles.disabledButton : null,
-                ]}
-                disabled={item.disabled}
-                onPress={() => {
-                  if (!item.disabled && item.onPress) {
-                    router.push(item.onPress);
-                  } else {
-                    Alert.alert(
-                      "Info",
-                      "This section is currently unavailable."
-                    );
-                  }
-                }}
-              >
-                {item.icon}
-                <RNText style={styles.iconText}>
-                  {truncateText(item.title, 8)}
-                </RNText>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+        <View style={styles.dropdownContainer}>
+          <SelectList
+            setSelected={handleCategorySelect}
+            data={complaintCategories.map(category => ({
+              key: category.key,
+              value: category.label
+            }))}
+            search={true}
+            placeholder="Select complaint category"
+            searchPlaceholder="Search categories..."
+            boxStyles={styles.dropdownBox}
+            inputStyles={styles.dropdownInput}
+            dropdownStyles={styles.dropdownList}
+            dropdownTextStyles={styles.dropdownText}
+            maxHeight={300}
+            save="key"
+            defaultOption={{ key: "", value: "Select a complaint category" }}
+          />
+          
+          {showSubOptions && selectedCategory && (
+            <View style={[styles.dropdownContainer, { marginTop: 10 }]}>
+              <SelectList
+                setSelected={handleComplaintSelect}
+                data={complaintCategories
+                  .find(cat => cat.key === selectedCategory)
+                  ?.options.map(option => ({
+                    key: option.key,
+                    value: option.label
+                  })) || []}
+                search={true}
+                placeholder="Select specific complaint"
+                searchPlaceholder="Search complaints..."
+                boxStyles={styles.dropdownBox}
+                inputStyles={styles.dropdownInput}
+                dropdownStyles={styles.dropdownList}
+                dropdownTextStyles={styles.dropdownText}
+                maxHeight={300}
+                save="key"
+                defaultOption={{ key: "", value: "Select a specific complaint" }}
+              />
+            </View>
+          )}
         </View>
 
         <RNText style={styles.boldText}>My Complaints</RNText>
@@ -516,6 +640,64 @@ const Index = () => {
             contentContainerStyle={styles.verticalScrollView}
           />
         )}
+
+        <View style={styles.iconWrapper}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalScrollContainer}
+          >
+            {ovalContainers.map((container) => (
+              <TouchableOpacity
+                key={container.id}
+                style={styles.iconContainer}
+                onPress={() => {
+                  router.push(container.onPress);
+                }}
+              >
+                {container.icon}
+                <RNText style={styles.iconText}>
+                  {truncateText(container.title, 5)}
+                </RNText>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        <View style={styles.complaintsSection}>
+          <Text style={styles.sectionTitle}>Your Complaints</Text>
+          {complaints.length === 0 ? (
+            <Text style={styles.noComplaints}>No complaints submitted yet</Text>
+          ) : (
+            complaints.map((complaint, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.complaintCard}
+                onPress={() => router.push("/Home/readMore")}
+              >
+                <View style={styles.complaintHeader}>
+                  <Text style={styles.complaintTitle}>
+                    {complaint.actionItem} - {complaint.issueType}
+                  </Text>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      { backgroundColor: getStatusColor(complaint.status) },
+                    ]}
+                  >
+                    <Text style={styles.statusText}>{complaint.status}</Text>
+                  </View>
+                </View>
+                <Text style={styles.complaintContent}>
+                  {complaint.issueContent}
+                </Text>
+                <Text style={styles.complaintDate}>
+                  {new Date(complaint.createdAt).toLocaleDateString()}
+                </Text>
+              </TouchableOpacity>
+            ))
+          )}
+        </View>
 
         <View style={styles.footer}>
           <RNText style={styles.footerText}>Powered by SIGMA</RNText>
@@ -748,5 +930,72 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     color: "#333",
+  },
+  dropdownContainer: {
+    padding: 10,
+    backgroundColor: "#fff",
+    marginHorizontal: "5%",
+    marginTop: "2%",
+  },
+  dropdownBox: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    padding: 10,
+  },
+  dropdownInput: {
+    fontSize: 16,
+    color: "#333",
+  },
+  dropdownList: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  complaintsSection: {
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 15,
+    color: "#333",
+  },
+  noComplaints: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  complaintCard: {
+    backgroundColor: "#f8f8f8",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+  },
+  complaintTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 15,
+  },
+  complaintContent: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 5,
+  },
+  complaintDate: {
+    fontSize: 12,
+    color: "#999",
   },
 });

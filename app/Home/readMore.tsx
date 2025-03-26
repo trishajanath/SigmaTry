@@ -312,22 +312,28 @@ export default function IssueDetails() {
               {issue?.issue.block}
               {issue?.issue.actionItem === "Department"
                 ? "  Floor - "
-                : issue?.issue.actionItem === "Lift -"
-                ? ""
-                : issue?.issue.actionItem === "Miscellaneous"
-                ? ""
                 : issue?.issue.actionItem === "Lift"
+                ? ""
+                : issue?.issue.actionItem === "Maintenance"
+                ? ""
+                : issue?.issue.actionItem === "Printer"
+                ? ""
+                : issue?.issue.actionItem === "AC"
+                ? ""
+                : issue?.issue.actionItem === "Electrical"
                 ? ""
                 : "  Floor -"}{" "}
               {issue?.issue.floor}
-              {issue?.issue.actionItem === "Restroom"
-                ? "  Restroom:"
-                : issue?.issue.actionItem === "Classroom"
-                ? " Room No: "
-                : issue?.issue.actionItem === "Department"
+              {issue?.issue.actionItem === "Department"
                 ? ""
                 : issue?.issue.actionItem === "Water Dispenser"
                 ? " Dispenser No: "
+                : issue?.issue.actionItem === "Printer"
+                ? " Printer ID: "
+                : issue?.issue.actionItem === "AC"
+                ? " AC Unit No: "
+                : issue?.issue.actionItem === "Electrical"
+                ? " Location: "
                 : ""}
               {issue?.issue.issueContent}
             </Text>

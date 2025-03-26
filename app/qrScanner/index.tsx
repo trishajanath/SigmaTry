@@ -37,7 +37,6 @@ const QRCodeScanner = () => {
   };
 
   const handleRedirect = (scannedData: string) => {
-    // Assuming the scannedData contains information about the location
     const locationType = parseLocationType(scannedData);
     console.log("Location Type:", locationType);
     console.log("Scanned Data:", scannedData);
@@ -72,9 +71,33 @@ const QRCodeScanner = () => {
           params: { scannedData },
         });
         break;
-      case "miscellaneous":
+      case "maintenance":
         router.push({
-          pathname: "/qrScanner/qrMiscellaneous",
+          pathname: "/qrScanner/qrMaintenance",
+          params: { scannedData },
+        });
+        break;
+      case "printer":
+        router.push({
+          pathname: "/qrScanner/qrPrinter",
+          params: { scannedData },
+        });
+        break;
+      case "ac":
+        router.push({
+          pathname: "/qrScanner/qrAC",
+          params: { scannedData },
+        });
+        break;
+      case "electrical":
+        router.push({
+          pathname: "/qrScanner/qrElectrical",
+          params: { scannedData },
+        });
+        break;
+      case "hostel":
+        router.push({
+          pathname: "/qrScanner/qrHostel",
           params: { scannedData },
         });
         break;
@@ -95,14 +118,21 @@ const QRCodeScanner = () => {
       return "restroom";
     } else if (data.includes("department")) {
       return "department";
-    } else if (data.includes("lift")) {
-      return "lift";
     } else if (data.includes("water")) {
       return "water";
-    } else if (data.includes("misc")) {
-      return "miscellaneous";
+    } else if (data.includes("lift")) {
+      return "lift";
+    } else if (data.includes("maintenance")) {
+      return "maintenance";
+    } else if (data.includes("printer")) {
+      return "printer";
+    } else if (data.includes("ac")) {
+      return "ac";
+    } else if (data.includes("electrical")) {
+      return "electrical";
+    } else if (data.includes("hostel")) {
+      return "hostel";
     }
-
     return "unknown";
   };
 
