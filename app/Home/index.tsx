@@ -151,6 +151,41 @@ const ovalContainers = [
   },
   {
     id: 13,
+    icon: <MaterialCommunityIcons name="laptop" size={23} color="#555555" />,
+    title: "IT",
+    onPress: "/Home/IT",
+    category: "employee"
+  },
+  {
+    id: 14,
+    icon: <MaterialCommunityIcons name="school" size={23} color="#555555" />,
+    title: "CSE",
+    onPress: "/Home/CSE",
+    category: "employee"
+  },
+  {
+    id: 15,
+    icon: <MaterialCommunityIcons name="school" size={23} color="#555555" />,
+    title: "EEE",
+    onPress: "/Home/EEE",
+    category: "employee"
+  },
+  {
+    id: 16,
+    icon: <MaterialCommunityIcons name="school" size={23} color="#555555" />,
+    title: "ECE",
+    onPress: "/Home/ECE",
+    category: "employee"
+  },
+  {
+    id: 17,
+    icon: <MaterialCommunityIcons name="account-tie" size={23} color="#555555" />,
+    title: "HR",
+    onPress: "/Home/HR",
+    category: "employee"
+  },
+  {
+    id: 18,
     icon: <MaterialCommunityIcons name="view-list" size={23} color="#555555" />,
     title: "View All",
     onPress: "/Home/viewMore",
@@ -164,17 +199,22 @@ const complaintCategories = [
     label: "Student Complaints",
     options: [
       { key: "classroom", label: "Classroom", route: "/Home/classroom1" },
-      { key: "restroom", label: "Washroom", route: "/Home/restroom" },
+      { key: "washroom", label: "Washroom", route: "/Home/restroom" },
       { key: "water", label: "Water Dispenser", route: "/Home/Water" },
       { key: "elevator", label: "Elevator", route: "/Home/Elevator" },
       { key: "maintenance", label: "Maintenance", route: "/Home/Maintenance" },
-      { key: "lostAndFound", label: "Lost & Found", route: "/Home/lostAndFound" },
-    ]
+      { key: "lost", label: "Lost & Found", route: "/Home/lostAndFound" },
+    ],
   },
   {
     key: "employee",
     label: "Employee Complaints",
     options: [
+      { key: "it", label: "IT Department", route: "/Home/IT" },
+      { key: "hr", label: "HR Department", route: "/Home/HR" },
+      { key: "cse", label: "CSE Department", route: "/Home/CSE" },
+      { key: "eee", label: "EEE Department", route: "/Home/EEE" },
+      { key: "ece", label: "ECE Department", route: "/Home/ECE" },
       { key: "department", label: "Department", route: "/Home/Department" },
       { key: "printer", label: "Printer", route: "/Home/printer" },
       { key: "ac", label: "AC", route: "/Home/ac" },
@@ -185,7 +225,7 @@ const complaintCategories = [
       { key: "commonAreas", label: "Common Areas", route: "/Home/commonAreas" },
       { key: "newInstallation", label: "New Installation Request", route: "/Home/newInstallation" },
       { key: "other", label: "Other Issues", route: "/Home/other" },
-    ]
+    ],
   },
   {
     key: "hod",
@@ -196,8 +236,8 @@ const complaintCategories = [
       { key: "faculty", label: "Faculty Related", route: "/Home/faculty" },
       { key: "curriculum", label: "Curriculum", route: "/Home/curriculum" },
       { key: "research", label: "Research", route: "/Home/research" },
-    ]
-  }
+    ],
+  },
 ];
 
 const Index = () => {
@@ -430,15 +470,22 @@ const Index = () => {
     setShowSubOptions(true);
   };
 
-  const handleComplaintSelect = (value: string) => {
-    const category = complaintCategories.find(cat => cat.key === selectedCategory);
-    if (category) {
-      const selectedOption = category.options.find(option => option.key === value);
-      if (selectedOption) {
-        router.push(selectedOption.route);
-        setShowSubOptions(false);
-        setSelectedCategory("");
-      }
+  const handleComplaintSelect = (selectedValue) => {
+    console.log('Selected complaint:', selectedValue);
+    // Find the selected complaint option
+    const selectedComplaint = complaintCategories
+      .flatMap(category => category.options)
+      .find(option => option.key === selectedValue);
+
+    if (selectedComplaint) {
+      console.log('Navigating to:', selectedComplaint.route);
+      // Reset the dropdown state
+      setShowSubOptions(false);
+      setSelectedCategory("");
+      // Navigate to the selected route
+      router.push(selectedComplaint.route);
+    } else {
+      console.log('No matching complaint found for:', selectedValue);
     }
   };
 
